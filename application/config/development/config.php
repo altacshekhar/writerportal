@@ -41,7 +41,7 @@ if(isset($_SERVER['HTTP_HOST']))
 	$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 }
 else{
-	$config['base_url'] = 'http://localhost/writerportal-i18-pg';
+	$config['base_url'] = 'http://localhost/writerportal_seor';
 }
 //$config['base_url'] = '';
 /*

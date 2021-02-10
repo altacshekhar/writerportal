@@ -31,13 +31,15 @@ class Articlebrief_report_model extends MY_Model
         $table_link_articles_PK = $this->linkbuilding_article_model->getTablePrimaryKey();
         $table_link_articles_i18 = $this->linkbuilding_article_i18_model->getTableName();
         $table_link_articles_i18_PK = $this->linkbuilding_article_i18_model->getTablePrimaryKey();
-        // $column_order = array(
-        //     $table_campaign . '.campaign_content_coordinator'
-        // );
-        $column_order = array('user_name');
+        $column_order = array(
+            'user_name',
+            'draft',
+            'submitted',
+            'approved',
+            'published'
+        );
         // $column_search_global = array(
-        //     $table_publisher . '.publisher_createdby',
-        //     $table_publisher . '.date_added'
+        //     'user_name'
         // );
         $column_search = array(
             $table_link_briefs . '.brief_article_writer',
@@ -47,13 +49,13 @@ class Articlebrief_report_model extends MY_Model
         $order = array(
             'user_name' => 'ASC'
         ); // default order
-        $this->db->select('string_agg(distinct '.$table_link_articles_i18.'.article_title,\'<br>\') as article_title',false);
         $this->db->select('CONCAT('.$table_user.'.user_fname,\' \','.$table_user.'.user_lname) as user_name', false);
         $this->db->select('SUM(CASE WHEN '.$table_link_articles_i18.'.article_status = \'submitted\' THEN 1 ELSE 0 END) as submitted',false);
         $this->db->select('SUM(CASE WHEN '.$table_link_articles_i18.'.article_status = \'draft\' THEN 1 ELSE 0 END) as draft',false);
         $this->db->select('SUM(CASE WHEN '.$table_link_articles_i18.'.article_status = \'pending\' THEN 1 ELSE 0 END) as pending',false);
         $this->db->select('SUM(CASE WHEN '.$table_link_articles_i18.'.article_status = \'published\' THEN 1 ELSE 0 END) as published',false);
         $this->db->select('SUM(CASE WHEN '.$table_link_articles_i18.'.article_status = \'approved\' THEN 1 ELSE 0 END) as approved',false);
+        $this->db->select('string_agg(CASE WHEN '.$table_link_articles_i18.'.article_status = \'published\' THEN '.$table_link_articles_i18.'.article_title END,\'<br>\') as article_title',false);
         $this->db->from($table_link_briefs);
         $this->db->join($table_user,$table_user.'.user_id = cast(coalesce(nullif('.$table_link_briefs.'.brief_article_writer,\'\'),\'0\') as bigint)','left');
         $this->db->join($table_link_articles,$table_link_articles.'.brief_id = '.$table_link_briefs.'.brief_id','left');
@@ -89,6 +91,7 @@ class Articlebrief_report_model extends MY_Model
         $this->db->group_by($table_link_briefs. '.brief_article_writer');
         $this->db->group_by($table_user. '.user_fname');
         $this->db->group_by($table_user. '.user_lname');
+        //$this->db->group_by($table_link_articles_i18.'.article_status');
         //$this->db->group_by($table_link_briefs. '.brief_id');
     }
   

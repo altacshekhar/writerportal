@@ -101,17 +101,22 @@ class Publisher_model extends MY_Model
 		'publisher_email' => array(
             'field' => 'publisher_email',
             'label' => 'email',
-            'rules' => 'trim|required|valid_email|xss_clean',
+            'rules' => 'trim|xss_clean',
 		),
-		'publisher_niche[]' => array(
-            'field' => 'publisher_niche[]',
-            'label' => 'niche',
-            'rules' => 'trim|required|xss_clean',
-		),
+		// 'publisher_niche[]' => array(
+            // 'field' => 'publisher_niche[]',
+            // 'label' => 'niche',
+            // 'rules' => 'trim|required|xss_clean',
+		// ),
 		'publisher_type[]' => array(
             'field' => 'publisher_type[]',
             'label' => 'type',
             'rules' => 'trim|required|xss_clean',
+            ),
+            'publisher_website[]' => array(
+                  'field' => 'publisher_websites[]',
+                  'label' => 'websites',
+                  'rules' => 'trim|required|xss_clean',
             ),
             'publisher_url' => array(
             'field' => 'publisher_url',
@@ -171,33 +176,33 @@ class Publisher_model extends MY_Model
 
             $table_publisher = $this->getTableName();
             $table_publisher_PK = $this->getTablePrimaryKey();
-  
+            //pre_exit($post_array);
             //$table_article = $this->article_model->getTableName();
             //$table_article_PK = $this->article_model->getTablePrimaryKey();
-  
-              $column_order = array(
-                    $table_publisher . '.publisher_url',
-                    $table_publisher . '.publisher_niche',
-                    $table_publisher . '.publisher_type',
-                    $table_publisher . '.publisher_notes',
-                    $table_publisher . '.publisher_url_traffic',
-                    $table_publisher . '.publisher_url_domainauthority',
-                    $table_publisher . '.publisher_url_referringdomains',
-                    $table_publisher . '.publisher_estimated_cost',
-                    $table_publisher . '.publisher_status',
-                    $table_publisher . '.publisher_activity_date',
-              );
-              $column_search_global = array(
-                    $table_publisher . '.publisher_first_name',
-                    $table_publisher . '.publisher_last_name',
-                    $table_publisher . '.publisher_niche',
-                    $table_publisher . '.publisher_type',
-                    $table_publisher . '.publisher_notes',
-                    $table_publisher . '.publisher_status',
-                    $table_publisher . '.publisher_url',
-              );
-              $column_search = array(
-              $table_publisher . '.publisher_type');
+            $column_order = array(
+                  $table_publisher.'.publisher_url',
+                  $table_publisher . '.publisher_niche',
+                  $table_publisher . '.publisher_type',
+                  $table_publisher . '.publisher_url_traffic',
+                  $table_publisher . '.publisher_url_domainauthority',
+                  $table_publisher . '.publisher_url_referringdomains',
+                  $table_publisher . '.publisher_estimated_cost',
+                  $table_publisher . '.publisher_status',
+                  $table_publisher . '.date_added',
+            );
+            $column_search_global = array(
+                  $table_publisher . '.publisher_first_name',
+                  $table_publisher . '.publisher_last_name',
+                  $table_publisher . '.publisher_niche',
+                  $table_publisher . '.publisher_type',
+                  $table_publisher . '.publisher_notes',
+                  $table_publisher . '.publisher_status',
+                  $table_publisher . '.publisher_url',
+            );
+            $column_search = array(
+                  $table_publisher . '.publisher_type',
+                  $table_publisher . '.publisher_status',
+            );
               $order = array(
                     $table_publisher . '.publisher_url' => 'ASC'
               ); // default order
@@ -230,29 +235,26 @@ class Publisher_model extends MY_Model
                   foreach ($post_array['columns'] as $key=>$column_array)
                   {
                         if($column_array['searchable'] && $column_array['search']['value']!=''){
-                              $this->db->where($column_search[$key], strtolower($column_array['search']['value']));
+                              $this->db->where($column_search[$key], $column_array['search']['value']);
                         }
                   }
             }
-
-              
-            //   pre_exit($post_array);
             if(isset($post_array['order'])) // here order processing
             {
-                  $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
-                  //$this->db->order_by(REGEXP_REPLACE($table_publisher.'.publisher_url','^(https?://)?(www\.)?', ''), $post_array['order']['0']['dir'],false);
+                  if($post_array['order']['0']['column'] == 0)
+                  {
+                        $this->db->order_by("substring(".$column_order[$post_array['order']['0']['column']].",'.*://([^/]*)')", $post_array['order']['0']['dir'],false);
+                  }
+                  else
+                  {
+                        $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                  }
             }
             else if(isset($this->order))
             {
-                  //pre_exit($this->order);
                   $order = $this->order;
                   $this->db->order_by(key($order), $order[key($order)]);
             }
-            // else
-            // {
-            //       $this->db->order_by(key($order), $order[key($order)]);
-            // }
-            //pre(key($order));
             $this->db->group_by($table_publisher. '.' . $table_publisher_PK);
       }
   

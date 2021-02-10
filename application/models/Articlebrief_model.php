@@ -48,20 +48,18 @@ class Articlebrief_model extends MY_Model
   
               $column_order = array(
                     $table_link_briefs . '.brief_assign_date',
+                    '',
                     $table_publisher . '.publisher_url',
                     $table_campaign . '.campaign_name',
                     $table_link_article_i18 . '.article_title',
                     $table_link_briefs . '.brief_article_status',
-                    
               );
               $column_search_global = array(
                     $table_link_article_i18 . '.article_title',
                     $table_campaign . '.campaign_name',
-                    $table_publisher . '.publisher_url',
-                    $table_link_briefs . '.brief_article_status',
               );
               $column_search = array(
-                  $table_link_briefs . '.brief_article_status'
+                  $table_campaign . '.campaign_id'
               );
               $order = array(
                   $table_link_briefs . '.brief_assign_date' => 'ASC'
@@ -98,33 +96,29 @@ class Articlebrief_model extends MY_Model
                   $table_publisher,
                   "$table_publisher.publisher_id = $table_link_briefs.publisher_id","left"
             );
-            //$this->db->where($table_link_article_i18 . '.language_id', 'en');
-            ///$this->db->limit(1, 0);
-            // if($this->session->userdata('user_type') == 0 || $this->session->userdata('user_type') == 4){
-            //     $this->db->where($table_user . '.user_id', $this->session->userdata('id'));
-            // }
             $whereArray = [];
               $i = 0;
   
-          foreach ($column_search_global as $item) // loop column
-          {
+            foreach ($column_search_global as $item) // loop column
+            {
                     $search_value = $post_array['search']['value'];
-              if( $search_value)
-              {
-                  if($i===0) // first loop
-                  {
-                      $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-                      $this->db->like('LOWER(' .$item. ')', strtolower($search_value));
-                  }
-                  else
-                  {
-                      $this->db->or_like('LOWER(' .$item. ')', strtolower($search_value));
-                  }
-                  if(count($column_search_global) - 1 == $i) //last loop
-                      $this->db->group_end(); //close bracket
-              }
-              $i++;
-              }
+                    //echo $search_value;
+                if( $search_value)
+                {
+                    if($i===0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like('LOWER(' .$item. ')', strtolower($search_value));
+                    }
+                    else
+                    {
+                        $this->db->or_like('LOWER(' .$item. ')', strtolower($search_value));
+                    }
+                    if(count($column_search_global) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
   
               if(isset($post_array['columns'])){
                     foreach ($post_array['columns'] as $key=>$column_array)
@@ -137,15 +131,25 @@ class Articlebrief_model extends MY_Model
   
           if(isset($post_array['order'])) // here order processing
           {
-              $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+              //$this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                if($post_array['order']['0']['column'] == 2)
+                {
+                    $this->db->order_by("substring(".$column_order[$post_array['order']['0']['column']].",'.*://([^/]*)')", $post_array['order']['0']['dir'],false);
+                }
+                else
+                {
+                    $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                }
           }
           else if(isset($this->order))
           {
               $order = $this->order;
               $this->db->order_by(key($order), $order[key($order)]);
             }
-  
-              //$this->db->group_by($table_campaign. '.' . $table_campaign_PK);
+            $this->db->group_start();
+            $this->db->where($table_link_briefs . '.brief_article_writer !=', null);
+            $this->db->or_where($table_link_briefs . '.publisher_id !=', null);
+            $this->db->group_end();
     }
 
     public function get_link_brief_backlinks($campaign_id)
@@ -178,19 +182,53 @@ class Articlebrief_model extends MY_Model
         return $list_brief_backlink;
     }
 
+    public function get_written_articles($campaign_id)
+    {
+        $this->load->model(array('linkbuilding_article_model','linkbuilding_article_i18_model'));
+        $table_link_brief = $this->getTableName();
+        $table_link_brief_PK = $this->getTablePrimaryKey();
+        $table_link_articles = $this->linkbuilding_article_model->getTableName();
+        $table_link_articles_PK = $this->linkbuilding_article_model->getTablePrimaryKey();
+        $table_link_articles_i18 = $this->linkbuilding_article_i18_model->getTableName();
+        $table_link_articles_i18_PK = $this->linkbuilding_article_i18_model->getTablePrimaryKey();
+        $this->db->select('*');
+        $this->db->from($table_link_articles);
+        $this->db->join($table_link_brief,'link_briefs.brief_id = link_articles.brief_id','LEFT');
+        $this->db->join($table_link_articles_i18,'link_articles_translate_i18.article_id = link_articles.article_id','LEFT');
+        $this->db->where('link_briefs.campaign_id',$campaign_id);
+        $query = $this->db->get();
+        $list_article = array();
+		if($query->num_rows()>0)
+        {
+			foreach ($query->result() as $row)
+            {
+                $list_article[$row->brief_id] = (array) $row;
+            }
+        }else{
+            $list_article =  array();
+        }
+        return $list_article;
+    }
+
     public function get_link_briefs($campaign_id)
     {
-        $this->load->model(array('campaign_model','linkarticle_model'));
+        $this->load->model(array('campaign_model','linkarticle_model','linkbuilding_article_model','linkbuilding_article_i18_model'));
         $table_link_campaigns = $this->campaign_model->getTableName();
         $table_link_campaigns_PK = $this->campaign_model->getTablePrimaryKey();
         $table_link_brief = $this->getTableName();
         $table_link_brief_PK = $this->getTablePrimaryKey();
         $table_link_wp_article = $this->linkarticle_model->getTableName();
         $table_link_wp_article_PK = $this->linkarticle_model->getTablePrimaryKey();
+        $table_link_article = $this->linkbuilding_article_model->getTableName();
+        $table_link_article_PK= $this->linkbuilding_article_model->getTablePrimaryKey();
+        $table_link_article_i18 = $this->linkbuilding_article_i18_model->getTableName();
+        $table_link_article_i18_PK = $this->linkbuilding_article_i18_model->getTablePrimaryKey();
         $this->db->select('*');
         $this->db->from($table_link_wp_article);
         $this->db->join($table_link_brief, 'link_wp_articles.link_wp_articles_id = link_briefs.link_wp_articles_id', 'LEFT');
         $this->db->join($table_link_campaigns, 'link_campaigns.campaign_id = link_wp_articles.campaign_id', 'LEFT');
+        //$this->db->join($table_link_article, 'link_articles.brief_id = link_briefs.brief_id', 'LEFT');
+        //$this->db->join($table_link_article_i18, 'link_articles_translate_i18.article_id = link_articles.article_id', 'LEFT');
         $this->db->where($table_link_wp_article.'.campaign_id', (int) $campaign_id);
 		$this->db->order_by($table_link_brief.'.brief_id', "asc");       
         $query = $this->db->get();

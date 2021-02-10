@@ -1,5 +1,14 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+$is_readonly = false;
+$is_disable = "";
+
+if($backlink_list_array['form_action'] == "publish")
+{
+	$is_readonly = true;
+	$is_disable = "disabled";
+}
+//echo $is_readonly;
 ?>
 <div class="clearfix position-relative py-1">
 	<div class="container">
@@ -24,8 +33,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									'name' => 'campaign_name',
 									'value' => set_value('campaign_name', $campaign['campaign_name']),
 									'placeholder' => 'Name',
-									'class' => 'form-control'
+									'class' => 'form-control',
 								);
+								if($is_readonly)
+									$data_campaign_name['readonly'] = true;
 								echo form_input($data_campaign_name);
 								echo form_error('campaign_name');
 								if(array_key_exists('campaign_id',$campaign))
@@ -59,8 +70,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									}else{
 										$selected_campaign_status ='In Progress';
 									}
-									echo form_dropdown("campaign_status", $campaign_status, $selected_campaign_status, 'class="form-control-sm select-2"' );
+									echo form_dropdown("campaign_status", $campaign_status, $selected_campaign_status, 'class="form-control-sm select-2" '.$is_disable );
 									echo form_error("campaign_status");
+									if($is_disable)
+									{
+										echo '<input type="hidden" name="campaign_status" value="'.$selected_campaign_status.'" />';
+									}
 
 								?>
 						</div>
@@ -82,9 +97,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									'placeholder' => 'Start Date',
 									'class' => 'form-control',
 									'id' => 'campaign_startdate',
-									'data-date-format'=>"yyyy-mm-dd",
-									
+									'data-date-format'=>"yyyy-mm-dd"
 								);
+								
+								if($is_readonly)
+									$data_campaign_startdate['readonly'] = true;
+
 								echo form_input($data_campaign_startdate);
 								echo form_error('campaign_startdate');
 							?>
@@ -105,10 +123,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									'placeholder' => 'End Date',
 									'class' => 'form-control',
 									'id' => 'campaign_enddate',
-									'data-date-format'=>"yyyy-mm-dd",
+									'data-date-format'=>"yyyy-mm-dd"
 								);
+								if($is_readonly)
+									$data_campaign_enddate['readonly'] = true;
 								echo form_input($data_campaign_enddate);
 								echo form_error('campaign_enddate');
+									
 							?>
 						</div>
 					</div>
@@ -124,6 +145,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									'placeholder' => 'Budget',
 									'class' => 'form-control'
 								);
+								
+								if($is_readonly)
+									$data_campaign_budget['readonly'] = true;
 								echo form_input($data_campaign_budget);
 								echo form_error('campaign_budget');
 							?> 
@@ -133,14 +157,32 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						</label>
 						<div class="col-sm-3">
 							<?php
-								$data_campaign_quantity = array(
-									'id' => 'campaign_quantity',
-									'name' => 'campaign_quantity',
-									'value' => set_value('campaign_quantity', $campaign['campaign_quantity']),
-									'placeholder' => 'Number of Backlink',
-									'class' => 'form-control',
-									'type' => 'number'
-								);
+								if($campaign['campaign_quantity'] > 0)
+								{
+									$data_campaign_quantity = array(
+										'id' => 'campaign_quantity',
+										'name' => 'campaign_quantity',
+										'value' => set_value('campaign_quantity', $campaign['campaign_quantity']),
+										'placeholder' => 'Number of Backlink',
+										'class' => 'form-control',
+										'type' => 'number',
+										'readonly' => 'true',
+									);
+								}
+								else
+								{
+									$data_campaign_quantity = array(
+										'id' => 'campaign_quantity',
+										'name' => 'campaign_quantity',
+										'value' => set_value('campaign_quantity', $campaign['campaign_quantity']),
+										'placeholder' => 'Number of Backlink',
+										'class' => 'form-control',
+										'type' => 'number'
+									);
+								}
+								
+								if($is_readonly)
+									$data_campaign_quantity['readonly'] = true;
 								echo form_input($data_campaign_quantity);
 								echo form_error('campaign_quantity');
 							?>
@@ -161,8 +203,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									'cols' => 50,
 									'class' => 'form-control'
 								);
+								if($is_readonly)
+									$data_campaign_notes['readonly'] = true;
 								echo form_textarea($data_campaign_notes);
-								
 							?> 
 						</div>
 					</div>
@@ -185,13 +228,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									}else{
 										$selected_campaign_websites = '';	
 									}
-									$js = 'id="campaign_websites" multiple="multiple" class="select-2 form-control-sm" required="required" data-msg-required="Please select websites"';
+									$js = 'id="campaign_websites" multiple="multiple" class="select-2 form-control-sm" required="required" data-msg-required="Please select websites" '.$is_disable;
 									echo form_dropdown("campaign_websites[]", $campaign_websites, $selected_campaign_websites, $js);
 									echo form_error("campaign_websites[]");
+									if($is_disable)
+									{
+										foreach($selected_campaign_websites as $scw)
+										{
+											echo '<input type="hidden" name="campaign_websites[]" id="campaign_websites" value="'.$scw.'" />';
+										}
+									}
 
 								?>
 						</div>
-						<label class="col-md-auto col-sm-6 h6 col-form-label" for="campaign_niche">
+						<!-- <label class="col-md-auto col-sm-6 h6 col-form-label" for="campaign_niche">
 							Niche<span class="text-danger">*</span>
 						</label>
 						<div class="col-md-3 col-sm-6">
@@ -211,13 +261,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									}else{
 										$selected_campaign_niche = '';	
 									}
-									$js = 'id="campaign_niche" multiple="multiple" class="select-2 form-control-sm" required="required" data-msg-required="Please select niche"';
+									$js = 'id="campaign_niche" multiple="multiple" class="select-2 form-control-sm" required="required" data-msg-required="Please select niche" '.$is_disable;
 									echo form_dropdown("campaign_niche[]", $campaign_niche, $selected_campaign_niche, $js);
 									echo form_error("campaign_niche[]");
-
+									if($is_disable)
+									{
+										foreach($selected_campaign_niche as $scn)
+										{
+											echo '<input type="hidden" name="campaign_niche[]" id="campaign_niche" value="'.$scn.'" />';
+										}
+									}
 								?>
 							
-						</div>
+						</div> -->
 
 						<label class="col-md-auto col-sm-6 h6 col-form-label" for="campaign_type">
 							Type<span class="text-danger">*</span>
@@ -234,15 +290,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									}
 									
 									if( $campaign['campaign_type']){
-										$selected_campaign_type =  explode(",",$campaign['campaign_type']);
-										//pre($selected_cat);
+										//$selected_campaign_type =  explode(",",$campaign['campaign_type']);
+										$selected_campaign_type =  $campaign['campaign_type'];
 									}else{
 										$selected_campaign_type = '';
 									}
-									$js = 'id="campaign_type" multiple="multiple" class="select-2 form-control-sm" required="required" data-msg-required="Please select type"';
-									echo form_dropdown("campaign_type[]", $campaign_type, $selected_campaign_type, $js);
-									echo form_error("campaign_type[]");
-
+									$js = 'id="campaign_type" class="select-2 form-control-sm" required="required" data-msg-required="Please select type" '.$is_disable;
+									echo form_dropdown("campaign_type", $campaign_type, $selected_campaign_type, $js);
+									echo form_error("campaign_type");
+									if($is_disable)
+									{
+										echo '<input type="hidden" name="campaign_type" id="campaign_type" value="'.$selected_campaign_type.'" />';
+									}
 								?>
 						</div>
 					</div>
@@ -262,9 +321,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 								 }else if($campaign['campaign_content_coordinator']){
 									$select_content_coordinator = $campaign['campaign_content_coordinator'];
 								 }
-								$js = 'id="campaign_content_coordinator"  class="select-2 form-control-sm" required="required"';
+								$js = 'id="campaign_content_coordinator"  class="select-2 form-control-sm" required="required" '.$is_disable;
 								echo form_dropdown("campaign_content_coordinator", $content_coordinators, $select_content_coordinator, $js);
 								echo form_error("campaign_content_coordinator");
+								if($is_disable)
+								{
+									echo '<input type="hidden" name="campaign_content_coordinator" id="campaign_content_coordinator" value="'.$select_content_coordinator.'" />';
+								}
 							?> 
 						</div>
 						<label class="col-md-auto col-sm-6 h6 col-form-label" for="campaign_outreach_coordinator">
@@ -272,9 +335,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						</label>
 						<div class="col-md-2 col-sm-6">
 							<?php
-								$js = 'id="campaign_outreach_coordinator"  class="select-2 form-control-sm" required="required"';
+								$js = 'id="campaign_outreach_coordinator"  class="select-2 form-control-sm" required="required" '.$is_disable;
 								echo form_dropdown("campaign_outreach_coordinator", $outreach_coordinators, $campaign['campaign_outreach_coordinator'], $js);
 								echo form_error("campaign_outreach_coordinator");
+								if($is_disable)
+								{
+									echo '<input type="hidden" name="campaign_outreach_coordinator" id="campaign_outreach_coordinator" value="'.$campaign['campaign_outreach_coordinator'].'" />';
+								}
 							?>
 						</div>
 						
@@ -291,8 +358,35 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						
 					</div>
  					<!---backlink section start --->
-					<!-- backlink section end --->
 					
+					<div class="row mb-1 mt-5">
+						<h4 class="pr-2">Backlinks</h4>
+						<?php 
+						//echo $backlink_list_array['form_action'];
+						if($backlink_list_array['form_action'] == "draft" || $backlink_list_array['form_action'] == "" || $backlink_list_array['form_action'] == null)
+						{?>
+						<a class="btn btn-success btn-sm articles-build-backlinks" href="javascript:void(0);" role="button">Add</a>
+						<div id="add-loading-image" style="display:none;"><svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="align-middle" style="height:30px" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve"><path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/> <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0 C22.32,8.481,24.301,9.057,26.013,10.047z"> <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/> </path></svg> Loading...</span></div>
+						<?php 
+						}
+						?>
+					</div>
+					<div id="backlink-list">
+						<?php
+						if($backlink_list_array['backlink_list']){
+							$this->load->view('secure/campaign/backlink_template', $backlink_list_array);
+						}	
+						?>
+					</div>
+					<?php 
+					if($campaign['campaign_quantity'] > 0 && ($backlink_list_array['form_action'] == "draft" || $backlink_list_array['form_action'] == "" || $backlink_list_array['form_action'] == null))
+					{?>
+					<div class="row mb-1">
+						<a class="btn btn-success btn-sm add-more-articles" href="javascript:void(0);" role="button">Add Article</a>
+						<div id="loading-image" style="display:none;"><svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="align-middle" style="height:30px" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve"><path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/> <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0 C22.32,8.481,24.301,9.057,26.013,10.047z"> <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/> </path></svg> Loading...</span></div>
+					</div>
+					<?php }
+					?>
 					<?php if($user_type == 1 || $user_type == 6){ ?>
 					<div class="row mb-1 mt-5">
 						<div class="col-md-6">
@@ -300,9 +394,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							<div class="col-md-9">
 								<h4 class="pr-2">Select publishers for backlink outreach</h4>
 							</div>
+							<?php if($backlink_list_array['form_action'] == "draft" || $backlink_list_array['form_action'] == "") {?>
 							<div class="col-md-3 pl-0">
 								<a class="btn btn-success btn-sm publishers-backlink-outreach" href="javascript:void(0);" role="button">Add</a>
 							</div>
+							<?php 
+							}
+							?>
 						</div>
 						</div>
 						<div class="col-md-6">
@@ -316,7 +414,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							</div>
 						</div>
 					</div>
-					<div class="backlink-publishers mb-5">
+					<div class="backlink-publishers">
 					  <div class="table-responsive">
 						<table class="table table-bordered">
 							<thead>
@@ -359,9 +457,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 											echo form_input($data_campaign_publishers_id);
 											$publisher_dropdown[$pub['publisher_id']] = get_domain($pub['publisher_url']); 
 											echo '<tr id="row_'.$pub['campaign_publisher_id'].'" class="publishers-row" data-campaign_publsiher_id="'.$pub['campaign_publisher_id'].'" data-name="'.get_domain($pub['publisher_url']).'" data-id="'.$pub['publisher_id'].'"><td>'.get_domain($pub['publisher_url']).'</td><td>'.$pub['publisher_url_traffic'].'</td>
-										<td>'.$pub['publisher_url_domainauthority'].'</td><td>'.$pub['publisher_estimated_cost'].'</td>
-										<td><a target="_blank" href="https://zimbra.altametrics.com/mail?view=compose&to='.$pub['publisher_email'].'&subject=&body=" class="publisher-email" data-publisher-email="'.$pub['publisher_email'].'"><i class="fas fa-envelope"></i></a></td>
-										<td><button type="button" class="btn btn-link text-danger delete-publisher-row p-0"><i class="fas fa-times"></i></button></td></tr>';
+											<td>'.$pub['publisher_url_domainauthority'].'</td><td>'.$pub['publisher_estimated_cost'].'</td>
+											<td><a target="_blank" href="https://zimbra.altametrics.com/mail?view=compose&to='.$pub['publisher_email'].'&subject=&body=" class="publisher-email" data-publisher-email="'.$pub['publisher_email'].'"><i class="fas fa-envelope"></i></a></td>
+											<td>';
+											if($backlink_list_array['form_action'] == "draft" || $backlink_list_array['form_action'] == "")
+											{
+												echo '<button type="button" class="btn btn-link text-danger delete-publisher-row p-0"><i class="fas fa-times"></i></button>';
+											}
+											echo '</td></tr>';
 										}	
 									}
 								}
@@ -372,21 +475,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 					</div>
 					<?php } ?>
-					<div class="row mb-1 mt-5">
-						<h4 class="pr-2">Backlinks</h4>
-						<a class="btn btn-success btn-sm articles-build-backlinks" href="javascript:void(0);" role="button">Add</a>
-					</div>
-					<div id="backlink-list">
-						<?php
-						//pre($backlink_list_array);
-						if($backlink_list_array['backlink_list']){
-							$this->load->view('secure/campaign/backlink_template', $backlink_list_array);
-						}
-							
-						?>
-					</div>
+					
 
-					<div class="row">
+					<!-- <div class="row">
 
 					<div class="build-backlinks col-md-6" style="overflow-x: scroll">
 						<?php 
@@ -565,13 +656,24 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						}
 						?>
 					</div>
-					</div>
+					</div> -->
 					<?php } ?>
-					<div class="form-group row mt-3">
-						<div class="col-md-2 col-sm-3 col-xs-12 offset-md-10 offset-sm-9">
-							<button type="submit" name="submitForm" value="" class="btn btn-primary " data-disable-with="Loading..." autocomplete="off">
+					<div class="form-group row">
+						<div class="col-md-4 col-sm-6 col-xs-12 offset-md-8 offset-sm-6">
+						<?php 
+						$hide_save = "";
+						if($backlink_list_array['form_action'] == "publish")
+						{
+							$hide_save = "hide";
+						}?>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+							<button type="submit" name="form_action" value="draft" class="ml-2 float-right btn btn-primary <?php echo $hide_save;?>" data-disable-with="Loading..." autocomplete="off">
 								<i class="fas fa-save"></i>
 								Save
+							</button>
+							<button type="submit" name="form_action" value="publish" class="float-right btn btn-success" data-disable-with="Loading..." autocomplete="off">
+								<i class="fas fa-check"></i>
+								Save &amp; Publish
 							</button>
 						</div>
 					</div>

@@ -4,14 +4,15 @@ var lang = 'en',
 	inputChanged = false,
 	hits, q, image_type, orientation, related_target;
 
-	window.onbeforeunload = function (e) {
-		if(inputChanged) {
-			var message = "Are you sure you want leave asds?";
-			e.returnValue = message;
-			return false;
-		}
-		return;
-	};
+window.onbeforeunload = function (e) {
+	if (inputChanged) {
+		var message = "Are you sure you want leave asds?";
+		e.returnValue = message;
+		return false;
+	}
+	return;
+};
+
 function initializeSelect2(selectElementObj) {
 	selectElementObj.select2({
 		width: "100%",
@@ -22,7 +23,8 @@ function initializeSelect2(selectElementObj) {
 		}
 	});
 }
-function urlencode (str) {
+
+function urlencode(str) {
 	str = (str + '')
 	return encodeURIComponent(str)
 		.replace(/!/g, '%21')
@@ -32,6 +34,7 @@ function urlencode (str) {
 		.replace(/\*/g, '%2A')
 		.replace(/%20/g, '+')
 }
+
 function call_px_api(q, p) {
 
 	var sendInfo = {
@@ -94,32 +97,33 @@ function render_px_results(q, p, data) {
 		rowHeight: 200
 	});
 }
+
 function youtubeDurationToSeconds(duration) {
-	var hours   = 0;
+	var hours = 0;
 	var minutes = 0;
 	var seconds = 0;
 
 	// Remove PT from string ref: https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration
-	duration = duration.replace('PT','');
+	duration = duration.replace('PT', '');
 
 	// If the string contains hours parse it and remove it from our duration string
 	if (duration.indexOf('H') > -1) {
 		hours_split = duration.split('H');
-		hours       = parseInt(hours_split[0]);
-		duration    = hours_split[1];
+		hours = parseInt(hours_split[0]);
+		duration = hours_split[1];
 	}
 
 	// If the string contains minutes parse it and remove it from our duration string
 	if (duration.indexOf('M') > -1) {
 		minutes_split = duration.split('M');
-		minutes       = parseInt(minutes_split[0]);
-		duration      = minutes_split[1];
+		minutes = parseInt(minutes_split[0]);
+		duration = minutes_split[1];
 	}
 
 	// If the string contains seconds parse it and remove it from our duration string
 	if (duration.indexOf('S') > -1) {
 		seconds_split = duration.split('S');
-		seconds       = parseInt(seconds_split[0]);
+		seconds = parseInt(seconds_split[0]);
 	}
 
 	return {
@@ -139,7 +143,7 @@ jQuery.validator.setDefaults({
 	ignore: [],
 	onkeyup: function (element) {
 		//console.log({element})
-		if(jQuery(element).parents('form .article-form').length > 0){
+		if (jQuery(element).parents('form .article-form').length > 0) {
 			inputChanged = true;
 		}
 		jQuery(element).valid();
@@ -177,145 +181,146 @@ jQuery.validator.setDefaults({
 	}
 });
 
-function croppieCreate(post_image_data){
+function croppieCreate(post_image_data) {
 	var tabName = 'pixabay-crop-tab';
-		var tab_container = '#pixabayModalTabContent';
-		var navTabs = "#pixabayModalTab";
-		var tabsObj = jQuery(navTabs).tabs();
+	var tab_container = '#pixabayModalTabContent';
+	var navTabs = "#pixabayModalTab";
+	var tabsObj = jQuery(navTabs).tabs();
 
-		jQuery(navTabs).find("li:eq(2)").remove();
-		jQuery(tab_container).find(".tab-pane:eq(2)").remove();
+	jQuery(navTabs).find("li:eq(2)").remove();
+	jQuery(tab_container).find(".tab-pane:eq(2)").remove();
 
-		var navItem = jQuery("<li />").attr({
-			"class": "nav-item"
-		});
-		var navLink = jQuery("<a />").attr({
-			"class": "nav-link",
-			"href": "#" + tabName,
-			"data-toggle": "tab",
-			"role": "tab",
-			"aria-controls": tabName,
-			"aria-selected": "false"
-		}).append(jQuery('<h4 />').attr({
-			"class": "modal-title"
-		}).html('Crop Image'));
+	var navItem = jQuery("<li />").attr({
+		"class": "nav-item"
+	});
+	var navLink = jQuery("<a />").attr({
+		"class": "nav-link",
+		"href": "#" + tabName,
+		"data-toggle": "tab",
+		"role": "tab",
+		"aria-controls": tabName,
+		"aria-selected": "false"
+	}).append(jQuery('<h4 />').attr({
+		"class": "modal-title"
+	}).html('Crop Image'));
 
-		var image_croppie = jQuery('<div />').attr({
-			"id" : "image_croppie_demo"
-		}).croppie({
-			enableExif: true,
-			viewport: {
-				width: 580,
-				height: 385
+	var image_croppie = jQuery('<div />').attr({
+		"id": "image_croppie_demo"
+	}).croppie({
+		enableExif: true,
+		viewport: {
+			width: 580,
+			height: 385
+		},
+		boundary: {
+			width: '100%',
+			height: 400
+		}
+	});
+
+	navItem.html(navLink).appendTo(navTabs);
+
+	var tabPane = jQuery("<div />").attr({
+		"class": "tab-pane fade",
+		"id": tabName,
+		"role": "tabpanel",
+		"aria-labelledby": tabName,
+	}).html(image_croppie);
+
+	if (post_image_data.pixabay_upload == 0) {
+		var form_str = '';
+		form_str += '<div class="row"> <div class="col-md-6">';
+		form_str += '<input name="image_attribution" type="text" class="image_attribution form-control" required placeholder="Enter image attribution"></div>';
+		form_str += '<div class="col-md-6"><input name="image_license" type="text" class="image_license form-control" required placeholder="Enter image license"></div>';
+		form_str += '</div>';
+		form_str += '<div class="form-group mt-1"><div class="custom-control custom-checkbox align-items-center">';
+		form_str += '<input class="custom-control-input" name="agree_image_rights" type="checkbox" id="agree_image_rights" required>';
+		form_str += '<label class="custom-control-label text-body" for="agree_image_rights">';
+		form_str += 'By uploading your ("Image"), you warrant and represent that you own all of the rights to your image and you grant all such rights to R Media, LLC subject to the Creative Commons CC0 license';
+		form_str += '</label>';
+		form_str += '</div></div>';
+		var corp_form = jQuery("<form />").html(form_str);
+		corp_form.validate({
+			errorPlacement: function (error, element) {
+				error.appendTo(element.parents('.custom-control'));
 			},
-			boundary: {
-				width: '100%',
-				height: 400
+			image_attribution: "required",
+			image_license: "required",
+			agree_image_rights: "required",
+			messages: {
+				agree_image_rights: "You must agree before uploading your Image.",
 			}
 		});
+		corp_form.appendTo(tabPane);
+	}
 
-		navItem.html(navLink).appendTo(navTabs);
-
-		var tabPane = jQuery("<div />").attr({
-			"class": "tab-pane fade",
-			"id": tabName,
-			"role": "tabpanel",
-			"aria-labelledby": tabName,
-		}).html(image_croppie);
-
-		if(post_image_data.pixabay_upload == 0){
-			var form_str = '';
-			form_str += '<div class="row"> <div class="col-md-6">';
-			form_str += '<input name="image_attribution" type="text" class="image_attribution form-control" required placeholder="Enter image attribution"></div>';
-			form_str += '<div class="col-md-6"><input name="image_license" type="text" class="image_license form-control" required placeholder="Enter image license"></div>';
-			form_str += '</div>';
-			form_str += '<div class="form-group mt-1"><div class="custom-control custom-checkbox align-items-center">';
-			form_str += '<input class="custom-control-input" name="agree_image_rights" type="checkbox" id="agree_image_rights" required>';
-			form_str += '<label class="custom-control-label text-body" for="agree_image_rights">';
-			form_str += 'By uploading your ("Image"), you warrant and represent that you own all of the rights to your image and you grant all such rights to R Media, LLC subject to the Creative Commons CC0 license';
-			form_str += '</label>';
-			form_str += '</div></div>';
-			var corp_form = jQuery("<form />").html(form_str);
-			corp_form.validate({
-				errorPlacement: function (error, element) {
-					error.appendTo(element.parents('.custom-control'));
-				},
-				image_attribution: "required",
-				image_license: "required",
-				agree_image_rights: "required",
-				messages: {
-					agree_image_rights: "You must agree before uploading your Image.",
-				}
-			});
-			corp_form.appendTo(tabPane);
-		}
-
-		var cropImageButton = jQuery('<button type="button" />')
-			.addClass("btn btn-primary")
-			.click(function () {
-				if(post_image_data.pixabay_upload == 0){
-					var formvalid  = corp_form.valid();
-					if(formvalid){
-						post_image_data.image_attribution = jQuery(corp_form).find('.image_attribution').val();
+	var cropImageButton = jQuery('<button type="button" />')
+		.addClass("btn btn-primary")
+		.click(function () {
+			if (post_image_data.pixabay_upload == 0) {
+				var formvalid = corp_form.valid();
+				if (formvalid) {
+					post_image_data.image_attribution = jQuery(corp_form).find('.image_attribution').val();
 					//	alert(post_image_data.image_attribution);
-					}
-					if(formvalid){
-						post_image_data.image_license = jQuery(corp_form).find('.image_license').val();
-					//	alert(post_image_data.image_license);
-					}
-					//alert(formvalid);
-					if(!formvalid){
-						return false;
-					}
 				}
-				image_croppie.croppie('result', {
-					type: 'canvas',
-					size: {
-						width: 1280,
-						height: 854
-					}
-				}).then(function (response) {
-					jQuery(related_target).addClass('embed-responsive-16by9');
-					jQuery(related_target).find('.section_video').val('');
-					jQuery(related_target).find('.youtubevideo').text('');
-					jQuery(related_target).css("background-image", "url(" + response + ")");
-					jQuery(related_target).find('.holder-icon').removeClass('uploading');
-					jQuery(related_target).find('.upload_image_base64').val(response);
-					jQuery(related_target).find('.hero_image').val(1);
-					jQuery('#hero_image-error').remove();
-					jQuery(related_target).find('.image_attribution').val(post_image_data.image_attribution);
-					jQuery(related_target).find('.image_license').val(post_image_data.image_license);
-					jQuery(related_target).next('.delete_image').fadeIn();
-					jQuery(related_target).next('.delete-image-container').find('.delete_image').fadeIn();
-					jQuery(related_target).parents('.form-group').nextAll('.section-video-found').hide();
-					jQuery(related_target).parents('.form-group').nextAll('.section-image-found').show();
-					jQuery(related_target).parents('.form-group').nextAll('.section-image-found').find('.article_image_alt').removeAttr("disabled");
-					jQuery(related_target).parents('.form-group').nextAll('.form-group').find('.article_image_alt').removeAttr("disabled");
-					$pixabayModal.modal('hide');
-				})
-			}).html('Crop & Use Image');
+				if (formvalid) {
+					post_image_data.image_license = jQuery(corp_form).find('.image_license').val();
+					//	alert(post_image_data.image_license);
+				}
+				//alert(formvalid);
+				if (!formvalid) {
+					return false;
+				}
+			}
+			image_croppie.croppie('result', {
+				type: 'canvas',
+				size: {
+					width: 1280,
+					height: 854
+				}
+			}).then(function (response) {
+				jQuery(related_target).addClass('embed-responsive-16by9');
+				jQuery(related_target).find('.section_video').val('');
+				jQuery(related_target).find('.youtubevideo').text('');
+				jQuery(related_target).css("background-image", "url(" + response + ")");
+				jQuery(related_target).find('.holder-icon').removeClass('uploading');
+				jQuery(related_target).find('.upload_image_base64').val(response);
+				jQuery(related_target).find('.hero_image').val(1);
+				jQuery('#hero_image-error').remove();
+				jQuery(related_target).find('.image_attribution').val(post_image_data.image_attribution);
+				jQuery(related_target).find('.image_license').val(post_image_data.image_license);
+				jQuery(related_target).next('.delete_image').fadeIn();
+				jQuery(related_target).next('.delete-image-container').find('.delete_image').fadeIn();
+				jQuery(related_target).parents('.form-group').nextAll('.section-video-found').hide();
+				jQuery(related_target).parents('.form-group').nextAll('.section-image-found').show();
+				jQuery(related_target).parents('.form-group').nextAll('.section-image-found').find('.article_image_alt').removeAttr("disabled");
+				jQuery(related_target).parents('.form-group').nextAll('.form-group').find('.article_image_alt').removeAttr("disabled");
+				$pixabayModal.modal('hide');
+			})
+		}).html('Crop & Use Image');
 
-		var cropImageButtonContainer = jQuery("<div />").attr({
-			"class": "text-center mt-1"
-		}).html(cropImageButton);
+	var cropImageButtonContainer = jQuery("<div />").attr({
+		"class": "text-center mt-1"
+	}).html(cropImageButton);
 
-		cropImageButtonContainer.appendTo(tabPane);
-		tabPane.appendTo(tab_container);
-		tabsObj.tabs("refresh");
-		jQuery(navTabs + ' a[href="#' + tabName + '"]').tab('show');
+	cropImageButtonContainer.appendTo(tabPane);
+	tabPane.appendTo(tab_container);
+	tabsObj.tabs("refresh");
+	jQuery(navTabs + ' a[href="#' + tabName + '"]').tab('show');
 
-		setTimeout(function(){
-			image_croppie.croppie('bind', {
-				url: post_image_data.image_url
-			}).then(function () {
-				jQuery('#pixabay_results .item.upload').removeClass('uploading').find('.download img').replaceWith('<img src="' + base_url + 'assets/images/download.svg">');
-			});
-		}, post_image_data.time_out);
+	setTimeout(function () {
+		image_croppie.croppie('bind', {
+			url: post_image_data.image_url
+		}).then(function () {
+			jQuery('#pixabay_results .item.upload').removeClass('uploading').find('.download img').replaceWith('<img src="' + base_url + 'assets/images/download.svg">');
+		});
+	}, post_image_data.time_out);
 }
 
 jQuery(document).ready(function () {
 	jQuery(document).on('click', '#article-form button[type="submit"]', function (event) {
 		var inputval = $(this).val();
+		//alert(inputval);
 		jQuery('#form_action').val(inputval)
 	});
 
@@ -344,15 +349,15 @@ jQuery(document).ready(function () {
 		allowInputToggle: true,
 		orientation: 'bottom',
 		numberOfMonths: 1,
-        onSelect: function(selected) {
-          $("#campaign_enddate").datepicker("option","minDate", selected)
-        }
+		onSelect: function (selected) {
+			$("#campaign_enddate").datepicker("option", "minDate", selected)
+		}
 	});
-	jQuery('#campaign_startdate').change(function() {
-		var date2 = $('#campaign_startdate').datepicker('getDate', '+1d'); 
-		date2.setDate(date2.getDate()+14); 
+	jQuery('#campaign_startdate').change(function () {
+		var date2 = $('#campaign_startdate').datepicker('getDate', '+1d');
+		date2.setDate(date2.getDate() + 14);
 		$('#campaign_enddate').datepicker('setDate', date2);
-	  });
+	});
 	jQuery('#from_date').datepicker({
 		startDate: "2015-01-01",
 		autoclose: true,
@@ -376,8 +381,8 @@ jQuery(document).ready(function () {
 		todayHighlight: true,
 		allowInputToggle: true,
 		orientation: 'bottom',
-		onSelect: function(selected) {
-			$("#campaign_startdate").datepicker("option","maxDate", selected)
+		onSelect: function (selected) {
+			$("#campaign_startdate").datepicker("option", "maxDate", selected)
 		}
 	});
 
@@ -393,7 +398,7 @@ jQuery(document).ready(function () {
 				['viewHTML'],
 				['checkspelling'],
 				['undo', 'redo'], // Only supported in Blink browsers
-			//	['h1', 'h2', 'h3', 'h4'],
+				//	['h1', 'h2', 'h3', 'h4'],
 				['strong', 'em'],
 				['link'],
 				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
@@ -405,7 +410,7 @@ jQuery(document).ready(function () {
 			],
 			plugins: {
 				table: {
-					styler : 'table table-bordered'
+					styler: 'table table-bordered'
 				},
 				skyscraper: {
 					article_id: jQuery("#article_id").val(),
@@ -432,7 +437,7 @@ jQuery(document).ready(function () {
 				['viewHTML'],
 				['checkspelling'],
 				['undo', 'redo'], // Only supported in Blink browsers
-			//	['h1', 'h2', 'h3', 'h4'],
+				//	['h1', 'h2', 'h3', 'h4'],
 				['strong', 'em'],
 				['link'],
 				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
@@ -444,7 +449,7 @@ jQuery(document).ready(function () {
 			],
 			plugins: {
 				table: {
-					styler : 'table table-bordered'
+					styler: 'table table-bordered'
 				},
 				skyscraper: {
 					article_id: jQuery("#article_id").val(),
@@ -486,7 +491,7 @@ jQuery(document).ready(function () {
 				var $r_container = jQuery(this);
 				var delete_c = '<a href="javascript:void(0);" data-repeater-delete class="deleteCallout"><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Callout"></i></a>';
 				$r_container.find('.delete-callout-container').html(delete_c);
-				
+
 				jQuery(this).slideDown();
 				jQuery(this).find('textarea.autoExpand').autoResize({
 					extraSpace: 30,
@@ -503,7 +508,7 @@ jQuery(document).ready(function () {
 			var $container = jQuery(this);
 			$container.find('.select2').remove();
 			$container.find('.holder-style').removeClass('embed-responsive-16by9').addClass('holder-active').css('background-image', '');
-			
+
 			$container.find('.holder-icon').addClass('uploading');
 			$container.find('.youtubevideo').html('');
 			$container.find('.delete_image').hide();
@@ -515,30 +520,37 @@ jQuery(document).ready(function () {
 			$container.find('.delete-image-container').html(delete_i_v);
 			var delete_c_o = '<a href="javascript:void(0);" data-repeater-delete  class="deleteCallout"><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Callout"></i></a>';
 			$container.find('.delete-callout-container').html(delete_c_o);
-		
-			
+
+
 			$container.slideDown(function () {
 				$container.find(".select-2").each(function () {
 					initializeSelect2(jQuery(this));
 					//alert('select-2');
-					jQuery(this).val("h2").trigger("change"); 
+					jQuery(this).val("h2").trigger("change");
 				});
 				if (trumbowyg) {
-					$container.find(editor_selector).trumbowyg(trumbowygObj).on('tbwchange', function(){
+					$container.find(editor_selector).trumbowyg(trumbowygObj).on('tbwchange', function () {
 						console.log('change!');
-					}).on('tbwfocus', function(){ /*console.log('Focus!');*/ }).on('tbwblur', function(){ /*console.log('Blur!');*/ }).on('tbwinit', function(){
-						jQuery(".trumbowyg-editor").each(function(n, element){
+					}).on('tbwfocus', function () {
+						/*console.log('Focus!');*/
+					}).on('tbwblur', function () {
+						/*console.log('Blur!');*/
+					}).on('tbwinit', function () {
+						jQuery(".trumbowyg-editor").each(function (n, element) {
 							jQuery(element).attr("id", "trumbowyg-editor-" + n);
 							jQuery(element).addClass("calc-length-editor");
 						});
 					});
 				}
-				if(link_trumbowyg)
-				{
-					$container.find(link_editor_selector).trumbowyg(link_trumbowygObj).on('tbwchange', function(){
+				if (link_trumbowyg) {
+					$container.find(link_editor_selector).trumbowyg(link_trumbowygObj).on('tbwchange', function () {
 						console.log('change!');
-					}).on('tbwfocus', function(){ /*console.log('Focus!');*/ }).on('tbwblur', function(){ /*console.log('Blur!');*/ }).on('tbwinit', function(){
-						jQuery(".trumbowyg-editor").each(function(n, element){
+					}).on('tbwfocus', function () {
+						/*console.log('Focus!');*/
+					}).on('tbwblur', function () {
+						/*console.log('Blur!');*/
+					}).on('tbwinit', function () {
+						jQuery(".trumbowyg-editor").each(function (n, element) {
 							jQuery(element).attr("id", "trumbowyg-editor-" + n);
 							jQuery(element).addClass("calc-length-editor");
 						});
@@ -549,15 +561,17 @@ jQuery(document).ready(function () {
 
 		},
 		hide: function (deleteElement) {
-			if(confirm('Are you sure you want to delete this element?')) {
+			if (confirm('Are you sure you want to delete this element?')) {
 				$(this).slideUp(deleteElement);
 			}
 		},
 		ready: function () {
 			if (trumbowyg) {
-				jQuery(editor_selector).trumbowyg(trumbowygObj).on('tbwchange', function(){
-					
-				}).on('tbwfocus', function(){ /*console.log('Focus!');*/ }).on('tbwblur', function(){ 
+				jQuery(editor_selector).trumbowyg(trumbowygObj).on('tbwchange', function () {
+
+				}).on('tbwfocus', function () {
+					/*console.log('Focus!');*/
+				}).on('tbwblur', function () {
 					var keywords_str = jQuery("#highlight_keywords").val();
 					keywords_str = JSON.parse(keywords_str);
 					var already_use = keywords_str.already_use;
@@ -566,69 +580,72 @@ jQuery(document).ready(function () {
 					var stuffing = keywords_str.stuffing;
 					var questions = keywords_str.questions;
 					//console.log({should_use});
-					var keywords_already_use =[];
+					var keywords_already_use = [];
 					jQuery('.trumbowyg-editor').unmark({
 						"element": "span"
-						});
-					jQuery.each(already_use, function( index, value ) {
+					});
+					jQuery.each(already_use, function (index, value) {
 						keywords_already_use.push(value.keyword);
 					});
 					//console.log({keywords_already_use});
-					
+
 					jQuery(".trumbowyg-editor").mark(keywords_already_use, {
-					"separateWordSearch": false,
-					"accuracy": "exactly",
-					"element": "span",
-					"className": "mark already"
-					}); 
-					var keywords_should_use =[];
-					jQuery.each(should_use, function( index, value ) {
+						"separateWordSearch": false,
+						"accuracy": "exactly",
+						"element": "span",
+						"className": "mark already"
+					});
+					var keywords_should_use = [];
+					jQuery.each(should_use, function (index, value) {
 						keywords_should_use.push(value.keyword);
 					});
 					//console.log({keywords_should_use});
 					jQuery(".trumbowyg-editor").mark(keywords_should_use, {
-					"separateWordSearch": false,
-					"accuracy": "exactly",
-					"element": "span",
-					"className": "mark should"
+						"separateWordSearch": false,
+						"accuracy": "exactly",
+						"element": "span",
+						"className": "mark should"
 					});
-					var keywords_more_often =[];
-					jQuery.each(more_often, function( index, value ) {
+					var keywords_more_often = [];
+					jQuery.each(more_often, function (index, value) {
 						keywords_more_often.push(value.keyword);
 					});
 					//console.log({keywords_more_often});
 					jQuery(".trumbowyg-editor").mark(keywords_more_often, {
-					"separateWordSearch": false,
-					"accuracy": "exactly",
-					"element": "span",
-					"className": "mark often"
+						"separateWordSearch": false,
+						"accuracy": "exactly",
+						"element": "span",
+						"className": "mark often"
 					});
 
-					var keywords_stuffing =[];
-					jQuery.each(stuffing, function( index, value ) {
+					var keywords_stuffing = [];
+					jQuery.each(stuffing, function (index, value) {
 						keywords_stuffing.push(value.keyword);
 					});
 					//console.log({keywords_stuffing});
 					jQuery(".trumbowyg-editor").mark(keywords_stuffing, {
-					"separateWordSearch": false,
-					"accuracy": "exactly",
-					"element": "span",
-					"className": "mark stuffing"
+						"separateWordSearch": false,
+						"accuracy": "exactly",
+						"element": "span",
+						"className": "mark stuffing"
 					});
-					
-					/*console.log('Blur!');*/ }).on('tbwinit', function(){
-					jQuery(".trumbowyg-editor").each(function(n, element){
+
+					/*console.log('Blur!');*/
+				}).on('tbwinit', function () {
+					jQuery(".trumbowyg-editor").each(function (n, element) {
 						jQuery(element).attr("id", "trumbowyg-editor-" + n);
 					});
 				});
 			}
 			if (link_trumbowyg) {
-				jQuery(link_editor_selector).trumbowyg(link_trumbowygObj).on('tbwchange', function(){
-					
-				}).on('tbwfocus', function(){ /*console.log('Focus!');*/ }).on('tbwblur', function(){ 
+				jQuery(link_editor_selector).trumbowyg(link_trumbowygObj).on('tbwchange', function () {
+
+				}).on('tbwfocus', function () {
+					/*console.log('Focus!');*/
+				}).on('tbwblur', function () {
 					var page_content = '';
 					jQuery('.seo-content-keywords').each(function (k, v) {
-						page_content += jQuery(this).val()+ ' ';
+						page_content += jQuery(this).val() + ' ';
 					});
 					jQuery('.trumbowyg .trumbowyg-editor').each(function (k, v) {
 						page_content += jQuery(this).html();
@@ -636,16 +653,15 @@ jQuery(document).ready(function () {
 					page_content = page_content.replace(/<br>/gi, ' ');
 					page_content = page_content.replace(/&nbsp;/g, ' ');
 					page_content = page_content.replace(/(<p[^>]+?>|<p>|<\/p>)/img, ' ');
-					page_content = page_content.replace( /(<([^>]+)>)/ig, ' ');
-					page_content = page_content.replace( /[\s\n\r]+/g, ' ').trim();
+					page_content = page_content.replace(/(<([^>]+)>)/ig, ' ');
+					page_content = page_content.replace(/[\s\n\r]+/g, ' ').trim();
 					jQuery(".backlinks-not-used span").each(function (k, v) {
 						var anchor = jQuery(this).data('anchor');
 						var text = jQuery(this).data('text');
 						var url = jQuery(this).data('url');
-						if(page_content.search(anchor) >= 0)
-						{
+						if (page_content.search(anchor) >= 0) {
 							var used = jQuery(this).html();
-							var u_used_div = '<div class="kw-group-item  align-items-center backlinks-used"><span class="copy-clipboard" data-anchor="'+anchor+'" data-text="'+text+'" data-url="'+url+'">';
+							var u_used_div = '<div class="kw-group-item  align-items-center backlinks-used"><span class="copy-clipboard" data-anchor="' + anchor + '" data-text="' + text + '" data-url="' + url + '">';
 							u_used_div += used + '</span></div>';
 							$('.used-items').append(u_used_div);
 							$(this).closest('.backlinks-not-used').remove();
@@ -655,10 +671,9 @@ jQuery(document).ready(function () {
 						var anchor_s = jQuery(this).data('anchor');
 						var text_s = jQuery(this).data('text');
 						var url_s = jQuery(this).data('url');
-						if(page_content.search(anchor_s) == -1)
-						{
+						if (page_content.search(anchor_s) == -1) {
 							var not_used = jQuery(this).html();
-							var n_used_div = '<div class="kw-group-item  align-items-center backlinks-not-used"><span class="copy-clipboard" data-anchor="'+anchor_s+'" data-text="'+text_s+'" data-url="'+url_s+'">';
+							var n_used_div = '<div class="kw-group-item  align-items-center backlinks-not-used"><span class="copy-clipboard" data-anchor="' + anchor_s + '" data-text="' + text_s + '" data-url="' + url_s + '">';
 							n_used_div += not_used + '</span></div>';
 							$('.not-used-items').append(n_used_div);
 							$(this).closest('.backlinks-used').remove();
@@ -668,7 +683,7 @@ jQuery(document).ready(function () {
 					$('.backlinks-used-count').text($('.backlinks-used').length);
 					$('.word-on-page').text(page_content.split(" ").length);
 					$('.read-score').text(read_score.automatedReadabilityIndex);
-					
+
 				});
 			}
 			jQuery(".select-2").each(function () {
@@ -677,7 +692,7 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	/*jQuery('.repeater-social-media-section').each(function () { 
+	/*jQuery('.repeater-social-media-section').each(function () {
 		var $container = jQuery(this);
 		jQuery(this).repeater({
 			defaultValues: {
@@ -692,7 +707,7 @@ jQuery(document).ready(function () {
 					});
 					console.log({msg_id_array});
 					var max_msg_number = Math.max.apply(null, msg_id_array)
-					console.log({max_msg_number});				
+					console.log({max_msg_number});
 					return max_msg_number + 1;
 				}
 			},
@@ -708,23 +723,27 @@ jQuery(document).ready(function () {
 		});
 	});	*/
 
-	jQuery('.repeater-social-media-section').each(function () { 
+	jQuery('.repeater-social-media-section').each(function () {
 		var $container = jQuery(this);
 		console.log($container);
 		$container.repeater({
 			defaultValues: {
-				'msg_channel': function (){
+				'msg_channel': function () {
 					return $container.find('.msg_channel').val();
 				},
-				'msg_sequence': function (){
+				'msg_sequence': function () {
 					var msg_id_array = [];
 					$container.find('.social-media-repeater-item').each(function () {
-						var msg_number  = jQuery(this).find('.msg_sequence').val();
+						var msg_number = jQuery(this).find('.msg_sequence').val();
 						msg_id_array.push(msg_number);
 					});
-					console.log({msg_id_array});
+					console.log({
+						msg_id_array
+					});
 					var max_msg_number = Math.max.apply(null, msg_id_array)
-					console.log({max_msg_number});				
+					console.log({
+						max_msg_number
+					});
 					return max_msg_number + 1;
 				}
 			},
@@ -738,8 +757,8 @@ jQuery(document).ready(function () {
 				$container.slideDown();
 			}
 		});
-	});	
-		
+	});
+
 
 	jQuery("textarea.autoExpand").each(function () {
 		jQuery(this).autoResize({
@@ -787,7 +806,7 @@ jQuery(document).ready(function () {
 		event.preventDefault();
 		var input = this;
 		var ext = $(this).val().split('.').pop().toLowerCase();
-		if($.inArray(ext, ['png','jpg','jpeg']) == -1) {
+		if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
 			setFlashes("error", "This is not an allowed file type.<br>Only jpeg, jpg, png formats are allowed.");
 			return false;
 		}
@@ -803,13 +822,12 @@ jQuery(document).ready(function () {
 				};
 				croppieCreate(post_image_data);
 			}
-			reader.onerror = function(event) {
+			reader.onerror = function (event) {
 				setFlashes("error", event.target.error.code);
 			};
 			reader.readAsDataURL(input.files[0]);
 			jQuery(input).val('');
-		}
-		else {
+		} else {
 			setFlashes("error", "Sorry - you're browser doesn't support the FileReader API");
 		}
 
@@ -848,26 +866,28 @@ jQuery(document).ready(function () {
 				embed_path = match[2];
 			} else {
 				embed_path = url;
-				
+
 			}
 			//alert(embed_path);
-				var url = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyAcVyt5DxKC53Wp0NhMLnz0O7my1xMJ64I&part=snippet,contentDetails,statistics,status,player&id='+ embed_path;
-				//alert(url);
-				$.getJSON(url,
-				function(response){
-					console.log({response});
-					if(response.items.length > 0){
+			var url = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyAcVyt5DxKC53Wp0NhMLnz0O7my1xMJ64I&part=snippet,contentDetails,statistics,status,player&id=' + embed_path;
+			//alert(url);
+			$.getJSON(url,
+				function (response) {
+					console.log({
+						response
+					});
+					if (response.items.length > 0) {
 						var video_containor = jQuery(related_target).parents('.form-group').nextAll('.section-video-found');
 						video_containor.find('.article_meta_video_name').val(response.items[0].snippet.title);
-						video_containor.find('.article_meta_video_description').val( response.items[0].snippet.description);
-						video_containor.find('.article_meta_video_url').val("https://youtu.be/"+ embed_path);
+						video_containor.find('.article_meta_video_description').val(response.items[0].snippet.description);
+						video_containor.find('.article_meta_video_url').val("https://youtu.be/" + embed_path);
 						video_containor.find('.article_meta_video_thumbnail_1x1').val(response.items[0].snippet.thumbnails.default.url);
 						video_containor.find('.article_meta_video_thumbnail_4x3').val(response.items[0].snippet.thumbnails.medium.url);
 						video_containor.find('.article_meta_video_thumbnail_16x9').val(response.items[0].snippet.thumbnails.standard.url);
-						var publishedAtDate = 	response.items[0].snippet.publishedAt;
-						var MyDate = new Date(Date.parse(	publishedAtDate.replace(/ *\(.*\)/,"")));
-						var date_Str = MyDate.getMonth() +  1  + "-" + MyDate.getDate() + "-" +  MyDate.getFullYear();
-							video_containor.find('.article_meta_video_uploaddate').val(date_Str);
+						var publishedAtDate = response.items[0].snippet.publishedAt;
+						var MyDate = new Date(Date.parse(publishedAtDate.replace(/ *\(.*\)/, "")));
+						var date_Str = MyDate.getMonth() + 1 + "-" + MyDate.getDate() + "-" + MyDate.getFullYear();
+						video_containor.find('.article_meta_video_uploaddate').val(date_Str);
 						var duration = youtubeDurationToSeconds(response.items[0].contentDetails.duration);
 						video_containor.find('.article_meta_video_minutes').val(duration.minutes);
 						video_containor.find('.article_meta_video_seconds').val(duration.seconds);
@@ -887,15 +907,15 @@ jQuery(document).ready(function () {
 						$pixabayModal.modal('hide');
 						//video_containor.slideDown();
 						jQuery(related_target).find('.youtubevideo').html('<iframe width="560" height="315" src="//www.youtube.com/embed/' + embed_path + '" frameborder="0" allowfullscreen></iframe>');
-					}else{
+					} else {
 						setFlashes('error', 'Video unavailable. Please enter valid Youtube Video Id or URL');
 					}
 				});
-			
-			
+
+
 		}
 	});
-	
+
 
 	jQuery(document).on('click', ".delete_image", function (event) {
 		event.preventDefault();
@@ -903,7 +923,7 @@ jQuery(document).ready(function () {
 		var image_path = $container.find('.upload_image_base64').val();
 		$(this).removeClass("article_image");
 		var action = jQuery(this).data('action');
-		if(action){
+		if (action) {
 			jQuery.ajax({
 				url: base_url + "upload/delete",
 				type: "POST",
@@ -913,29 +933,29 @@ jQuery(document).ready(function () {
 				},
 				success: function (response) {
 					p_delete_image($container);
-					setFlashes(response.flashes.type, response.flashes.message);	
+					setFlashes(response.flashes.type, response.flashes.message);
 				}
 			});
-		}else{
+		} else {
 
 			p_delete_image($container);
 		}
 
 		jQuery(this).fadeOut();
-		if(jQuery(this).hasClass('is_article_image')){
+		if (jQuery(this).hasClass('is_article_image')) {
 
 			$('.hero_image').val();
 			/*jQuery('.delete_image.article_image').each(function(){
 				$(this).trigger('click');
-				
+
 			});*/
-			
+
 		}
 	});
 
 	jQuery(document).on('keyup', '.calc-length', function () {
 		var length = jQuery(this).val().length;
-			maxLength = jQuery(this).attr("maxlength");
+		maxLength = jQuery(this).attr("maxlength");
 		var length = maxLength - length;
 		var obj = jQuery(this).parents('.form-group').find('.char-remain');
 		if (length > 0)
@@ -951,27 +971,27 @@ jQuery(document).ready(function () {
 		jQuery(".inner-repeater").find('.trumbowyg-editor').removeClass("calc-length-editor");
 		var length = jQuery(this).text().length;
 		var clength = length;
-			maxLength = 3000;
+		maxLength = 3000;
 		var length = maxLength - length;
 		var obj = jQuery(this).parents('.form-group').find('.char-remain');
-		
-		if (length > 0){
+
+		if (length > 0) {
 			obj.html('<span class="text-success">' + length + '</span>');
-		}else{
+		} else {
 			obj.html('<span class="text-danger">' + length + '</span>');
-			
+
 		}
-		
-		if(clength >10){
+
+		if (clength > 10) {
 			jQuery(this).parents('.repeat-paragraph').find('.add-callout').removeClass("initial-callout-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-image-video').removeClass("initial-image-video-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-ingredient').removeClass("initial-ingredient-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-steps').removeClass("initial-steps-hide");
-		}else{
+		} else {
 			jQuery(this).parents('.repeat-paragraph').find('.add-callout').addClass("initial-callout-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-image-video').addClass("initial-image-video-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-ingredient').addClass("initial-ingredient-hide");
-			jQuery(this).parents('.repeat-paragraph').find('.add-steps').addClass("initial-steps-hide");	
+			jQuery(this).parents('.repeat-paragraph').find('.add-steps').addClass("initial-steps-hide");
 		}
 	});
 	jQuery('.calc-length-editor').each(function () {
@@ -1105,8 +1125,8 @@ jQuery(document).ready(function () {
 					console.log(dataObj);
 					if (dataObj.status == true) {
 						console.log(dataObj);
-						window.location = dataObj.redirect;	
-					} 
+						window.location = dataObj.redirect;
+					}
 				}
 			});
 		}
@@ -1143,6 +1163,155 @@ jQuery(document).ready(function () {
 			});
 		}
 	});
+	jQuery.validator.addMethod("check_primary_keyword", function (value, element) {
+		var keyword = jQuery('input[name="keyword"]').val();
+		//console.log(element);
+		var isValid = true;
+		var res = value.search(new RegExp(keyword, "i"));
+		//alert(res);
+		if (res < 0) {
+			jQuery(element).parents('.input-group').find(".tooltip-hide").show();
+			isValid = false;
+		} else {
+			jQuery(element).parents('.input-group').find(".tooltip-hide").hide();
+		}
+		//console.log({isValid});
+		return isValid;
+	}, "Primary keyword does not appear in this field.");
+
+	var warningArray = [],
+		stopArray = [];
+	jQuery.validator.addMethod("check_seo_rules", function (value, element, param) {
+		var hostWebsite = jQuery("#article_website_id").val(),
+			errorMsg = 'Primary keyword does not appear in this field.',
+			keyword = jQuery('input[name="keyword"]').val(),
+			currEleObject = jQuery(element),
+			inputGroupObj = $(element).parents('.input-group'),
+			trumbObj = inputGroupObj.find('.trumbowyg-editor'),
+			trumbContent = trumbObj.html(),
+			trumbowygId = trumbObj.attr('id'),
+			isValid = true,
+			tooltipWarnTitle = [],
+			tooltipStopTitle = [],
+			i = 0;
+		warningArray[trumbowygId] = [];
+		stopArray[trumbowygId] = [];
+
+		var sentences = trumbContent.replace(/<(.|\n)*?>/g, ' ').trim().split(/[.|!|?]+/g);
+
+		var sentences_length = sentences.length - 1;
+
+		if (sentences_length < 3) {
+			errorMsg = 'The paragraph is less than 3 sentences long.';
+			tooltipWarnTitle[i++] = '<small class="d-block text-left">' + errorMsg + '</small>';
+			warningArray[trumbowygId].push(errorMsg);
+		}
+		if (sentences_length > 6) {
+			errorMsg = 'The paragraph is more than 6 sentences long.';
+			tooltipWarnTitle[i++] = '<small class="d-block text-left">' + errorMsg + '</small>';
+			warningArray[trumbowygId].push(errorMsg);
+		}
+
+		var words = [];
+		sentences.forEach(function (sentence) {
+			words.push(sentence.split(' '));
+		});
+
+		var words_length_array = [];
+		words.forEach(function (word) {
+			words_length_array.push(parseInt(word.length - 1));
+		});
+		var words_length = max(words_length_array);
+
+		if (words_length > 20) {
+			errorMsg = 'One or more sentences contain more than 20 words.';
+			tooltipWarnTitle[i++] = '<small class="d-block text-left">' + errorMsg + '</small>';
+			warningArray[trumbowygId].push(errorMsg);
+		}
+
+		console.log({
+			trumbowygId,
+			param,
+			trumbContent,
+			sentences,
+			words_length
+		});
+
+		var passive_voice = trumbContent.match(/\b((be(en)?)|(w(as|ere))|(is)|(a(er|m)))(.+(en|ed))([\s]|\.)/g);
+		if (passive_voice !== null) {
+			if (passive_voice.length > 0) {
+				errorMsg = 'One or more sentences use a passive voice.';
+				tooltipWarnTitle[i++] = '<small class="d-block text-left">' + errorMsg + '</small>';
+				warningArray[trumbowygId].push(errorMsg);
+			}
+		}
+
+		var res = trumbContent.search(new RegExp(keyword, "i"));
+		if (res < 0) {
+			stopArray[trumbowygId].push(errorMsg);
+			isValid = false;
+		}
+
+		externalLinksArray = [];
+		trumbObj.find('a').each(function () {
+			var currHref = $(this).attr('href');
+			var domainName = getDomain(currHref);
+			if (domainName !== hostWebsite) {
+				externalLinksArray.push(domainName);
+			}
+		});
+		console.log({
+			externalLinksArray
+		});
+
+		var href_array = trumbContent.split('<a');
+		var href_length = (href_array.length - 1);
+		if (href_length > 10) {
+			errorMsg = 'A maximum of 10 links are allowed per article. Please review and try again.';
+			tooltipWarnTitle[i++] = '<small class="d-block text-left">' + errorMsg + '</small>';
+			tooltipStopTitle[trumbowygId].push(errorMsg);
+			isValid = false;
+		}
+
+		if (externalLinksArray.length > 0) {
+			errorMsg = 'One or more hyperlinks is pointing to external websites.';
+			tooltipWarnTitle[i++] = '<small class="d-block text-left">' + errorMsg + '</small>';
+			tooltipStopTitle[trumbowygId].push(errorMsg);
+			isValid = false;
+		}
+
+		$.validator.messages["check_seo_rules"] = errorMsg;
+
+		inputGroupObj.find(".tooltip-hide").hide();
+
+		if (stopArray[trumbowygId].length > 0) {
+			// set stop tooltip title here
+			var title = tooltipStopTitle.join("");
+			inputGroupObj.find(".para_sentences").attr('data-original-title', title).tooltip('update');
+			inputGroupObj.find(".tooltip-hide").show();
+		}
+
+		if (warningArray[trumbowygId].length > 0) {
+			// set warning tooltip title here
+			var title = tooltipWarnTitle.join("");
+			inputGroupObj.find(".para_sentences").attr('data-original-title', title).tooltip('update');
+			inputGroupObj.find(".tooltip-hide").show();
+		}
+
+		currEleObject.parent('.trumbowyg-box').removeClass("form-control-invalid");
+		if (!isValid) {
+			currEleObject.parent('.trumbowyg-box').addClass("form-control-invalid");
+		}
+
+		return isValid;
+
+	}, '');
+
+	function max(input) {
+		if (toString.call(input) !== "[object Array]")
+			return false;
+		return Math.max.apply(null, input);
+	}
 
 	var articleValidator = jQuery('#article-form').validate({
 		invalidHandler: function (form, validator) {
@@ -1154,104 +1323,90 @@ jQuery(document).ready(function () {
 				setFlashes('error', message);
 			}
 		},
-		/*rules: {
-			'article[en][article_title]': {
-				required: true,
-				rangelength: [10, 70]
-			},
-			'article_image_alt': {
-				required: true,
-				rangelength: [10, 70]
-			},
-			'article_description': {
-				required: true,
-				rangelength: [50, 250]
-			},
-			'article_category': {
-				required: true
+		onkeyup: function (element, event) {
+			var currElement = element;
+			if (jQuery(element).hasClass('calc-length-editor') && element.tagName === "DIV") {
+				currElement = jQuery(element).parents('.input-group').find('textarea');
 			}
+			this.element(currElement);
 		},
-		messages: {
-			article_title: {
-				required: 'The Article Headline field is required.'
-			},
-			article_image_alt: {
-				required: 'Short description of the image is required.'
-			},
-			article_description: {
-				required: 'Summary is required.',
-			},
-			article_category: {
-				required: 'Please select category'
-			}
-		},*/
 		submitHandler: function (form) {
-		
-			//event.preventDefault();
-			if (hyperLinkLimitExceeded()) {
-				return false;
-			}
-			//jQuery('#article-publish-modal').modal('hide');
-			jQuery(form).find("button[type='submit']").attr('disabled', 'disabled');
-			jQuery.ajax({
-				url: base_url + "user/loggedin",
-				type: "POST",
-				success: function (data) {
-					if (!data) {
-						jQuery('#signupModal').modal('show');
-						jQuery(form).find("button[type='submit']").removeAttr('disabled');
-					} else {
-						inputChanged = false;
-						form.submit();
-					}
-				}
+
+			var articleContant = '';
+			jQuery('.article-body:input').each(function (k, v) {
+				articleContant += jQuery(this).val();
 			});
+
+			jQuery('.trumbowyg .trumbowyg-editor').each(function (k, v) {
+				articleContant += jQuery(this).html();
+				var key = jQuery(this).attr('id');
+				// if (articleContant.length < 200) {
+				// 	warningArray[key] = articleContant.length;
+				// }
+			});
+
+			if (articleContant < 800) {
+				warningArray['max-length'] = 'The article is less than 800 words.';
+			}
+
+			if (jquery('.callout-editor')) {
+
+			}
+
+			console.log({
+				stopArray,
+				warningArray
+			});
+
+			var uniques = [];
+			for (let index = 0; index < stopArray.length; index++) {
+				const element = stopArray[index];
+				uniques[index] = '<li class="list-group-item border-0 px-0 pb-0"><i class="fa fa-exclamation-triangle text-warning"></i> ' + element + '</li>';
+			}
+
+			jQuery('#articleValidatorModal .warning').html(uniques.join(" "));
+			jQuery('#articleValidatorModal').modal('show');
 		}
 	});
-	/*	var summernoteElement = $('.summernote');
-		summernoteElement.summernote({
-			height: 300,
-			shortcuts: false,
-			toolbar: [
-				// [groupName, [list of button]]
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				//['font', ['strikethrough', 'superscript', 'subscript']],
-				['fontsize', ['fontsize']],
-				['insert', ['link']],
-				['color', ['color']],
-				['para', ['paragraph']],
-				//['height', ['height']]
-			],
-	        callbacks: {
-	            onChange: function (contents, $editable) {
-					console.log(contents);
-	                summernoteElement.val(summernoteElement.summernote('isEmpty') ? "" : contents);
-	                articleValidator.element(summernoteElement);
-	            }
-	        }
-		});*/
 
-		var $language_modal = jQuery('#language-modal');
+	jQuery('#articleValidatorModal').on('click', '.btn-success', function (e) {
+		e.preventDefault();
+		alert('success');
+		return false;
 
-		jQuery(document).on('click', '.article-add-language', function (e) {
-
-				$language_modal.modal('show');  
-
+		jQuery('#article-form').find("button[type='submit']").attr('disabled', 'disabled');
+		jQuery.ajax({
+			url: base_url + "user/loggedin",
+			type: "POST",
+			success: function (data) {
+				if (!data) {
+					jQuery('#signupModal').modal('show');
+					jQuery('#article-form').find("button[type='submit']").removeAttr('disabled');
+				} else {
+					inputChanged = false;
+					jQuery('#article-form').submit();
+				}
+			}
 		});
+	});
+	$("#article-form").validate().form();
 
+	var $language_modal = jQuery('#language-modal');
 
-			jQuery('#article-content').on('change keyup keydown', 'input, textarea, select', function (e) {
-				
-				inputChanged = true;
-			});
+	jQuery(document).on('click', '.article-add-language', function (e) {
 
+		$language_modal.modal('show');
 
-		jQuery(document).on('click', '.change-lang-tab', function (e) {
-		
-			jQuery(this).attr('href', $(this).attr('data-bind'));    
-		
-		});
+	});
 
+	jQuery('#article-content').on('change keyup keydown', 'input, textarea, select', function (e) {
+
+		inputChanged = true;
+	});
+
+	jQuery(document).on('click', '.change-lang-tab', function (e) {
+		jQuery(this).attr('href', $(this).attr('data-bind'));
+	});
 
 	jQuery(document).on('scroll', function () {
 		if (jQuery(window).scrollTop() > 100) {
@@ -1274,9 +1429,8 @@ jQuery(document).ready(function () {
 	clearFlashes();
 
 
-
 	jQuery(document).on('click', '.check_spelling', function (event) {
-		jQuery(".trumbowyg-editor").each(function(n, element){
+		jQuery(".trumbowyg-editor").each(function (n, element) {
 			checkSpelling("trumbowyg-editor-" + n);
 		});
 	});
@@ -1286,7 +1440,7 @@ jQuery(document).ready(function () {
 
 	jQuery(document).on('click', '.verify_copyscape', function (event) {
 		var trumbowyg_html = '';
-		var article_id =jQuery(this).attr('data-article');
+		var article_id = jQuery(this).attr('data-article');
 		var lang_id = jQuery(this).attr('data-lang');
 		jQuery('.trumbowyg .trumbowyg-editor').each(function (k, v) {
 			trumbowyg_html += jQuery(this).html();
@@ -1303,7 +1457,7 @@ jQuery(document).ready(function () {
 					'lang_id': lang_id
 				},
 				success: function (data) {
-					jQuery('#verify_copyscape').html('<i class="fas fa-check-square" aria-hidden="true" style="color:#5ed84f"></i>');
+					jQuery('#verify_copyscape').html('<i class="fas fa-check-square" style="color:#5ed84f"></i>');
 					jQuery('.article-publish').removeAttr("disabled");
 				}
 			});
@@ -1324,30 +1478,30 @@ jQuery(document).ready(function () {
 		});
 	});
 	jQuery(document).on('click', '.add-callout', function (event) {
-		
-		var curr_callout_obj 	= jQuery(this);
-		var callout_id 	= curr_callout_obj.data('callout');
+
+		var curr_callout_obj = jQuery(this);
+		var callout_id = curr_callout_obj.data('callout');
 		//alert(callout_id);
 		$(callout_id).collapse('show');
-		
-		
-	});	
+
+
+	});
 
 	jQuery(document).on('click', '.add-image-video', function (event) {
 
 		var $container = jQuery(this).parents('.p-container');
 		$container.find(".image-video-collapse").slideDown();
-	});	
+	});
 	//$('.collapse').collapse('hide');
 	//optimize_content();
 	jQuery(document).on('click', '.check-score', function (event) {
-		var curr_obj 	= jQuery(this);
-		var article_id 	= curr_obj.data('article');
-		var lang_id 	= curr_obj.data('lang');
-		var keyword 	= curr_obj.data('keyword');
+		var curr_obj = jQuery(this);
+		var article_id = curr_obj.data('article');
+		var lang_id = curr_obj.data('lang');
+		var keyword = curr_obj.data('keyword');
 		var page_content = '';
 		jQuery('.seo-content-keywords').each(function (k, v) {
-			page_content += jQuery(this).val()+ ' ';
+			page_content += jQuery(this).val() + ' ';
 		});
 		jQuery('.trumbowyg .trumbowyg-editor').each(function (k, v) {
 			page_content += jQuery(this).html();
@@ -1355,11 +1509,11 @@ jQuery(document).ready(function () {
 		page_content = page_content.replace(/<br>/gi, ' ');
 		page_content = page_content.replace(/&nbsp;/g, ' ');
 		page_content = page_content.replace(/(<p[^>]+?>|<p>|<\/p>)/img, ' ');
-		page_content = page_content.replace( /(<([^>]+)>)/ig, ' ');
-		page_content = page_content.replace( /[\s\n\r]+/g, ' ').trim();
+		page_content = page_content.replace(/(<([^>]+)>)/ig, ' ');
+		page_content = page_content.replace(/[\s\n\r]+/g, ' ').trim();
 		//console.log(page_content);
 		//jQuery('#optimizecontent-result-container').html('<div class="text-center"><img style="width:60px" src="' + base_url + 'assets/images/loading.svg"></div>');
-	
+
 		jQuery.ajax({
 			cache: true,
 			url: base_url + "optimizecontent/getOptimizeContent",
@@ -1371,37 +1525,37 @@ jQuery(document).ready(function () {
 				'keyword': keyword,
 				'content': page_content
 			},
-			 beforeSend: function( xhr ) {
+			beforeSend: function (xhr) {
 				curr_obj.addClass('data-loading').prop('disabled', true);
-			},			
+			},
 			success: function (data) {
 				//console.log('tf-idf data==');
 				//console.log(data);
-				if(data.success){
+				if (data.success) {
 					jQuery("#article_content_performance").val(JSON.stringify(data.json_data));
 					jQuery("#article_content_score").val(data.json_data.result.content_performance.performance_rank_score);
 					jQuery("#article_target_score").val(data.json_data.result.content_performance.target);
 					jQuery('#optimizecontent-result-container').html(data.newContent);
 					jQuery('.trumbowyg-editor').unmark({
 						"element": "mark"
-						});
+					});
 				}
 			}
-		}).done(function(){
+		}).done(function () {
 			curr_obj.removeClass('data-loading').removeAttr('disabled');
 		});
 	});
 
 
 	jQuery(document).on('click', '.link-building-check-score', function (event) {
-		var curr_obj 	= jQuery(this);
-		var article_id 	= curr_obj.data('article');
+		var curr_obj = jQuery(this);
+		var article_id = curr_obj.data('article');
 		var breif_id = curr_obj.data('brief');
-		var lang_id 	= curr_obj.data('lang');
-		var keyword 	= curr_obj.data('keyword');
+		var lang_id = curr_obj.data('lang');
+		var keyword = curr_obj.data('keyword');
 		var page_content = '';
 		jQuery('.seo-content-keywords').each(function (k, v) {
-			page_content += jQuery(this).val()+ ' ';
+			page_content += jQuery(this).val() + ' ';
 		});
 		jQuery('.trumbowyg .trumbowyg-editor').each(function (k, v) {
 			page_content += jQuery(this).html();
@@ -1409,9 +1563,9 @@ jQuery(document).ready(function () {
 		page_content = page_content.replace(/<br>/gi, ' ');
 		page_content = page_content.replace(/&nbsp;/g, ' ');
 		page_content = page_content.replace(/(<p[^>]+?>|<p>|<\/p>)/img, ' ');
-		page_content = page_content.replace( /(<([^>]+)>)/ig, ' ');
-		page_content = page_content.replace( /[\s\n\r]+/g, ' ').trim();
-		
+		page_content = page_content.replace(/(<([^>]+)>)/ig, ' ');
+		page_content = page_content.replace(/[\s\n\r]+/g, ' ').trim();
+
 		jQuery.ajax({
 			cache: true,
 			url: base_url + "secure/linkbuildingarticle/getLinkBuildingOptimizeContent",
@@ -1423,11 +1577,11 @@ jQuery(document).ready(function () {
 				'keyword': keyword,
 				'content': page_content
 			},
-			 beforeSend: function( xhr ) {
+			beforeSend: function (xhr) {
 				curr_obj.addClass('data-loading').prop('disabled', true);
-			},			
+			},
 			success: function (data) {
-				if(data.success){
+				if (data.success) {
 					jQuery("#article_content_performance").val(JSON.stringify(data.json_data));
 					jQuery("#article_content_score").val(data.json_data.result.content_performance.performance_rank_score);
 					jQuery("#article_target_score").val(data.json_data.result.content_performance.target);
@@ -1437,7 +1591,7 @@ jQuery(document).ready(function () {
 					});
 				}
 			}
-		}).done(function(){
+		}).done(function () {
 			curr_obj.removeClass('data-loading').removeAttr('disabled');
 		});
 	});
@@ -1446,7 +1600,7 @@ jQuery(document).ready(function () {
 		var article_id = jQuery(this).data('article');
 		var lang_id = jQuery(this).data('lang');
 		var keyword = jQuery(this).data('keyword');
-	
+
 		jQuery.ajax({
 			cache: true,
 			url: base_url + "optimizecontent/export_optimize_content_keywords",
@@ -1468,62 +1622,66 @@ jQuery(document).ready(function () {
 	/*jQuery('#article_language').on('change', function (event) {
 		var language = jQuery(this).val();
 		var target = jQuery(this).data('target');
-		window.location = (target + language); 
+		window.location = (target + language);
 	});*/
 
-	jQuery( "#article_meta_lookup_id" )
+	jQuery("#article_meta_lookup_id")
 		.change(function () {
 			var str = "";
-			var optionValue =jQuery(this).val();
-			var author =jQuery('#article_author').val();
-			var language_id =jQuery('#language_id').val();
+			var optionValue = jQuery(this).val();
+			var author = jQuery('#article_author').val();
+			var language_id = jQuery('#language_id').val();
 			//alert(author);
 			//alert(language_id);
 			str += optionValue;
 			//alert(str);
-			if(optionValue){
-			jQuery.ajax({
-				url: base_url + 'secure/metatags/getMetatagInfo/' + optionValue + '/' + language_id  +'/' + author,
-				type: "POST",
-				success: function (data) {
-					var data = data;
-					console.log(data);
-					jQuery('#article_meta_product').val(data['meta_product']);
-					jQuery('#article_meta_category').val(data['meta_category']);
-					jQuery('#article_meta_product_name').val(data['meta_product_name']);
-					jQuery('#article_meta_product_desc').val(data['meta_product_description']);
-					jQuery('#article_meta_product_image').val(data['meta_product_image']);
-					jQuery('#article_meta_product_icon').val(data['meta_product_icon']);
-					jQuery('#article_meta_product_id').val(data['meta_product_id']);
-					jQuery('#article_meta_part_id').val(data['meta_product_part_id']);
-					jQuery('#article_meta_product_brand').val(data['meta_product_brand']);
-					jQuery('#article_meta_product_reviewcount').val(data['meta_product_review_count']);
-					jQuery('#article_meta_product_price').val(data['meta_product_price']);
-					jQuery('#article_meta_product_price_currency').val(data['meta_product_price_currency']);
-					jQuery('#article_meta_product_ratingvalue').val(data['meta_product_rating_value']);
-					jQuery("#article_product_cta").val(data['product_cta']).trigger('change');
-					jQuery("#article_content_cta").val(data['content_cta']).trigger('change');
-					//jQuery('#article_product_cta').val(data['product_cta']);
-					//jQuery('#article_content_cta').val(data['content_cta']);
-					//jQuery('#article_meta_author_url').val(data['meta_product_language_id']);
-					//jQuery('#article_author').val(data['meta_product_language_id']);	
-					//jQuery('#article_meta_author_desc').val(data['meta_product_language_id']);
-					//jQuery('#article_meta_author_facebook').val(data['meta_product_language_id']);
-					//jQuery('#article_meta_author_twitter').val(data['meta_product_language_id']);
-					
-					//jQuery('#article_meta_keyword').val(data['meta_product_language_id']);
-					//jQuery('#article_meta_abstract').val(data['meta_product_language_id']);
-					//jQuery('#meta_product_language_id').val(data['meta_product_language_id']);
-					//jQuery('#article_type').val(data['meta_product_language_id']);
-					//jQuery('#publishdate').val(data['meta_product_language_id']);
-					//jQuery('#datemodified').val(data['meta_product_language_id']);	
-					
-								
-				}
-			});
+			if (optionValue) {
+				jQuery.ajax({
+					url: base_url + 'secure/metatags/getMetatagInfo/' + optionValue + '/' + language_id + '/' + author,
+					type: "POST",
+					success: function (data) {
+						var data = data;
+						console.log(data);
+						jQuery('#article_meta_product').val(data['meta_product']);
+						jQuery('#article_meta_category').val(data['meta_category']);
+						jQuery('#article_meta_product_name').val(data['meta_product_name']);
+						jQuery('#article_meta_product_desc').val(data['meta_product_description']);
+						jQuery('#article_meta_product_image').val(data['meta_product_image']);
+						jQuery('#article_meta_product_icon').val(data['meta_product_icon']);
+						jQuery('#article_meta_product_id').val(data['meta_product_id']);
+						jQuery('#article_meta_part_id').val(data['meta_product_part_id']);
+						jQuery('#article_meta_product_brand').val(data['meta_product_brand']);
+						jQuery('#article_meta_product_reviewcount').val(data['meta_product_review_count']);
+						jQuery('#article_meta_product_price').val(data['meta_product_price']);
+						jQuery('#article_meta_product_price_currency').val(data['meta_product_price_currency']);
+						jQuery('#article_meta_product_ratingvalue').val(data['meta_product_rating_value']);
+						jQuery("#article_product_cta").val(data['product_cta']).trigger('change');
+						jQuery("#article_content_cta").val(data['content_cta']).trigger('change');
+						//jQuery('#article_product_cta').val(data['product_cta']);
+						//jQuery('#article_content_cta').val(data['content_cta']);
+						//jQuery('#article_meta_author_url').val(data['meta_product_language_id']);
+						//jQuery('#article_author').val(data['meta_product_language_id']);
+						//jQuery('#article_meta_author_desc').val(data['meta_product_language_id']);
+						//jQuery('#article_meta_author_facebook').val(data['meta_product_language_id']);
+						//jQuery('#article_meta_author_twitter').val(data['meta_product_language_id']);
+
+						//jQuery('#article_meta_keyword').val(data['meta_product_language_id']);
+						//jQuery('#article_meta_abstract').val(data['meta_product_language_id']);
+						//jQuery('#meta_product_language_id').val(data['meta_product_language_id']);
+						//jQuery('#article_type').val(data['meta_product_language_id']);
+						//jQuery('#publishdate').val(data['meta_product_language_id']);
+						//jQuery('#datemodified').val(data['meta_product_language_id']);
+
+
+					}
+				});
 			}
 		})
 		.change();
+
+	jQuery(document).on('click', '.add-spinner', function (event) {
+		jQuery('<div class="spinner-border append-to-body text-light" role="status"><span class="sr-only">Loading...</span></div>').prependTo(document.body);
+	});
 });
 
 function optimize_content() {
@@ -1532,7 +1690,7 @@ function optimize_content() {
 	var keyword = jQuery('input[name="keyword"]').val();
 	//alert(keyword);
 	jQuery('#tf-idf-result-container').html('<div class="text-center"><img style="width:60px" src="' + base_url + 'assets/images/loading.svg"></div>');
-	
+
 	jQuery.ajax({
 		cache: true,
 		url: base_url + "optimizecontent",
@@ -1546,10 +1704,10 @@ function optimize_content() {
 		success: function (data) {
 			console.log('tf-idf data==');
 			console.log(data);
-			if(data.success){
+			if (data.success) {
 				jQuery('#tf-idf-result-container').html(data.newContent);
 			}
-			
+
 		}
 	});
 
@@ -1565,7 +1723,7 @@ function setFlashes(flashType, message) {
 		'default': 'alert-inverse'
 	};
 	var flashes = '<div class="alert ' + alertClasses[flashType] + ' alert-dismissible alert-new">' +
-		'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+		'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span>&times;</span></button>' +
 		message +
 		'</div>';
 	var error = false;
@@ -1593,176 +1751,160 @@ var clearFlashes = function (el) {
 	});
 }
 
-var hyperLinkLimitExceeded = function () {
-	var trumbowyg_html = '';
-	jQuery('.trumbowyg .trumbowyg-editor').each(function (k, v) {
-		trumbowyg_html += jQuery(this).html();
-	});
-	var href_array = trumbowyg_html.split('<a');
-	var href_length = (href_array.length - 1);
-	if (href_length > 10) {
-		//setFlashes('error', 'A maximum of 10 links are allowed per article.');
-		alert('A maximum of 10 links are allowed per article. Please review and try again.');
-		return true;
+
+
+function parse_url(str, component) { // eslint-disable-line camelcase
+	//       discuss at: http://locutus.io/php/parse_url/
+	//      original by: Steven Levithan (http://blog.stevenlevithan.com)
+	// reimplemented by: Brett Zamir (http://brett-zamir.me)
+	//         input by: Lorenzo Pisani
+	//         input by: Tony
+	//      improved by: Brett Zamir (http://brett-zamir.me)
+	//           note 1: original by http://stevenlevithan.com/demo/parseuri/js/assets/parseuri.js
+	//           note 1: blog post at http://blog.stevenlevithan.com/archives/parseuri
+	//           note 1: demo at http://stevenlevithan.com/demo/parseuri/js/assets/parseuri.js
+	//           note 1: Does not replace invalid characters with '_' as in PHP,
+	//           note 1: nor does it return false with
+	//           note 1: a seriously malformed URL.
+	//           note 1: Besides function name, is essentially the same as parseUri as
+	//           note 1: well as our allowing
+	//           note 1: an extra slash after the scheme/protocol (to allow file:/// as in PHP)
+	//        example 1: parse_url('http://user:pass@host/path?a=v#a')
+	//        returns 1: {scheme: 'http', host: 'host', user: 'user', pass: 'pass', path: '/path', query: 'a=v', fragment: 'a'}
+	//        example 2: parse_url('http://en.wikipedia.org/wiki/%22@%22_%28album%29')
+	//        returns 2: {scheme: 'http', host: 'en.wikipedia.org', path: '/wiki/%22@%22_%28album%29'}
+	//        example 3: parse_url('https://host.domain.tld/a@b.c/folder')
+	//        returns 3: {scheme: 'https', host: 'host.domain.tld', path: '/a@b.c/folder'}
+	//        example 4: parse_url('https://gooduser:secretpassword@www.example.com/a@b.c/folder?foo=bar')
+	//        returns 4: { scheme: 'https', host: 'www.example.com', path: '/a@b.c/folder', query: 'foo=bar', user: 'gooduser', pass: 'secretpassword' }
+
+	var query
+
+	var mode = (typeof require !== 'undefined' ? require('../info/ini_get')('locutus.parse_url.mode') : undefined) || 'php'
+
+	var key = [
+		'source',
+		'scheme',
+		'authority',
+		'userInfo',
+		'user',
+		'pass',
+		'host',
+		'port',
+		'relative',
+		'path',
+		'directory',
+		'file',
+		'query',
+		'fragment'
+	]
+
+	// For loose we added one optional slash to post-scheme to catch file:/// (should restrict this)
+	var parser = {
+		php: new RegExp([
+			'(?:([^:\\/?#]+):)?',
+			'(?:\\/\\/()(?:(?:()(?:([^:@\\/]*):?([^:@\\/]*))?@)?([^:\\/?#]*)(?::(\\d*))?))?',
+			'()',
+			'(?:(()(?:(?:[^?#\\/]*\\/)*)()(?:[^?#]*))(?:\\?([^#]*))?(?:#(.*))?)'
+		].join('')),
+		strict: new RegExp([
+			'(?:([^:\\/?#]+):)?',
+			'(?:\\/\\/((?:(([^:@\\/]*):?([^:@\\/]*))?@)?([^:\\/?#]*)(?::(\\d*))?))?',
+			'((((?:[^?#\\/]*\\/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)'
+		].join('')),
+		loose: new RegExp([
+			'(?:(?![^:@]+:[^:@\\/]*@)([^:\\/?#.]+):)?',
+			'(?:\\/\\/\\/?)?',
+			'((?:(([^:@\\/]*):?([^:@\\/]*))?@)?([^:\\/?#]*)(?::(\\d*))?)',
+			'(((\\/(?:[^?#](?![^?#\\/]*\\.[^?#\\/.]+(?:[?#]|$)))*\\/?)?([^?#\\/]*))',
+			'(?:\\?([^#]*))?(?:#(.*))?)'
+		].join(''))
 	}
-	return false;
+
+	var m = parser[mode].exec(str)
+	var uri = {}
+	var i = 14
+
+	while (i--) {
+		if (m[i]) {
+			uri[key[i]] = m[i]
+		}
+	}
+
+	if (component) {
+		return uri[component.replace('PHP_URL_', '').toLowerCase()]
+	}
+
+	if (mode !== 'php') {
+		var name = (typeof require !== 'undefined' ? require('../info/ini_get')('locutus.parse_url.queryKey') : undefined) || 'queryKey'
+		parser = /(?:^|&)([^&=]*)=?([^&]*)/g
+		uri[name] = {}
+		query = uri[key[12]] || ''
+		query.replace(parser, function ($0, $1, $2) {
+			if ($1) {
+				uri[name][$1] = $2
+			}
+		})
+	}
+
+	delete uri.source
+	return uri
 }
 
-
-function parse_url (str, component) { // eslint-disable-line camelcase
-  //       discuss at: http://locutus.io/php/parse_url/
-  //      original by: Steven Levithan (http://blog.stevenlevithan.com)
-  // reimplemented by: Brett Zamir (http://brett-zamir.me)
-  //         input by: Lorenzo Pisani
-  //         input by: Tony
-  //      improved by: Brett Zamir (http://brett-zamir.me)
-  //           note 1: original by http://stevenlevithan.com/demo/parseuri/js/assets/parseuri.js
-  //           note 1: blog post at http://blog.stevenlevithan.com/archives/parseuri
-  //           note 1: demo at http://stevenlevithan.com/demo/parseuri/js/assets/parseuri.js
-  //           note 1: Does not replace invalid characters with '_' as in PHP,
-  //           note 1: nor does it return false with
-  //           note 1: a seriously malformed URL.
-  //           note 1: Besides function name, is essentially the same as parseUri as
-  //           note 1: well as our allowing
-  //           note 1: an extra slash after the scheme/protocol (to allow file:/// as in PHP)
-  //        example 1: parse_url('http://user:pass@host/path?a=v#a')
-  //        returns 1: {scheme: 'http', host: 'host', user: 'user', pass: 'pass', path: '/path', query: 'a=v', fragment: 'a'}
-  //        example 2: parse_url('http://en.wikipedia.org/wiki/%22@%22_%28album%29')
-  //        returns 2: {scheme: 'http', host: 'en.wikipedia.org', path: '/wiki/%22@%22_%28album%29'}
-  //        example 3: parse_url('https://host.domain.tld/a@b.c/folder')
-  //        returns 3: {scheme: 'https', host: 'host.domain.tld', path: '/a@b.c/folder'}
-  //        example 4: parse_url('https://gooduser:secretpassword@www.example.com/a@b.c/folder?foo=bar')
-  //        returns 4: { scheme: 'https', host: 'www.example.com', path: '/a@b.c/folder', query: 'foo=bar', user: 'gooduser', pass: 'secretpassword' }
-
-  var query
-
-  var mode = (typeof require !== 'undefined' ? require('../info/ini_get')('locutus.parse_url.mode') : undefined) || 'php'
-
-  var key = [
-    'source',
-    'scheme',
-    'authority',
-    'userInfo',
-    'user',
-    'pass',
-    'host',
-    'port',
-    'relative',
-    'path',
-    'directory',
-    'file',
-    'query',
-    'fragment'
-  ]
-
-  // For loose we added one optional slash to post-scheme to catch file:/// (should restrict this)
-  var parser = {
-    php: new RegExp([
-      '(?:([^:\\/?#]+):)?',
-      '(?:\\/\\/()(?:(?:()(?:([^:@\\/]*):?([^:@\\/]*))?@)?([^:\\/?#]*)(?::(\\d*))?))?',
-      '()',
-      '(?:(()(?:(?:[^?#\\/]*\\/)*)()(?:[^?#]*))(?:\\?([^#]*))?(?:#(.*))?)'
-    ].join('')),
-    strict: new RegExp([
-      '(?:([^:\\/?#]+):)?',
-      '(?:\\/\\/((?:(([^:@\\/]*):?([^:@\\/]*))?@)?([^:\\/?#]*)(?::(\\d*))?))?',
-      '((((?:[^?#\\/]*\\/)*)([^?#]*))(?:\\?([^#]*))?(?:#(.*))?)'
-    ].join('')),
-    loose: new RegExp([
-      '(?:(?![^:@]+:[^:@\\/]*@)([^:\\/?#.]+):)?',
-      '(?:\\/\\/\\/?)?',
-      '((?:(([^:@\\/]*):?([^:@\\/]*))?@)?([^:\\/?#]*)(?::(\\d*))?)',
-      '(((\\/(?:[^?#](?![^?#\\/]*\\.[^?#\\/.]+(?:[?#]|$)))*\\/?)?([^?#\\/]*))',
-      '(?:\\?([^#]*))?(?:#(.*))?)'
-    ].join(''))
-  }
-
-  var m = parser[mode].exec(str)
-  var uri = {}
-  var i = 14
-
-  while (i--) {
-    if (m[i]) {
-      uri[key[i]] = m[i]
-    }
-  }
-
-  if (component) {
-    return uri[component.replace('PHP_URL_', '').toLowerCase()]
-  }
-
-  if (mode !== 'php') {
-    var name = (typeof require !== 'undefined' ? require('../info/ini_get')('locutus.parse_url.queryKey') : undefined) || 'queryKey'
-    parser = /(?:^|&)([^&=]*)=?([^&]*)/g
-    uri[name] = {}
-    query = uri[key[12]] || ''
-    query.replace(parser, function ($0, $1, $2) {
-      if ($1) {
-        uri[name][$1] = $2
-      }
-    })
-  }
-
-  delete uri.source
-  return uri
-}
 function getHostName(url) {
-    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
-    if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
-    return match[2];
-    }
-    else {
-        return null;
-    }
+	var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+	if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
+		return match[2];
+	} else {
+		return null;
+	}
 }
+
 function getDomain(url) {
-		var parseUrl = parse_url(url);
-		var hostName = parseUrl.host;
-    var domain = hostName;
+	var parseUrl = parse_url(url);
+	var hostName = parseUrl.host;
+	var domain = hostName;
 
-    if (hostName != null) {
-        var parts = hostName.split('.').reverse();
+	if (hostName != null) {
+		var parts = hostName.split('.').reverse();
 
-        if (parts != null && parts.length > 1) {
-            domain = parts[1] + '.' + parts[0];
+		if (parts != null && parts.length > 1) {
+			domain = parts[1] + '.' + parts[0];
 
-            if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2) {
-              domain = parts[2] + '.' + domain;
-            }
-        }
-    }
+			if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2) {
+				domain = parts[2] + '.' + domain;
+			}
+		}
+	}
 
-    return domain;
+	return domain;
 }
+
 function addhttp(url) {
 	if (!/^(f|ht)tps?:\/\//i.test(url)) {
-	   url = "http://" + url;
+		url = "http://" + url;
 	}
 	return url;
- }
+}
 
-function checkSpelling_new(temp_num = 0, editor_length=0){
+function checkSpelling_new(temp_num = 0, editor_length = 0) {
 
-	if(temp_num == 0){
+	if (temp_num == 0) {
 		var editor_length = (jQuery(".trumbowyg-editor").length);
 	}
-	if(temp_num >= editor_length){
+	if (temp_num >= editor_length) {
 		return false;
 	}
 
 
-	AtD.checkCrossAJAX("trumbowyg-editor-" + temp_num,
-	{
-		success : function(errorCount)
-		{
-	//		checkSpelling_new(temp_num++, editor_length)
-			if (errorCount == 0)
-			{
+	AtD.checkCrossAJAX("trumbowyg-editor-" + temp_num, {
+		success: function (errorCount) {
+			//		checkSpelling_new(temp_num++, editor_length)
+			if (errorCount == 0) {
 				//alert("aaaaaaaNo writing errors were found");
 			}
 		},
-		error : function(reason)
-		{
+		error: function (reason) {
 			alert(reason);
 		}
 	});
@@ -1770,24 +1912,20 @@ function checkSpelling_new(temp_num = 0, editor_length=0){
 	//checkSpelling_new(temp_num, editor_length)
 }
 
-function checkSpelling(element_id){
-	AtD.checkCrossAJAX(element_id,
-	{
-		success : function(errorCount)
-		{
-			if (errorCount == 0)
-			{
+function checkSpelling(element_id) {
+	AtD.checkCrossAJAX(element_id, {
+		success: function (errorCount) {
+			if (errorCount == 0) {
 				alert("No writing errors were found");
 			}
 		},
-		error : function(reason)
-		{
+		error: function (reason) {
 			alert(reason);
 		}
 	});
 }
 
-function p_delete_image($container){
+function p_delete_image($container) {
 	$container.find('.holder-style').removeClass('embed-responsive-16by9');
 	$container.find('.holder-style').addClass('holder-active').css('background-image', '');
 	$container.find('.holder-icon').addClass('uploading');
@@ -1796,34 +1934,34 @@ function p_delete_image($container){
 	$container.find('.image-video-collapse').slideUp();
 	$container.find('.section-video-found').slideUp();
 	$container.find('.section-image-found').slideDown().find('.article_image_alt').val('').attr("disabled", 'disabled');
-			
-				
+
+
 }
 
 //Fontawesome Iconpicker
-$(function() {
+$(function () {
 	$('.article-iconpicker').iconpicker();
 });
 
 
 //basic template to create new plugin
-(function($) {
+(function ($) {
 	'use strict';
 	$.extend(true, $.trumbowyg, {
-	  plugins: {
-		checkspelling: {
-		  init: function(trumbowyg) {
-			const checkspellingDef = {
-			  fn: function(cmd) {
-				var element_id  = trumbowyg.$ed.attr('id');
-				checkSpelling(element_id);
-			  },
-			  text: 'Check Grammar and Spelling',
-			};
-			//adding buttons in editor
-			trumbowyg.addBtnDef('checkspelling', checkspellingDef);
-		  }
+		plugins: {
+			checkspelling: {
+				init: function (trumbowyg) {
+					const checkspellingDef = {
+						fn: function (cmd) {
+							var element_id = trumbowyg.$ed.attr('id');
+							checkSpelling(element_id);
+						},
+						text: 'Check Grammar and Spelling',
+					};
+					//adding buttons in editor
+					trumbowyg.addBtnDef('checkspelling', checkspellingDef);
+				}
+			}
 		}
-	  }
 	});
-  })(jQuery);
+})(jQuery);

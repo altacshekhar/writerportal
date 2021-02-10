@@ -8,6 +8,7 @@ class MY_Controller extends CI_Controller
     {
 		parent::__construct();
 		$this->load->model('article_model');
+		$this->load->model('contentarticlesbrief_model');
 		$this->load->model('category_model');
 		$this->load->library('session');
         $this->data['error'] = array();
@@ -18,6 +19,7 @@ class MY_Controller extends CI_Controller
 		$this->data['news_categories'] = $this->category_model->get_category_json('news');
 		$this->data['recipe_categories'] = $this->category_model->get_category_json('recipe');
 		$this->data['pillar_articles'] = $this->article_model->get_pillar_article('hubworks.com');
+		$this->data['brief_articles'] = $this->contentarticlesbrief_model->get_brief_list_by_user();
 
         $this->data['current_user_full_name'] = ucwords($this->session->userdata('full_name'));
         $this->data['current_user_email'] = $this->session->userdata('email');
@@ -46,9 +48,9 @@ class MY_Controller extends CI_Controller
 
 	public function send_email($emailer_data, $message, $attach = null){
 
-		/*if(ENVIRONMENT == 'development' || ENVIRONMENT == 'testing'){
+		if(ENVIRONMENT == 'development' || ENVIRONMENT == 'testing'){
 			return TRUE;
-		}*/
+		}
 
 		$this->load->library('email');
 		$this->load->library('parser');
@@ -2099,6 +2101,15 @@ class MY_Controller extends CI_Controller
 
 		return $body;
 	}
+	protected function get_cta_info($article_id, $lang='en'){
+
+		$this->db->select("*");
+		$this->db->where('article_id', (int) $article_id);
+		$this->db->where('brief_cta_language_id', $lang);
+		$result_array = $this->db->get('article_brief_cta')->result_array();
+		return $result_array;
+
+	}
 	protected function get_article_title($article_id, $lang='en'){
 
 		$this->db->select("article_title");
@@ -2214,14 +2225,23 @@ class MY_Controller extends CI_Controller
 			}
 		}
 
-		require_once APPPATH . 'third_party/vendor/autoload.php';
-
+		//require_once APPPATH . 'third_party/vendor/autoload.php'; // Old code path
+		require_once FCPATH . 'vendor/autoload.php';  //New Code path
 		$client = new \Github\Client();
 
 		$tokenOrLogin = $github_row->github_client_id;
 		$password	  = $github_row->github_api_key;
 
-		$client->authenticate($tokenOrLogin, $password, \Github\Client::AUTH_HTTP_PASSWORD);
+		$tokenOrLogin ='f53d7554f9241367c5ae432016af7864158c14ea'; // Personal access tokens
+
+		//$client->authenticate($tokenOrLogin, $password, \Github\Client::AUTH_HTTP_PASSWORD); //old code
+
+		try {
+			$client->authenticate($tokenOrLogin, null, Github\Client::AUTH_ACCESS_TOKEN); //New code
+		}catch (\RuntimeException $e)
+		{
+		//pre($e->getMessage());
+		}
 
 		$committer_name  = ucwords($this->session->userdata('full_name'));
 		$committer_email = $this->session->userdata('email');
@@ -2366,53 +2386,116 @@ class MY_Controller extends CI_Controller
 		   
 			$git_file_path = $git_commit_path . $repo_name;
 			//pre_exit($git_file_path);
-			$reference = "refs/heads/" . $git_repository_branch;
+			//$reference = "refs/heads/" . $git_repository_branch; //use reference in old code 
+			$reference = "heads/" . $git_repository_branch; //use reference in new code 
 			$article_repo_found = FALSE;
 			$gitArticleInfo = array();
 
 			//$articleExists = $client->api('repo')->contents()->exists($git_username, $git_repository, $git_file_path, $reference);
 
 			//$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $article['article_commit_sha']);
-			$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
 
+			// Create reference for new code.
+			try
+			{
+				$reference = $client->api('gitData')->references()->show($git_username, $git_repository, 'heads/master');
+				
+			}
+			catch (\RuntimeException $e)
+			{
+				$reference = array();
+			 	//pre($e->getMessage());
+			}
+
+			// File Exists
+			try
+			{
+				
+				$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+				
+			}
+			catch (\RuntimeException $e)
+			{
+			
+				$articleOldFile = array();
+				//pre($e->getMessage());
+			}
+			//$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+			//pre($articleOldFile);
+			//die;
 			if (array_key_exists('sha', $articleOldFile) && ($articleOldFile['sha'] == trim($article['article_sha']))) {
 				$sha_exists = array_key_exists('sha', $articleOldFile);
 			}else{
-				$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
-				$sha_exists = array_key_exists('sha', $articleOldFile);
+				try
+				{
+					
+					$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+					$sha_exists = array_key_exists('sha', $articleOldFile);
+					
+				}
+				catch (\RuntimeException $e)
+				{
+				    $articleOldFile = array();
+					$sha_exists = '';
+					//pre($e->getMessage());
+				}
+				
 			}
 			$article_git_action = '';
 			if ($sha_exists) {
 				$git_sha = $articleOldFile['sha'];
 				if($delete){
-					$article_git_action = 'delete';
-					$gitArticleInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_file_path, $git_commit_message, $git_sha, $git_repository_branch, $committer);
-
-					//pre($gitArticleInfo);
-					//die;
-
-					$error_type = 'warning';
-					$return['error'] 	=  TRUE;
-					$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been deleted!';
+					try
+					{
+						$article_git_action = 'delete';
+						$gitArticleInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_file_path, $git_commit_message, $git_sha, $git_repository_branch, $committer);
+						$error_type = 'warning';
+						$return['error'] 	=  TRUE;
+						$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been deleted!';
+						
+					}
+					catch (\RuntimeException $e)
+					{
+						//pre($e->getMessage());
+					}
+					
 				}
 
 				if(!$delete){
-					$article_git_action = 'update';
-					$gitArticleInfo 	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_sha, $git_repository_branch, $committer);
+					try
+					{
+						$article_git_action = 'update';
+						$gitArticleInfo 	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_sha, $git_repository_branch, $committer);
 
-					$error_type = 'success';
-					$return['error'] 	=  FALSE;
-					$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+						$error_type = 'success';
+						$return['error'] 	=  FALSE;
+						$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+						
+					}
+					catch (\RuntimeException $e)
+					{
+						//pre($e->getMessage());
+					}
+					
 				}
 			}
 
 			if(!$delete && !$sha_exists){
-				$article_git_action = 'new';
-				$gitArticleInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_repository_branch, $committer);
+				try
+				{
+					$article_git_action = 'new';
+					$gitArticleInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_repository_branch, $committer);
 
-				$error_type = 'success';
-				$return['error'] 	=  TRUE;
-				$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+					$error_type = 'success';
+					$return['error'] 	=  TRUE;
+					$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+					
+				}
+				catch (\RuntimeException $e)
+				{
+					//pre($e->getMessage());
+				}
+				
 			}
 
 		}
@@ -2486,26 +2569,65 @@ class MY_Controller extends CI_Controller
 				$image_name = $image['image_name'];
 				$git_img_path = $git_commit_image_path . $image_name;
 				//$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $image['image_commit_sha']);
-				$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $git_repository_branch);
-				$img_sha_exists = array_key_exists('sha', $gitOldImage);
+				try
+				{
+					
+					$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $git_repository_branch);
+					$img_sha_exists = array_key_exists('sha', $gitOldImage);
+					
+				}
+				catch (\RuntimeException $e)
+				{
+				    $gitOldImage = array();
+					$img_sha_exists = '';
+					//pre($e->getMessage());
+				}
+				
 				
 				$img_git_action = '';
 				if ($img_sha_exists) {
 					$git_img_sha = $gitOldImage['sha'];
 					if($delete){
-						$img_git_action = 'delete';
-						$gitImageInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_img_path, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+						try
+						{
+							$img_git_action = 'delete';
+							$gitImageInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_img_path, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+							
+						}
+						catch (\RuntimeException $e)
+						{
+							//pre($e->getMessage());
+						}
+						
 					}
 
 					if(!$delete && $image_content){
-						$img_git_action	= 'update';
-						$gitImageInfo	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+						try
+						{
+							$img_git_action	= 'update';
+							$gitImageInfo	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+							
+						}
+						catch (\RuntimeException $e)
+						{
+							//pre($e->getMessage());
+						}
+						
 					}
 				}
 
 				if(!$delete && !$img_sha_exists && $image_content){
-					$img_git_action	= 'new';
-					$gitImageInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_repository_branch, $committer);
+					try
+					{
+						$img_git_action	= 'new';
+						$gitImageInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_repository_branch, $committer);
+						
+					}
+					catch (\RuntimeException $e)
+					{
+						//pre($e->getMessage());
+					}
+					
 				}
 				if(array_key_exists('content', $gitImageInfo) && array_key_exists('commit', $gitImageInfo)){
 					$image_sha = $gitImageInfo['content']['sha'];
@@ -2937,6 +3059,95 @@ class MY_Controller extends CI_Controller
 
 			fclose($file); 
 			exit;
+	}
+
+	public function get_keyword_analysis_details($keyword_id, $lang_id, $keyword)
+    {
+		$log_message = 'Keyword Analysis Log Start'  .PHP_EOL;
+		$this->db->select("keyword_analysis");
+		$this->db->where('keyword_id', (int) $keyword_id);
+		$result_array = $this->db->get('article_keyword')->result_array();
+		$keyword_analysis = $result_array[0]['keyword_analysis'];
+		$response = json_decode($keyword_analysis, true);
+		if($response && 1==2){
+			$log_message .= 'Database Store Response = ' . $keyword_analysis . PHP_EOL;
+			$log_message .= 'Keyword Analysis Log End'  .PHP_EOL;
+			$this->writeLog($log_message);
+			return $response;
+		}else{
+
+			$no_of_search_count = 20;
+				/* API URL */
+			//$url = 'https://wplseotools.hubworks.com/keywordphrase';
+			$url = 'https://whookqa.hubworks.com/keywordanalysisdata';
+		
+			/* Init cURL resource */
+			$ch = curl_init();
+			curl_setopt($ch,CURLOPT_URL,$url);
+			/* Array Parameter Data */
+			$data_array = array(
+				'keyword'=>$keyword,
+				'keyword_id'=>$keyword_id,
+				'lang'=>$lang_id,
+				'no_of_search_count'=>$no_of_search_count
+			);
+			$log_message .= 'Api url = ' . $url . PHP_EOL;
+		    $log_message .= 'keyword = ' . $keyword . PHP_EOL;
+			$log_message .= 'keyword_id = ' . $keyword_id . PHP_EOL;
+			$log_message .= 'lang = ' . $lang_id . PHP_EOL;
+			$log_message .= 'no_of_search_count = ' . $no_of_search_count . PHP_EOL;
+			
+			//pre($data_array);
+
+			$data =  json_encode($data_array);
+			/* pass encoded JSON string to the POST fields */
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			
+			/* set return type json */
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				
+			/* set the content type json */
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+						'Content-Type:application/json'
+					));
+				
+			/* execute request */
+			$output = curl_exec($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				//echo $httpCode;
+			$log_message .= 'Curl httpCode : = ' . $httpCode . PHP_EOL;
+			if($output === false)
+			{
+				//echo 'Curl error: ' . curl_error($ch);
+				$log_message .= 'Curl error: = ' . curl_error($ch) . PHP_EOL;
+				
+			}
+			else
+			{
+				$log_message .= 'Curl Response = ' . $output . PHP_EOL;
+			
+				$result = json_decode($output, true);
+				if($result['keyword_analysis']){
+					$keyword_content_performance = json_encode($result['keyword_data']);
+					$data = array(
+						'keyword_analysis' =>$output,
+						'keyword_content_performance' =>$keyword_content_performance,
+					);
+					$this->db->update('article_keyword', $data, array('keyword_id' => $keyword_id));
+
+					$log_message .= 'Update Query Run = ' . $this->db->last_query() . PHP_EOL;
+				}
+				$log_message .= 'Keyword Analysis Log End'  .PHP_EOL;
+				$this->writeLog($log_message);
+				return json_decode($output, true);
+			}
+			/* close cURL resource */
+			curl_close($ch);
+
+		}
+		//$log_message .= 'Keyword Analysis Log End'  .PHP_EOL;
+		//$this->writeLog($log_message);
+		
 	}
 	public function get_articles_by_createdate()
 	{

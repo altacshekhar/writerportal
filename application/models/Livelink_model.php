@@ -55,14 +55,14 @@ class Livelink_model extends MY_Model
                     $table_link_briefs . '.brief_live_validation_date' => 'DESC'
               ); // default order
   
-              $this->db->select($table_link_briefs.'.*, COUNT('.$table_link_brief_backlinks.'.brief_id) as total_backlink');
+              $this->db->select($table_link_briefs.'.*, '.$table_link_brief_backlinks.'.backlink_anchortext');
               $this->db->from($table_link_briefs);
               $this->db->join(
                 $table_link_brief_backlinks,
                 "$table_link_brief_backlinks.$table_link_brief_backlinks_brief_id = $table_link_briefs.$table_link_briefs_brief_id", 'inner'
                 );
-                //$this->db->where($table_link_briefs . '.brief_article_status', 'Published - Live Link');
-                $this->db->like($table_link_briefs . '.brief_article_status', 'Published - Live Link');
+                
+                //$this->db->like($table_link_briefs . '.brief_article_status', 'Published - Live Link');
               $i = 0;
   
           foreach ($column_search_global as $item) // loop column
@@ -93,8 +93,10 @@ class Livelink_model extends MY_Model
                           }
                     }
               }
-            $this->db->where('is_deleted',null);
-            $this->db->or_where('is_deleted',0);
+            
+            //$this->db->where($table_link_briefs.'.is_deleted',null);
+            $this->db->where($table_link_briefs.'.is_deleted',0);
+            $this->db->where($table_link_briefs . '.brief_article_status', "Published - Live Link.");
           if(isset($post_array['order'])) // here order processing
           {
               $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
@@ -105,7 +107,7 @@ class Livelink_model extends MY_Model
               $this->db->order_by(key($order), $order[key($order)]);
               }
   
-              $this->db->group_by($table_link_briefs. '.' . $table_link_briefs_PK);
+              //$this->db->group_by($table_link_briefs. '.' . $table_link_briefs_PK);
       }
   
       function get_datatables($post_array)

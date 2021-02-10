@@ -49,11 +49,11 @@ class Campaign_model extends MY_Model
             'label' => 'campaign websites',
             'rules' => 'trim|required|xss_clean',
 		),
-		'campaign_niche[]' => array(
-            'field' => 'campaign_niche[]',
-            'label' => 'campaign niche',
-            'rules' => 'trim|required|xss_clean',
-		),
+		// 'campaign_niche[]' => array(
+            // 'field' => 'campaign_niche[]',
+            // 'label' => 'campaign niche',
+            // 'rules' => 'trim|required|xss_clean',
+		// ),
 		'campaign_type' => array(
             'field' => 'campaign_type[]',
             'label' => 'campaign type',
@@ -73,7 +73,12 @@ class Campaign_model extends MY_Model
             'field' => 'campaign_status',
             'label' => 'campaign status',
             'rules' => 'trim|required|xss_clean',
-		)
+            ),
+            'form_action' => array(
+            'field' => 'form_action',
+            'label' => 'form action',
+            'rules' => 'trim|required|xss_clean',
+            )
     );
       public function get_new()
       {
@@ -109,8 +114,8 @@ class Campaign_model extends MY_Model
             $this->db->select('string_agg(distinct '.$table_link_briefs.'.brief_article_writer,\',\') as brief_article_writer',false);
             $this->db->from($table_campaign);
             $this->db->join($table_campaign_publisher,$table_campaign_publisher.'.campaign_id = '.$table_campaign.'.'.$table_campaign_PK,'left');
-            $this->db->join($table_link_briefs,$table_link_briefs.'.publisher_id = '.$table_campaign_publisher.'.publisher_id','left');
-            $this->db->where($table_campaign.'.'.$table_campaign_PK,$campaign_id);
+            $this->db->join($table_link_briefs,$table_link_briefs.'.campaign_id = '.$table_campaign.'.campaign_id','left');
+            $this->db->where($table_link_briefs.'.'.$table_campaign_PK,$campaign_id);
             $this->db->group_by($table_link_briefs.'.'.$table_campaign_PK);
             return $this->db->get()->result();
       }
@@ -132,7 +137,9 @@ class Campaign_model extends MY_Model
                   $table_campaign . '.campaign_startdate',
                   $table_campaign . '.campaign_enddate',
                   $table_campaign . '.campaign_name',
-                  $table_campaign . '.campaign_websites',
+                  $table_publisher . '.publisher_url',
+                  '',
+                  '',
                   $table_campaign . '.campaign_quantity',
                   $table_campaign . '.campaign_content_coordinator',
             );
@@ -173,7 +180,6 @@ class Campaign_model extends MY_Model
                   }
                   $i++;
             }
-      
             if(isset($post_array['columns'])){
                   foreach ($post_array['columns'] as $key=>$column_array)
                   {
@@ -182,10 +188,16 @@ class Campaign_model extends MY_Model
                         }
                   }
             }
-      
             if(isset($post_array['order'])) // here order processing
             {
-                  $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                  if($post_array['order']['0']['column'] == 3)
+                  {
+                        $this->db->order_by("string_agg(distinct link_publishers.publisher_url, ', ')", $post_array['order']['0']['dir'],false);
+                  }
+                  else
+                  {
+                        $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                  }
             }
             else if(isset($this->order))
             {

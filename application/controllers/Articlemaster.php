@@ -79,6 +79,7 @@ class Articlemaster extends Frontend_Controller
                     $data_i18['article_icon'] = $this->input->post('article_icon');
 
                 }
+                $data_i18['article_content_cta']='signup';
                 if($this->input->post('website')){
                     $website_id = $this->input->post('website');
                     $metaDetail = $this->article_model->get_metatag_info($website_id, $lang);
@@ -139,9 +140,9 @@ class Articlemaster extends Frontend_Controller
                         {
                           $data_i18['article_product_cta'] = $metaDetail['product_cta'];    
                         }
-                        if(array_key_exists("content_cta",$metaDetail))
+                        if(array_key_exists("leadcapture_cta",$metaDetail))
                         {
-                          $data_i18['article_content_cta'] = $metaDetail['content_cta'];   
+                          $data_i18['article_leadcapture_cta'] = $metaDetail['leadcapture_cta'];   
                         }
                         if(array_key_exists("meta_product_unique_key",$metaDetail))
                         {

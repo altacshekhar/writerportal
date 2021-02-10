@@ -32,6 +32,19 @@
 										
 									</select>
 								</div> -->
+								<div class="form-group">
+									<label class="control-label" for="campaign"> Campaigns</label>
+									<select id="campaign" class="form-control select-2" data-column="0">
+									<option value=''>--Select All Campaigns --</option>
+									<?php 
+									foreach($campaigns as $campaign)
+									{
+										
+										echo '<option value="'.$campaign->campaign_id.'">'.$campaign->campaign_name.'</option>';
+									}
+									?>
+									</select>
+								</div>
 							</div>
 							<div class="col-sm-4 ">
 							</div>

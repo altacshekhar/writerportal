@@ -28,7 +28,11 @@ class Livelink_report_model extends MY_Model
         $table_link_briefs_PK = $this->articlebrief_model->getTablePrimaryKey();
         $table_campaign = $this->getTableName();
         $table_campaign_PK = $this->getTablePrimaryKey();
-        $column_order = array('user_name');
+        $column_order = array(
+            'user_name',
+            'failed',
+            'valid'
+        );
         // $column_search_global = array(
         //     $table_publisher . '.publisher_createdby',
         //     $table_publisher . '.date_added'
@@ -41,10 +45,11 @@ class Livelink_report_model extends MY_Model
         $order = array(
             'user_name' => 'ASC'
         ); // default order
-        $this->db->select('string_agg(distinct '.$table_link_briefs.'.brief_live_url,\'<br>\') as brief_live_url',false);
+        //$this->db->select('string_agg(distinct '.$table_link_briefs.'.brief_live_url,\'<br>\') as brief_live_url',false);
         $this->db->select('CONCAT('.$table_user.'.user_fname,\' \','.$table_user.'.user_lname) as user_name', false);
         $this->db->select('SUM(CASE WHEN '.$table_link_briefs.'.brief_live_validation_status = \'failed\' THEN 1 ELSE 0 END) as failed',false);
         $this->db->select('SUM(CASE WHEN '.$table_link_briefs.'.brief_live_validation_status = \'valid\' THEN 1 ELSE 0 END) as valid',false);
+        $this->db->select('string_agg(CASE WHEN '.$table_link_briefs.'.brief_live_validation_status = \'valid\' THEN '.$table_link_briefs.'.brief_live_url END,\'<br>\') as brief_live_url',false);
         $this->db->from($table_campaign);
         $this->db->join($table_user,$table_user.'.user_id = '.$table_campaign.'.campaign_outreach_coordinator','left');
         $this->db->join($table_link_briefs,$table_link_briefs.'.campaign_id = '.$table_campaign.'.campaign_id','left');

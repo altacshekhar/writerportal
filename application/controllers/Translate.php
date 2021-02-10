@@ -445,14 +445,22 @@ class Translate extends Frontend_Controller
 			}
 		}*/
 
-		require_once APPPATH . 'third_party/vendor/autoload.php';
+		//require_once APPPATH . 'third_party/vendor/autoload.php'; // Old code path
+		require_once FCPATH . 'vendor/autoload.php';  //New Code path
 
 		$client = new \Github\Client();
 
 		$tokenOrLogin = $github_row->github_client_id;
 		$password	  = $github_row->github_api_key;
+		$tokenOrLogin ='f53d7554f9241367c5ae432016af7864158c14ea'; // Personal access tokens
 
-		$client->authenticate($tokenOrLogin, $password, \Github\Client::AUTH_HTTP_PASSWORD);
+		//$client->authenticate($tokenOrLogin, $password, \Github\Client::AUTH_HTTP_PASSWORD);
+		try {
+			$client->authenticate($tokenOrLogin, null, Github\Client::AUTH_ACCESS_TOKEN); //New code
+		}catch (\RuntimeException $e)
+		{
+		//pre($e->getMessage());
+		}
 
 		$committer_name  = ucwords('Chandra Shekhar');
 		$committer_email = 'cshekhar@altametrics.com';
@@ -619,53 +627,111 @@ class Translate extends Frontend_Controller
 		   
 			$git_file_path = $git_commit_path . $repo_name;
 			//pre_exit($git_file_path);
-			$reference = "refs/heads/" . $git_repository_branch;
+			//$reference = "refs/heads/" . $git_repository_branch; //use reference in old code 
+			$reference = "heads/" . $git_repository_branch; //use reference in new code 
 			$article_repo_found = FALSE;
 			$gitArticleInfo = array();
 
 			//$articleExists = $client->api('repo')->contents()->exists($git_username, $git_repository, $git_file_path, $reference);
 
 			//$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $article['article_commit_sha']);
-			$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+			// Create reference for new code.
+			try
+			{
+				$reference = $client->api('gitData')->references()->show($git_username, $git_repository, 'heads/master');
+				
+			}
+			catch (\RuntimeException $e)
+			{
+				$reference = array();
+			 	//pre($e->getMessage());
+			}
+
+			// File Exists
+			try
+			{
+				
+				$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+				
+			}
+			catch (\RuntimeException $e)
+			{
+			
+				$articleOldFile = array();
+				//pre($e->getMessage());
+			}
+			//$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+			
 
 			if (array_key_exists('sha', $articleOldFile) && ($articleOldFile['sha'] == trim($article['article_sha']))) {
 				$sha_exists = array_key_exists('sha', $articleOldFile);
 			}else{
-				$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
-				$sha_exists = array_key_exists('sha', $articleOldFile);
+				try
+				{
+					
+					$articleOldFile = $client->api('repo')->contents()->show($git_username, $git_repository, $git_file_path, $git_repository_branch);
+					$sha_exists = array_key_exists('sha', $articleOldFile);
+					
+				}
+				catch (\RuntimeException $e)
+				{
+				    $articleOldFile = array();
+					$sha_exists = '';
+					//pre($e->getMessage());
+				}
 			}
 			$article_git_action = '';
 			if ($sha_exists) {
 				$git_sha = $articleOldFile['sha'];
 				if($delete){
-					$article_git_action = 'delete';
-					$gitArticleInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_file_path, $git_commit_message, $git_sha, $git_repository_branch, $committer);
-
-					//pre($gitArticleInfo);
-					//die;
-
-					$error_type = 'warning';
-					$return['error'] 	=  TRUE;
-					$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been deleted!';
+					try
+					{
+						$article_git_action = 'delete';
+						$gitArticleInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_file_path, $git_commit_message, $git_sha, $git_repository_branch, $committer);
+						$error_type = 'warning';
+						$return['error'] 	=  TRUE;
+						$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been deleted!';
+						
+					}
+					catch (\RuntimeException $e)
+					{
+						//pre($e->getMessage());
+					}
 				}
 
 				if(!$delete){
-					$article_git_action = 'update';
-					$gitArticleInfo 	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_sha, $git_repository_branch, $committer);
+					try
+					{
+						$article_git_action = 'update';
+						$gitArticleInfo 	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_sha, $git_repository_branch, $committer);
 
-					$error_type = 'success';
-					$return['error'] 	=  FALSE;
-					$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+						$error_type = 'success';
+						$return['error'] 	=  FALSE;
+						$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+						
+					}
+					catch (\RuntimeException $e)
+					{
+						//pre($e->getMessage());
+					}
 				}
 			}
 
 			if(!$delete && !$sha_exists){
-				$article_git_action = 'new';
-				$gitArticleInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_repository_branch, $committer);
+				try
+				{
+					$article_git_action = 'new';
+					$gitArticleInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_file_path, $body, $git_commit_message, $git_repository_branch, $committer);
 
-				$error_type = 'success';
-				$return['error'] 	=  TRUE;
-				$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+					$error_type = 'success';
+					$return['error'] 	=  TRUE;
+					$return['message'] 	=  '<span class="font-weight-bold alert-link css-truncate css-truncate-target">' . $article_title . '</span> has been Published!';
+					
+				}
+				catch (\RuntimeException $e)
+				{
+					//pre($e->getMessage());
+				}
 			}
 
 		}
@@ -739,26 +805,62 @@ class Translate extends Frontend_Controller
 				$image_name = $image['image_name'];
 				$git_img_path = $git_commit_image_path . $image_name;
 				//$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $image['image_commit_sha']);
-				$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $git_repository_branch);
-				$img_sha_exists = array_key_exists('sha', $gitOldImage);
+				//$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $git_repository_branch);
+				try
+				{
+					
+					$gitOldImage = $client->api('repo')->contents()->show($git_username, $git_repository, $git_img_path, $git_repository_branch);
+					$img_sha_exists = array_key_exists('sha', $gitOldImage);
+					
+				}
+				catch (\RuntimeException $e)
+				{
+				    $gitOldImage = array();
+					$img_sha_exists = '';
+					//pre($e->getMessage());
+				}
 				
 				$img_git_action = '';
 				if ($img_sha_exists) {
 					$git_img_sha = $gitOldImage['sha'];
 					if($delete){
-						$img_git_action = 'delete';
-						$gitImageInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_img_path, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+						try
+						{
+							$img_git_action = 'delete';
+							$gitImageInfo 	= $client->api('repo')->contents()->rm($git_username, $git_repository, $git_img_path, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+							
+						}
+						catch (\RuntimeException $e)
+						{
+							//pre($e->getMessage());
+						}
 					}
 
 					if(!$delete && $image_content){
-						$img_git_action	= 'update';
-						$gitImageInfo	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+						try
+						{
+							$img_git_action	= 'update';
+							$gitImageInfo	= $client->api('repo')->contents()->update($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_img_sha, $git_repository_branch, $committer);
+							
+						}
+						catch (\RuntimeException $e)
+						{
+							//pre($e->getMessage());
+						}
 					}
 				}
 
 				if(!$delete && !$img_sha_exists && $image_content){
-					$img_git_action	= 'new';
-					$gitImageInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_repository_branch, $committer);
+					try
+					{
+						$img_git_action	= 'new';
+						$gitImageInfo 	= $client->api('repo')->contents()->create($git_username, $git_repository, $git_img_path, $image_content, $git_commit_message, $git_repository_branch, $committer);
+						
+					}
+					catch (\RuntimeException $e)
+					{
+						//pre($e->getMessage());
+					}
 				}
 				if(array_key_exists('content', $gitImageInfo) && array_key_exists('commit', $gitImageInfo)){
 					$image_sha = $gitImageInfo['content']['sha'];

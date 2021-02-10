@@ -40,7 +40,6 @@ class Linkarticle_model extends MY_Model
         $this->db->where($table_link_wp_articles.'.campaign_id', (int) $campaign_id);
 		$this->db->order_by($table_link_wp_articles.'.link_wp_articles_id', "asc");       
         $query = $this->db->get();
-       
         $list_backlink = array();
 		if($query->num_rows()>0)
         {

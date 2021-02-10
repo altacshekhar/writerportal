@@ -1,17 +1,22 @@
-<div class="container">
-	<ul class="nav nav-tabs custom-nav-tabs" id="myTab" role="tablist">
-		<li class="nav-item">
-			<a class="nav-link active" id="article-tab" data-toggle="tab" href="#article" role="tab" aria-controls="article" aria-selected="true">Article</a>
-		</li>
-		<?php if($user_type && $user_type!=4){?>
-		<li class="nav-item">
-			<a class="nav-link" id="promotion-tab" data-toggle="tab" href="#promotion" role="tab" aria-controls="promotion" aria-selected="false">Promotion</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" id="metadata-tab" data-toggle="tab" href="#metadata" role="tab" aria-controls="metadata" aria-selected="false">Meta Data</a>
-		</li>
-		<?php } ?>
-	</ul>
+<div class="custom-nav-tab-container">
+	<div class="container">
+		<ul class="nav nav-tabs custom-nav-tabs" id="customTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link" id="article-brief-tab" data-toggle="tab" href="#articlebrief" role="tab" aria-controls="articlebrief" aria-selected="true">Article Brief</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link active" id="article-tab" data-toggle="tab" href="#article" role="tab" aria-controls="article" aria-selected="true">Article</a>
+			</li>
+			<?php if($user_type && $user_type!=4){?>
+			<li class="nav-item">
+				<a class="nav-link" id="promotion-tab" data-toggle="tab" href="#promotion" role="tab" aria-controls="promotion" aria-selected="false">Promotion</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="metadata-tab" data-toggle="tab" href="#metadata" role="tab" aria-controls="metadata" aria-selected="false">Meta Data</a>
+			</li>
+			<?php } ?>
+		</ul>
+	</div>
 </div>
 <?php
 $article_status = strtolower($article['article_status']);
@@ -22,10 +27,29 @@ if($article['language_id']=='en'){
 
 ?>
 <div class="tab-content" id="articleTabContent">
+    <!--- Article Brief Tab Section Start  --->
+	<div class="tab-pane fade" id="articlebrief" role="tabpanel" aria-labelledby="article-brief-tab">
+		<div class="container mt-2">
+			<div class="row">
+				<div class="col-md-12">
+					<!------------- Article Brief Section Start ---------------->
+
+					<?php
+						//$articlesbrief = array();
+						$this->load->view('component/article_brief', $articlesbrief);
+					?>
+					<!------------- Article Brief Section End ---------------->
+
+				</div>
+			</div>
+	  	</div>
+	</div>
+	<!--- Article Brief Tab Section End  --->
+
 	<!--- Article Tab Section Start  --->
 	<div class="tab-pane fade show active" id="article" role="tabpanel" aria-labelledby="article-tab">
 	     <div class="container">
-				<div class="language-navigation mt-1">
+				<div class="language-navigation">
 					<ul class="nav nav-tabs">
 						<?php
 						$segment_array = $this->uri->segment_array();
@@ -49,8 +73,8 @@ if($article['language_id']=='en'){
 						</li>-->
 					</ul>
 				</div>
-				<div class="form-actions inline-spacing mt-3 mb-2">
-						<?php 
+				<div class="form-actions inline-spacing mt-2 mb-1">
+						<?php
 								$keyword = $article['article_title'];
 								if($article['article_meta_keyword']){
 									$keyword = $article['article_meta_keyword'];
@@ -69,7 +93,7 @@ if($article['language_id']=='en'){
 						<button type="button" data-article="<?php echo $article['article_id'] ?>"
 							data-lang="<?php echo $article['language_id'] ?>" data-keyword="<?php echo $keyword ?>" id="check-score" class="btn btn-secondary btn-icon check-score" <?php echo ($article['language_id']=='en') ? '' : 'disabled'?>>
 							<span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
-							<i class="fas fa-tachometer-alt"></i> 
+							<i class="fas fa-tachometer-alt"></i>
 							Check Score
 						</button>
 
@@ -240,7 +264,7 @@ if($article['language_id']=='en'){
 								</button>
 
 							<?php }else{
-								
+
 								?>
 								<button type="button" value="publish" class="btn btn-primary btn-icon article-publish" <?php echo ($article['language_id']=='en') ? '' : 'disabled'?>>
 									<i class="fas fa-check "></i>
@@ -251,7 +275,7 @@ if($article['language_id']=='en'){
 							echo $delbutton ?>
 
 						<?php } ?>
-					
+
 				</div>
 				<div class="row">
 					<div class="col-md-8">
@@ -328,7 +352,7 @@ if($article['language_id']=='en'){
 														'required' => 'required',
 														'data-msg-required'=>"Top Image is required."
 													);
-													
+
 													echo form_input($data_upload_hero_image_hide);
 
 													$data_upload_image_base64_hide = array(
@@ -356,7 +380,7 @@ if($article['language_id']=='en'){
 													);
 													echo form_input($data_article_image_license_hide);
 													?>
-													
+
 												</div>
 												<a href="javascript:void(0);" class="fas fa-trash-alt holder-style-edit delete_image is_article_image text-danger" data-action="article|<?php echo $lang ?>|<?php echo $article['article_id']?>|<?php echo $article['article_image']?>|0" data-toggle="tooltip" data-placement="top" title="Remove Multimedia" <?php if($article_image) echo 'style="display:block"';?>></a>
 											</div>
@@ -464,9 +488,11 @@ if($article['language_id']=='en'){
 																<i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Paragraph"></i>
 															</a>
 														<?php }else{?>
-															<a href="javascript:void(0);" data-repeater-delete ><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Paragraph"></i></a>		
+															<a href="javascript:void(0);" data-repeater-delete ><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Paragraph"></i></a>
 														<?php }?>
 														</div>
+												<div class="row">
+													<div class="col-md-6">
 														<h3 class="mb-0">Paragraph</h3>
 														<?php
 														$data_section_id_hide = array(
@@ -485,6 +511,10 @@ if($article['language_id']=='en'){
 														echo form_input($data_section_id_i18_hide);*/
 														?>
 													</div>
+													<div class="col-md-6">
+													</div>
+												</div>
+											</div>
 													<div class="form-group mb-2">
 														<div class="row">
 															<div class="col-md-8">
@@ -494,6 +524,8 @@ if($article['language_id']=='en'){
 															<div class="col-md-4 text-right">
 															</div>
 														</div>
+												<div class="row">
+													<div class="col-md-10">
 														<div class="input-group">
 															<?php
 															$data_section_title = array(
@@ -512,12 +544,33 @@ if($article['language_id']=='en'){
 															</div>
 														</div>
 													</div>
+												<div class="col-md-2">
+																<?php
+																					$heading_type = array(
+																						'h2' => 'H2',
+																						'h3' => 'H3',
+																					);
+																					//$selected_heading_type ='h2';
+																					if($paragraph['section_heading_type']){
+																						$selected_heading_type = $paragraph['section_heading_type'];
+																						//pre($selected_cat);
+																					}else{
+																						$selected_heading_type = 'h2';
+																					}
+																					echo form_dropdown("section_heading_type", $heading_type, $selected_heading_type, 'class="form-control-sm select-2"' );
+																					echo form_error("section_heading_type");
+
+																					?>
+													</div>
+												</div>
+
+											</div>
 													<!--- Image or Video Section Start  --->
 													<div class="form-group text-right">
-														
+
 													</div>
 											<div class="collapse <?php if($paragraph['section_image'] ||  $paragraph['section_video'] ) echo 'show';?> image-video-collapse-<?php echo $section_count?> image-video-collapse">
-										
+
 														<div class="form-group mb-2">
 															<?php
 															$section_image = set_value('section_image', $paragraph['section_image']);
@@ -599,9 +652,9 @@ if($article['language_id']=='en'){
 														}elseif($section_image OR $section_image==''){
 															$hide='hide';
 														}
-														
+
 														?>
-														
+
 													<div class="form-group mb-2 section-video-found hide">
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
@@ -775,7 +828,7 @@ if($article['language_id']=='en'){
 															</div>
 														</div>
 													</div>
-												
+
 													<div class="form-group mb-2 section-image-found <?php if($section_video) echo 'hide'; ?>">
 														<div class="row">
 															<div class="col-md-8">
@@ -834,14 +887,14 @@ if($article['language_id']=='en'){
 													</div>
 													<!---- Callout Start ---->
 													<div class="form-group text-right">
-														
+
 													</div>
-													
+
 													<!-- Callout Repeater -->
 													<div class="inner-repeater callouts-collapse-<?php echo $section_count?> collapse <?php if($paragraph['callouts'][0]['callout_i18_id']) echo 'show';?> ">
 														<div class="" data-repeater-list="callouts">
-														
-															<?php 
+
+															<?php
 															$callout_count = 0;
 															foreach($paragraph['callouts'] as $callout){
 																$callout_id = set_value('callout_i18_id', $callout['callout_i18_id']);
@@ -888,7 +941,7 @@ if($article['language_id']=='en'){
 																		'class' => 'callout_i18_id'
 																	);
 																	echo form_input($data_callout_id_hide);
-																
+
 																?>
 															</div>
 																<div class="form-group mb-2">
@@ -920,7 +973,7 @@ if($article['language_id']=='en'){
 																<div class="form-group">
 																	<label class="h6">Callout Text</label>
 																	<?php
-																	
+
 																		$data_section_callout_text = array(
 																			'name' => 'callout_text',
 																			'rows' => 4,
@@ -933,9 +986,9 @@ if($article['language_id']=='en'){
 																		?>
 																</div>
 															</div>
-															<?php 
+															<?php
 																$callout_count++;
-																} 
+																}
 															?>
 														</div>
 														<div class="form-group overflow-hidden">
@@ -981,13 +1034,13 @@ if($article['language_id']=='en'){
 							</div>
 							<!-------------Paragraphs End---------------->
 							<!-------------Backlink Start---------------->
-							
+
 							<!-------------Backlink End---------------->
 						</div>
 					</div>
 					<div class="col-md-4">
 						<!-------------Sidebar Start---------------->
-						<div id="optimizecontent-result-container"> 
+						<div id="optimizecontent-result-container">
 							<?php
 								$this->load->view('component/optimizecontent', $optimizecontent);
 							?>
@@ -1005,11 +1058,11 @@ if($article['language_id']=='en'){
 				<div class="col-md-9">
 				 	<!-------------Social Media Section Start---------------->
 
-					<?php 
-					if($user_type && $user_type!=4){ 
+					<?php
+					if($user_type && $user_type!=4){
 						//pre($socialmedia_messages);
 						//pre($channels);
-						
+
 						?>
 
 						<div class="row mb-2">
@@ -1018,12 +1071,12 @@ if($article['language_id']=='en'){
 							</div>
 						</div>
 					<?php
-						foreach($channels as $channel){ 
+						foreach($channels as $channel){
 							//pre($channel->article_promo_channel);
 							//pre($socialmedia_messages);
 							if(array_key_exists($channel->article_promo_channel, $socialmedia_messages)){
 								//pre($socialmedia_messages[$channel->article_promo_channel]);
-							
+
 								//pre($socialmedia_messages);
 							//pre($socialmedia_section_count);
 						if($channel->article_promo_channel!='instagram'){
@@ -1033,7 +1086,7 @@ if($article['language_id']=='en'){
 							<div class="row text-right">
 								<div class="col-md-12">
 									<div class="form-group overflow-hidden ">
-										
+
 									</div>
 								</div>
 							</div>
@@ -1051,7 +1104,7 @@ if($article['language_id']=='en'){
 										<span class="text-success font-weight-bold msg_status_switch ml-1">
 										<?php
 										//pre(array_key_exists("msg_status", $socialmedia_messages[$channel->article_promo_channel][0]));
-											
+
 											$msgid = $socialmedia_messages[$channel->article_promo_channel][0]['msg_id'];
 											if($msgid!=''){
 												if(array_key_exists("msg_status", $socialmedia_messages[$channel->article_promo_channel][0]) && $socialmedia_messages[$channel->article_promo_channel][0]['msg_status'] == 1){
@@ -1088,7 +1141,7 @@ if($article['language_id']=='en'){
 								$socialmedia_section_count = 1;
 								foreach($socialmedia_messages[$channel->article_promo_channel] as $socialmedia_message){
 									$msg_id = set_value('msg_id', $socialmedia_message['msg_id']);
-								?>	
+								?>
 								<div id="socialmedia-<?php echo $msg_id ?>"  class="social-media-repeater-item p-container"  data-repeater-item>
 									<div class="row">
 										<div class="col-md-5">
@@ -1118,15 +1171,15 @@ if($article['language_id']=='en'){
 														'class' => 'language_id'
 													);
 													echo form_input($data_language_id_hide);
-													
+
 													$data_msg_id_hide = array(
 														'type' => 'hidden',
 														'name' => 'msg_id',
 														'value' => $msg_id,
 														'class' => 'msg_id'
 													);
-													echo form_input($data_msg_id_hide); 
-													
+													echo form_input($data_msg_id_hide);
+
 													$data_msg_channel_hide = array(
 														'type' => 'hidden',
 														'name' => 'msg_channel',
@@ -1134,7 +1187,7 @@ if($article['language_id']=='en'){
 														'class' => 'msg_channel'
 													);
 													echo form_input($data_msg_channel_hide);
-					
+
 													$data_msg_sequence_hide = array(
 														'type' => 'hidden',
 														'name' => 'msg_sequence',
@@ -1142,7 +1195,7 @@ if($article['language_id']=='en'){
 														'class' => 'msg_sequence'
 													);
 													echo form_input($data_msg_sequence_hide);
-													
+
 													$data_msg_article_headline_hide = array(
 														'type' => 'hidden',
 														'name' => 'msg_article_headline',
@@ -1164,9 +1217,9 @@ if($article['language_id']=='en'){
 												}else{
 													$msg_multimedia_section_video = set_value('video_url', $socialmedia_message['msg_multimedia']);
 												}
-												
+
 												//pre($msg_multimedia_section_image);
-												
+
 												//$msg_multimedia_section_video = '';
 												$msg_multimedia_show_loading = true;
 												if($msg_multimedia_section_image || $msg_multimedia_section_video){
@@ -1184,8 +1237,8 @@ if($article['language_id']=='en'){
 																echo '<iframe width="560" height="315" src="//www.youtube.com/embed/' . $msg_multimedia_section_video . '" frameborder="0" allowfullscreen></iframe>';
 															}
 														?>
-															
-															
+
+
 														</div>
 														<div class="holder-icon <?php if($msg_multimedia_show_loading) echo 'uploading';?>">
 															<div class="holder-icon-text">
@@ -1224,13 +1277,13 @@ if($article['language_id']=='en'){
 														?>
 
 													</div>
-													<a href="javascript:void(0);" 
-														class="fas fa-trash-alt holder-style-edit delete_image text-danger social-media-channel <?php echo ($article_image_status > 0) ? 'article_image' : ''?>" 
+													<a href="javascript:void(0);"
+														class="fas fa-trash-alt holder-style-edit delete_image text-danger social-media-channel <?php echo ($article_image_status > 0) ? 'article_image' : ''?>"
 														data-action="social-channel|<?php echo $lang ?>|<?php echo $socialmedia_message['msg_id']?>|<?php echo $msg_multimedia_section_image?>|<?php echo $article_image_status?>" data-toggle="tooltip" data-placement="top" title="Remove Multimedia" <?php if(!$msg_multimedia_show_loading) echo 'style="display:block"';?>></a>
-													
+
 												</div>
 											</div>
-											<?php } ?>	
+											<?php } ?>
 										</div>
 										<div class="col-md-7">
 											<?php if($channel->article_promo_channel_show_headline){ ?>
@@ -1267,7 +1320,7 @@ if($article['language_id']=='en'){
 												<div class="row">
 													<div class="col-md-8">
 														<label class="h6">Introduction Text<span class="text-danger"></span>
-															
+
 														</label>
 													</div>
 													<div class="col-md-4 text-right">
@@ -1275,7 +1328,7 @@ if($article['language_id']=='en'){
 												</div>
 												<div class="input-group">
 													<?php
-													
+
 													$data_msg_intro = array(
 														'name' => 'msg_intro',
 														'rows' => 4,
@@ -1306,7 +1359,7 @@ if($article['language_id']=='en'){
 												</div>
 												<div class="input-group">
 													<?php
-													
+
 													$data_msg_text = array(
 														'name' => 'msg_text',
 														'rows' => 4,
@@ -1332,7 +1385,7 @@ if($article['language_id']=='en'){
 													<div class="<?php echo ($channel->article_promo_channel_show_msg_url_link) ? 'col-md-6' : 'col-md-12'?>">
 														<div class="form-group">
 															<label class="h6">Call to Action<span class="text-danger"></span>
-																
+
 															</label>
 															<?php
 																$msg_product_cta = $product_list;
@@ -1348,7 +1401,7 @@ if($article['language_id']=='en'){
 																Url Link<span class="text-danger"></span>
 															</label>
 															<?php
-													
+
 															$data_msg_url_link = array(
 																'name' => 'msg_url_link',
 																'value' => set_value('msg_url_link', $socialmedia_message['msg_url_link'], $html_escape=FALSE),
@@ -1362,31 +1415,31 @@ if($article['language_id']=='en'){
 														</div>
 													</div>
 													<?php } ?>
-												</div>		
+												</div>
 											</div>
 
 
 										</div>
 									</div>
 								</div>
-								<?php 
+								<?php
 								$socialmedia_section_count++;
 								}
 								?>
 							</div>
 
 						</div>
-					<?php 
-						
+					<?php
+
 				        }
 					}
 					}
 					} ?>
-					<!-------------Social Media Section End----------------> 
+					<!-------------Social Media Section End---------------->
 				</div>
 				<div class="col-md-3">
 					<!-------------Sidebar Start---------------->
-						
+
 					<!------------- Sidebar End ---------------->
 				</div>
 			</div>
@@ -1482,7 +1535,7 @@ if($article['language_id']=='en'){
 														$product_id[''] = '---Select Product Id---';
 														foreach ($websites as $website){
 															$product_id[$website['meta_product_unique_key']] = ucfirst(ucwords($website['meta_product_id']));
-														}	
+														}
 														echo form_dropdown("article[$lang][meta_product_unique_key]", $product_id, $article['meta_product_unique_key'], 'class="custom-select " required="required" data-msg-required="Please select product Id" id="article_meta_lookup_id"' );
 														echo form_error("article[$lang][meta_product_unique_key]");
 												?>
@@ -1521,7 +1574,7 @@ if($article['language_id']=='en'){
 														echo form_error("article[$lang][article_category]");*/
 													?>
 												<?php   $selected_category = 'management';
-														
+
 														if($article["article_category"]){
 															$selected_cat = explode(",",$article["article_category"]);
 															//pre($selected_cat);
@@ -1610,16 +1663,16 @@ if($article['language_id']=='en'){
 										</div>
 										<div class="form-group row">
 											<label class="col-md-6 col-sm-6 h6  d-block col-form-label" for="article_toc_ordered">
-												
-												
+
+
 											</label>
 											<div class="col-md-6 col-sm-6">
-												
+
 											</div>
 										</div>
 									<!-------------Article Visible Setting End---------------->
 									<!-------------Article Hidden Setting Start---------------->
-									<?php 
+									<?php
 									//if($article['article_id']){?>
 									<div class="row article-setting">
 											<div class="form-group col-md-6 mb-2">
@@ -1979,7 +2032,7 @@ if($article['language_id']=='en'){
 															echo form_input($data_article_meta_author_description);
 															echo form_error("article[$lang][article_meta_author_desc]");
 														?>
-											
+
 											</div>
 										</div>
 
@@ -1992,7 +2045,7 @@ if($article['language_id']=='en'){
 													'class'=>"form-control select-2",
 													'required'=>"required",
 													'data-msg-required'=>"Please select product cta"
-													
+
 												);
 												echo form_dropdown("article[$lang][article_product_cta]", $product_list, $article['article_product_cta'], $js);
 
@@ -2001,25 +2054,24 @@ if($article['language_id']=='en'){
 												?>
 											</div>
 											<div class="form-group col-md-6 mb-2">
-												<label class="h6">content CTA</label>
+												<label class="h6">Lead Capture CTA</label>
 												<?php
 												$js = array(
-													'id'       => 'article_content_cta',
+													'id'       => 'article_leadcapture_cta',
 													'class'=>"form-control select-2",
 													'required'=>"required",
-													'data-msg-required'=>"Please select content cta"
-													
+													'data-msg-required'=>"Please select leadcapture cta"
+
 												);
 												$cta = array(
-													''         => 'Select Content',
-													'signup'         => 'Signup',
-													'content'        => 'Content',
+													''         => 'Select Lead Capture CTA',
+													'leadcapture'         => 'Lead Capture'
 												);
-												echo form_dropdown("article[$lang][article_content_cta]", $cta, $article['article_content_cta'], $js);
-												//echo form_dropdown("article[$lang][article_content_cta]", $cta, $article['article_content_cta'], 'class="form-control select-2" required="required" data-msg-required="Please select content cta" id => "article_content_cta"' );
-												echo form_error("article[$lang][article_content_cta]");
-												
-												
+												echo form_dropdown("article[$lang][article_leadcapture_cta]", $cta, $article['article_leadcapture_cta'], $js);
+												//echo form_dropdown("article[$lang][article_leadcapture_cta]", $cta, $article['article_leadcapture_cta'], 'class="form-control select-2" required="required" data-msg-required="Please select leadcapture cta" id => "article_leadcapture_cta"' );
+												echo form_error("article[$lang][article_leadcapture_cta]");
+
+
 												?>
 											</div>
 										</div>
@@ -2031,8 +2083,8 @@ if($article['language_id']=='en'){
 													echo form_error("article[$lang][article_type]");
 												?>
 											</div>
-											
-											<?php 
+
+											<?php
 											if($article['article_id']){?>
 											<div class="<?php echo ($article['article_id']) ? 'form-group col-md-6 mb-2' : 'form-group col-md-12 mb-2'?>">
 												<label class="h6">Publish Date</label>
@@ -2066,7 +2118,7 @@ if($article['language_id']=='en'){
 												<?php	if(!$article['article_author']){
 												$article['article_author'] = $this->session->userdata('full_name');
 
-												}					
+												}
 													$data_article_author = array(
 														'name' => "article[$lang][article_author]",
 														'id' => "article_author",
@@ -2097,7 +2149,7 @@ if($article['language_id']=='en'){
 				</div>
 				<div class="col-md-4">
 					<!-------------Sidebar Start---------------->
-						
+
 					<!------------- Sidebar End ---------------->
 				</div>
 			</div>

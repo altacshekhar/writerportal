@@ -15,8 +15,9 @@ class Publishers extends Admin_Controller
 		$this->load->model('linkarticle_model');
 		$this->load->model('articlebrief_model');
 		$this->load->model('linkbuilding_article_model');
-        $this->load->model('linkbuilding_article_i18_model');
-       
+		$this->load->model('linkbuilding_article_i18_model');
+		$this->data['websites'] = $this->publisher_model->get_github_repo();
+		//pre_exit($this->data['websites']);
     }
 
     public function index()
@@ -50,8 +51,8 @@ class Publishers extends Admin_Controller
 		$user_id = $this->session->userdata('id');
         if ($id) {
 			$publisher  = (array) $this->publisher_model->get($id);
+			//pre_exit($publisher['publisher_websites']);
 			$this->data['publisher'] = $publisher;
-			
         } else {
 			$publisher  = $this->publisher_model->get_new();
 			$this->data['publisher'] = $publisher;
@@ -66,7 +67,7 @@ class Publishers extends Admin_Controller
 				'publisher_email',
 				'publisher_phone',
 				'publisher_notes',
-				'publisher_niche',
+				'publisher_websites',
 				'publisher_type',
 				'publisher_url',
 				'publisher_url_traffic',
@@ -76,12 +77,18 @@ class Publishers extends Admin_Controller
 				'publisher_requirements',
 				'publisher_status'
 			);
-            $data = $this->publisher_model->array_from_post($post_array);
-			if ($this->input->post("publisher_niche[]")){
-                $data['publisher_niche'] = implode(",",$this->input->post("publisher_niche[]"));
+			$data = $this->publisher_model->array_from_post($post_array);
+			if ($this->input->post("publisher_email")){
+				$data['publisher_email'] = $data['publisher_email'] == "" ? null : $data['publisher_email'];
 			}
+			// if ($this->input->post("publisher_niche[]")){
+            //     $data['publisher_niche'] = implode(",",$this->input->post("publisher_niche[]"));
+			// }
 			if ($this->input->post("publisher_type[]")){
                 $data['publisher_type'] = implode(",",$this->input->post("publisher_type[]"));
+			}
+			if ($this->input->post("publisher_websites[]")){
+                $data['publisher_websites'] = implode(",",$this->input->post("publisher_websites[]"));
 			}
 			if ($publisher['publisher_createdby']){
                 $data['publisher_createdby'] = $publisher['publisher_createdby'];
@@ -96,12 +103,14 @@ class Publishers extends Admin_Controller
 				$data['publisher_url_referringdomains'] = null;
 			if($data['publisher_url_traffic'] == "" || $data['publisher_url_traffic'] == null)
 				$data['publisher_url_traffic'] = null;
-
-			$now = date('Y-m-d H:i:s');
+			$now = date('Y-m-d H:i:s');	
+			//$status = ($data['publisher_url_referringdomains'] == "" || $data['publisher_url_domainauthority'] == "" || $data['publisher_url_traffic'] == "") ? "Fetching SEO Metrics" : $data['publisher_status'];
+			$status = ($data['publisher_url_referringdomains'] == "" || $data['publisher_url_domainauthority'] == "") ? "Fetching SEO Metrics" : "Not Contacted";
 			if (!$id) {
 				$data['publisher_createddate'] = $now;
-				$data['publisher_status'] = "Not Contacted";
+				$status = ($data['publisher_url_referringdomains'] == "" || $data['publisher_url_domainauthority'] == "" || $data['publisher_url_traffic'] == "") ? "Fetching SEO Metrics" :"Not Contacted";
 			}
+			$data['publisher_status'] = $status;
 			$domain = $this->get_domain($this->input->post('publisher_url'));
 			$is_domain = $this->publisher_model->isDomainRootExist($domain);
 			if($is_domain && $id == null)
@@ -146,9 +155,7 @@ class Publishers extends Admin_Controller
 	{
 		$this->load->model('publisher_report_model');
 		$post_array = $_POST;
-		//pre($post_array);
 		$publisher_rows = $this->publisher_report_model->get_datatables($post_array);
-		//pre_exit($publisher_rows);
 		$data = array();
 		$no = $post_array['start'];
 		foreach ($publisher_rows as $publisher_row) {
@@ -174,16 +181,12 @@ class Publishers extends Admin_Controller
 
 	public function ajax_list()
     {
-		//sleep(10);
 		$post_array = $_POST;
-		//pre_exit($post_array);
 		$publisher_rows = $this->publisher_model->get_datatables($post_array);
-		//pre_exit($post_array);
-		//log_message("ERROR", print_r($user_rows, TRUE));
-        $data = array();
-        $no = $post_array['start'];
-        foreach ($publisher_rows as $publisher_row) {
-            $no++;
+		$data = array();
+		$no = $post_array['start'];
+		foreach ($publisher_rows as $publisher_row) {
+		    $no++;
             $row = array();
 			//$date_modified = $campaign_row->date_modified;
 			$delbutton = '';
@@ -220,17 +223,17 @@ class Publishers extends Admin_Controller
 			$domain = preg_replace('/^www\./', '', $domain);
 			$publisher_domain = '<span data-toggle="tooltip" data-placement="top" title="'.strtolower($publisher_row->publisher_url).'">'.$domain_name.'</span>';
 			//$publisher_domain = strtolower($this->get_domain($publisher_row->publisher_url));
-			if($publisher_row->publisher_activity_date){
-				$publisher_activity_date = nice_date($publisher_row->publisher_activity_date, 'Y-m-d');
+			if($publisher_row->date_added){
+				$publisher_activity_date = nice_date($publisher_row->date_added, 'Y-m-d');
 			}else{
 				$publisher_activity_date ='';
 			}
-			$publisher_niche = explode(',',$publisher_row->publisher_niche);
-			$publisher_niche = array_map('ucwords',$publisher_niche);
+			$publisher_websites = explode(',',$publisher_row->publisher_websites);
+			$publisher_websites = array_map('ucwords',$publisher_websites);
 			$publisher_type = explode(',',$publisher_row->publisher_type);
 			$publisher_type = array_map('ucwords',$publisher_type);
             $row[] 	= $publisher_domain;//$this->get_domain($publisher_row->publisher_url);
-            $row[] 	= ucwords(implode('<br>',$publisher_niche));
+            $row[] 	= ucwords(implode('<br>',$publisher_websites));
             $row[] 	= ucwords(implode('<br>',$publisher_type));
 			$row[] 	= $publisher_row->publisher_url_traffic;
 			$row[] 	= $publisher_row->publisher_url_domainauthority;
@@ -239,13 +242,12 @@ class Publishers extends Admin_Controller
 			$row[] 	= $publisher_row->publisher_status;
 			$row[] 	= $publisher_activity_date;
 			$row[] 	= $actions;
-			$data[$domain] = $row;
-			//$data[] = $row;
-        }
-		ksort($data);
-		//pre($data);
-		$data = array_values($data);
+			$data[] = $row;
+			//$data[$this->get_domain($publisher_row->publisher_url)] = $row;
+		}
 		//pre_exit($data);
+		//ksort($data);
+		//$data = array_values($data);
         $output = array(
 			"draw" => $post_array['draw'],
 			"recordsTotal" => $this->publisher_model->count_all($post_array),
@@ -521,10 +523,9 @@ class Publishers extends Admin_Controller
 					$import_xls_file = $data['upload_data']['file_name'];
 					$file_path_name = $path.$import_xls_file;
 					$file_obj = fopen($file_path_name,"r");
-					// $file_data = fgetcsv($file_obj);
-					// pre_exit($file_data);
 					$i = 0;
 					$cnt = 0;
+					$userid = $this->session->userdata('id');
 					while(! feof($file_obj))
 					{
 						$insert = array();
@@ -532,46 +533,114 @@ class Publishers extends Admin_Controller
 						if(!empty($file_data) && $i > 0)
 						{
 							$file_data = array_map("utf8_encode", $file_data);
-							$l_type = array();
-							$l_check = array();
-							$link_type = explode(',',$file_data[8]); 
-							foreach($link_type as $ll)
+							$link_type = explode(',',$file_data[7]); 
+							$publisher_websites = explode(',',$file_data[6]);
+							$publisher = $this->publisher_model->get_by(['publisher_url' => $file_data[0]],true);
+							$publisher_id = null;
+							$traffic = null;
+							$da = null;
+							$rd = null;
+							$status = "Fetching SEO Metrics"; //$file_data[1] == "" ? "Not Contacted" : $file_data[1];
+							$ecost = $file_data[8] == "" || $file_data[8] == null ? null : $file_data[8];
+							if($publisher)
 							{
-								$l_check[] = $this->linktype_model->checkandSave(strtolower(trim($ll)));
-								$l_type[] = strtolower(trim($ll));
+								$publisher_id = $publisher->publisher_id;
+								if($publisher->publisher_type)
+								{
+									$publisher_type = explode(',',$publisher->publisher_type);
+									$link_type = array_merge($link_type,$publisher_type);
+									$link_type = array_map('ltrim',$link_type);
+									$link_type = array_unique($link_type);
+								}
+								if($publisher->publisher_websites)
+								{
+									$existing_publisher_websites = explode(',',$publisher->publisher_websites);
+									$publisher_websites = array_merge($publisher_websites,$existing_publisher_websites);
+									$publisher_websites = array_map('ltrim',$publisher_websites);
+									$publisher_websites = array_unique($publisher_websites);
+								}
+								$traffic = $publisher->publisher_url_traffic;
+								$da = $publisher->publisher_url_domainauthority;
+								$rd = $publisher->publisher_url_referringdomains;
+								$ecost = $publisher->publisher_estimated_cost;
+								if($da && $rd)
+									$status = $publisher->publisher_status;
 							}
-							$l_niche = array();
-							$l_ncheck = array();
-							$niches = explode(',',$file_data[7]);
-							foreach($niches as $niche)
+							//$status = "Fetching SEO Metrics"; //$file_data[1] == "" ? "Not Contacted" : $file_data[1];
+							$insert = array(
+								'publisher_first_name' => $file_data[1],
+								'publisher_last_name' => $file_data[2],
+								'publisher_email' => $file_data[3] == "" ? null : $file_data[4],
+								'publisher_phone' => $file_data[4],
+								'publisher_notes' => $file_data[5],
+								'publisher_websites' => implode(",",$publisher_websites),
+								'publisher_type' => implode(",",$link_type),
+								'publisher_url' => strtolower($file_data[0]),
+								'publisher_url_traffic' => $traffic,
+								'publisher_url_domainauthority' => $da, 
+								'publisher_url_referringdomains' => $rd,
+								'publisher_estimated_cost' => $ecost,
+								'publisher_requirements' => $file_data[9],
+								'publisher_status' => $status,
+								'publisher_createdby' => $userid
+							);
+							if($publisher_id == null)
 							{
-								$l_ncheck[] = $this->niche_model->checkandSave(strtolower(trim($niche)));
-								$l_niche[] = strtolower(trim($niche));
+								$insert['date_added'] = date('Y-m-d');
+								$insert['publisher_createddate'] = date('Y-m-d');
 							}
-							$userid = $this->session->userdata('id');
-							$domain = $this->get_domain($file_data[0]);
-							$is_domain = $this->publisher_model->isDomainRootExist(strtolower($domain));
-							if(!$is_domain && !in_array(0,$l_ncheck) && !in_array(0,$l_check))
-							{
-								$status = $file_data[1] == "" ? "Not Contacted" : $file_data[1];
-								//$status = "Not Contacted";
-								$traffic = $file_data[9] == "" || $file_data[9] == null ? null : $file_data[9];
-								$da = $file_data[11] == "" || $file_data[11] == null ? null : $file_data[11];
-								$rd = $file_data[10] == "" || $file_data[10] == null ? null : $file_data[10];
-								$ecost = $file_data[12] == "" || $file_data[12] == null ? null : $file_data[12];
-								$insert = array(
-									'publisher_first_name' => $file_data[2],'publisher_last_name' => $file_data[3],'publisher_email' => $file_data[4],
-									'publisher_phone' => $file_data[5],'publisher_notes' => $file_data[6],'publisher_niche' => implode(",",$l_niche),'publisher_type' => implode(",",$l_type),
-									'publisher_url' => strtolower($file_data[0]),'publisher_url_traffic' => $traffic,'publisher_url_domainauthority' => $da, 
-									'publisher_url_referringdomains' => $rd,'publisher_estimated_cost' => $ecost,'publisher_requirements' => $file_data[13],
-									'publisher_status' => $status,'publisher_createdby' => $userid,'publisher_createddate' => date('Y-m-d'), 'date_added' => date('Y-m-d')
-								);
-								$isSave = $this->publisher_model->save($insert);
-								if($isSave > 0)
-									$cnt++;
-							}
-							// else{
-							// 	echo $domain.'<br>';
+							$isSave = $this->publisher_model->save($insert,$publisher_id);
+							if($isSave > 0)
+								$cnt++;
+							// foreach($link_type as $ll)
+							// {
+							// 	$l_check[] = $this->linktype_model->checkandSave(strtolower(trim($ll)));
+							// 	$l_type[] = strtolower(trim($ll));
+							// }
+							// $l_niche = array();
+							// $l_ncheck = array();
+							// $niches = explode(',',$file_data[6]);
+							// foreach($niches as $niche)
+							// {
+							// 	$l_ncheck[] = $this->niche_model->checkandSave(strtolower(trim($niche)));
+							// 	$l_niche[] = strtolower(trim($niche));
+							// }
+							// $userid = $this->session->userdata('id');
+							// $domain = $this->get_domain($file_data[0]);
+							// $is_domain = $this->publisher_model->isDomainRootExist(strtolower($domain));
+							// if(!$is_domain && !in_array(0,$l_ncheck) && !in_array(0,$l_check))
+							// {
+							// 	$status = "Fetching SEO Metrics"; //$file_data[1] == "" ? "Not Contacted" : $file_data[1];
+							// 	$traffic = null;
+							// 	$da = null;
+							// 	$rd = null;
+							// 	//$status = "Not Contacted";
+							// 	// $traffic = $file_data[9] == "" || $file_data[9] == null ? null : $file_data[9];
+							// 	// $da = $file_data[11] == "" || $file_data[11] == null ? null : $file_data[11];
+							// 	// $rd = $file_data[10] == "" || $file_data[10] == null ? null : $file_data[10];
+							// 	$ecost = $file_data[8] == "" || $file_data[8] == null ? null : $file_data[8];
+							// 	$insert = array(
+							// 		'publisher_first_name' => $file_data[1],
+							// 		'publisher_last_name' => $file_data[2],
+							// 		'publisher_email' => $file_data[4] == "" ? null : $file_data[4],
+							// 		'publisher_phone' => $file_data[10],
+							// 		'publisher_notes' => $file_data[5],
+							// 		'publisher_niche' => implode(",",$l_niche),
+							// 		'publisher_type' => implode(",",$l_type),
+							// 		'publisher_url' => strtolower($file_data[0]),
+							// 		'publisher_url_traffic' => $traffic,
+							// 		'publisher_url_domainauthority' => $da, 
+							// 		'publisher_url_referringdomains' => $rd,
+							// 		'publisher_estimated_cost' => $ecost,
+							// 		'publisher_requirements' => $file_data[9],
+							// 		'publisher_status' => $status,
+							// 		'publisher_createdby' => $userid,
+							// 		'publisher_createddate' => date('Y-m-d'),
+							// 		'date_added' => date('Y-m-d')
+							// 	);
+							// 	$isSave = $this->publisher_model->save($insert);
+							// 	if($isSave > 0)
+							// 		$cnt++;
 							// }
 						}
 						$i++;
@@ -611,5 +680,42 @@ class Publishers extends Admin_Controller
             $return_array[$row['user_id']] = $row['user_name'];
         }
         return $return_array;
+	}
+
+	public function semrush_api()
+	{
+		$return = false;
+		$endpoint = 'https://api.semrush.com/analytics/v1/';
+		$target = $this->input->post('url');
+		$target = preg_replace( "#^[^:/.]*[:/]+#i", "", $target );
+		//echo $target;
+		$params = array(
+			'key'=>'320858172aee5f8cb6936ea13dd70980',
+			'type'=>'backlinks_overview',
+			'target'=>$target,
+			'target_type'=>'root_domain',
+			'export_columns'=>'ascore,domains_num',
+		);
+		$url = $endpoint . '?' . http_build_query($params);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_USERAGENT,"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		//pre_exit($result);
+		curl_close($ch);
+		$search = 'ERROR';
+		if(!preg_match("/{$search}/i", $result)) {
+			$result = trim(str_replace("ascore,domains_num", "", $result));
+			$domain_array = array();
+			foreach(preg_split("/((\r?\n)|(\r\n?))/", $result) as $key=>$line){
+
+					list($ascore, $domains_num) = str_getcsv($line,';');
+					$domain_array['da'] = $ascore;
+					$domain_array['rd'] = $domains_num;
+			
+			}
+		}
+		exit(json_encode($domain_array));
 	}
 }

@@ -124,6 +124,60 @@ jQuery(document).ready(function () {
 			"targets": [17]
 		}]
 	});
+	var cta_data_table = jQuery('#cta_list_table').DataTable({
+		"columns": [
+			{ "title": "Website","data":"cta_website", "className": "column-cta-website" },
+			{ "title": "Type","data":"cta_type", "className": "column-cta-type" },
+			{ "title": "Headline", "data":"cta_headline","className": "column-cta-headline"},
+			{ "title": "Background Type", "data":"cta_background_type","className": "column-cta-background-type"},
+			{ "title": "","data":"cta_action", "className": "column-action" }
+		],
+		"ajax": {
+			"url": base_url + 'secure/cta/ajax_list',
+			"type": "POST"
+		},
+		"columnDefs": [{
+			"orderable": false,
+			"targets": [4]
+		}],
+		"drawCallback": function(settings) {
+			var api = new $.fn.dataTable.Api(settings);
+			var json = api.ajax.json();
+			if(json.show_action == false){
+				api.columns([4]).visible(false);
+			}else{
+				api.columns([4]).visible(true);
+			}
+		}
+	});
+
+	jQuery(document).on('keyup change', "#datatableCtaSearch", function () {
+		cta_data_table.search(this.value).draw();
+	});
+
+	jQuery(document).on('change', '.cta-search-filters .select-2', function () {
+		var i = jQuery(this).attr('data-column');
+		cta_data_table.column(i).search(
+			jQuery(this).val()
+		).draw();
+	});
+	var $ctaPreviewModal = jQuery('#ctaPreviewModal');
+	jQuery(document).on('click', '.cta_preview', function (e) {
+		var ctaId = $(this).data("cta-id");
+		if(ctaId){
+			jQuery.ajax({
+				url: base_url + 'secure/cta/show/' + ctaId,
+				type: "POST",
+				success: function (data) {
+					var data = data;
+					jQuery(".preview").html(data);
+					console.log(data);
+					$ctaPreviewModal.modal('show');
+				}
+			});
+		}
+		
+	});
 
 	jQuery('#websites_list_table').DataTable({
 		"ajax": {
@@ -217,6 +271,47 @@ jQuery(document).ready(function () {
 	jQuery(document).on('change', '.search-filters .select-2', function () {
 		var i = jQuery(this).attr('data-column');
 		data_table.column(i).search(
+			jQuery(this).val()
+		).draw();
+	});
+
+	var keyword_data_table = jQuery('#keyword_list_table').DataTable({
+		"columns": [
+			{ "title": "Website","data":"website", "className": "column-website" },
+			{ "title": "keyword","data":"keyword", "className": "column-keyword" },
+			{ "title": "Monthly Searches", "data":"monthly_search","className": "column-monthly-search"},
+			{ "title": "Content Score","data":"content_score", "className": "column-content-score" },
+			{ "title": "Link Building","data":"link_building", "className": "column-link-building" },
+			{ "title": "Focus Keywords","data":"focus_keyword", "className": "column-focus-keyword" },
+			{ "title": "Status & Next Step","data":"status", "className": "column-status" },
+			{ "title": "","data":"keyword_action", "className": "column-action" }
+		],
+		"ajax": {
+			"url": base_url + 'secure/keyword/ajax_list',
+			"type": "POST"
+		},
+		"columnDefs": [{
+			"orderable": false,
+			"targets": [7]
+		}],
+		"drawCallback": function(settings) {
+			var api = new $.fn.dataTable.Api(settings);
+			var json = api.ajax.json();
+			if(json.show_action == false){
+				api.columns([7]).visible(false);
+			}else{
+				api.columns([7]).visible(true);
+			}
+		}
+	});
+
+	jQuery(document).on('keyup change', "#datatableKeywordSearch", function () {
+		keyword_data_table.search(this.value).draw();
+	});
+
+	jQuery(document).on('change', '.keyword-search-filters .select-2', function () {
+		var i = jQuery(this).attr('data-column');
+		keyword_data_table.column(i).search(
 			jQuery(this).val()
 		).draw();
 	});
@@ -377,11 +472,10 @@ jQuery(document).ready(function () {
 		"order": [[ 0, "asc" ]],
 		"columnDefs": [{
 			"className": "text-center",
-			"targets": [2, 3, 4]
 		}, {
 			"orderable": false,
+			"targets": [4,5,8]
 		}],
-		
 	});
 	
 	jQuery(document).on('keyup change', "#datatableCampaignSearch", function () {
@@ -409,10 +503,10 @@ jQuery(document).ready(function () {
 		},
 		"order": [[ 0, "asc" ]],
 		"columnDefs": [
-			{
-				"orderable": false,
-				"targets": [1]
-			}]
+		{
+			"orderable": false,
+			"targets": [5]
+		}]
 	});
 	
 	var livelink_report = jQuery('#livelinks_report').DataTable({
@@ -424,7 +518,7 @@ jQuery(document).ready(function () {
 		"columnDefs": [
 			{
 				"orderable": false,
-				"targets": [1]
+				"targets": [3]
 			}]
 	});
 
@@ -454,7 +548,7 @@ jQuery(document).ready(function () {
 		"columnDefs": [
 			{
 				"orderable": false,
-				"targets": [1]
+				"targets": [3]
 			}]
 	});
 
@@ -467,7 +561,7 @@ jQuery(document).ready(function () {
 		"columnDefs": [
 			{
 				"orderable": false,
-				"targets": [1]
+				"targets": [2]
 			}]
 	});
 
@@ -521,13 +615,11 @@ jQuery(document).ready(function () {
 			"type": "POST"
 		},
 		"columnDefs": [
-		{ "type": "html", "targets": 0 },
 		{
 			"orderable": false,
-			"targets": [9]
+			"targets": [8]
 		}],
 		"order": [[ 0, "asc" ]],
-		
 	});
 	
 	jQuery(document).on('keyup change', "#datatablePublisherSearch", function () {
@@ -629,11 +721,11 @@ jQuery(document).ready(function () {
 			// 	required: true,
 			// 	minlength: 3
 			// },
-			publisher_email: {
-				required: true,
-				email: true,
-			},
-			publisher_niche: {
+			// publisher_email: {
+			// 	//required: true,
+			// 	//email: true,
+			// },
+			publisher_websites: {
 				required: true,
 			},
 			publisher_type: {
@@ -686,9 +778,9 @@ jQuery(document).ready(function () {
 			campaign_websites: {
 				required: true,
 			},
-			campaign_niche: {
-				required: true,
-			},
+			// campaign_niche: {
+			// 	required: true,
+			// },
 			campaign_type: {
 				required: true,
 			},
@@ -709,13 +801,13 @@ jQuery(document).ready(function () {
 	});
 	
 	var $BuildBacklinks_modal = jQuery('#articleBuildBacklinksModal');
-	jQuery('.filter-websites').on('change',function(event)
+	jQuery(document).on('change','.filter-websites',function(event)
 	{
 		event.preventDefault();
 		var opt_filter_site = $(this).val();
-		
 		$BuildBacklinks_modal.find('tbody tr').each(function()
 		{
+			
 			str = $(this).data('site-id');
 			if(opt_filter_site == "")
 			{
@@ -739,8 +831,8 @@ jQuery(document).ready(function () {
 		$(".backlink-articles-id").each(function() {
 			selected_backlink.push($(this).val());
 		});
-		console.log({selected_backlink});
 		if(campaign_websites){
+			$('#add-loading-image').show();
 			jQuery.ajax({
 				url: base_url + "secure/campaigns/articles_build_backlinks_list",
 				type: "POST",
@@ -751,6 +843,7 @@ jQuery(document).ready(function () {
 				success: function (response) {
 					$BuildBacklinks_modal.find('.modal-body').html(response); 
 					$BuildBacklinks_modal.modal('show');
+					$('#add-loading-image').hide();
 					/*$BuildBacklinks_modal.find('tbody').html(response); 
 					$BuildBacklinks_modal.modal('show');
 					var backlinks_articles = new Array();
@@ -790,7 +883,7 @@ jQuery(document).ready(function () {
 		{
 			return false;
 		}
-		var niche_type = $('#campaign_niche').val();
+		//var niche_type = $('#campaign_niche').val();
 		var links = $('#campaign_type').val();
 		if(niche_type == "" || links == "")
 		{
@@ -839,40 +932,32 @@ jQuery(document).ready(function () {
 		}else{	
 
 		}
-
-		if(niche_type && links)
-		{
-			jQuery.ajax({
-				url: base_url + "secure/campaigns/new_publishers_list",
-				type: "POST",
-				data: {
-					"niches": niche_type,
-					"type": links
-				},
-				success: function (response) {
-					$('#publisher_writer').empty();
-					$('#publisher_writer').text(response);
-				}
-			});
-		}
-		else
-		{
-
-		}
+		jQuery.ajax({
+			url: base_url + "secure/campaigns/writer_list",
+			type: "POST",
+			data: {
+				"type": links
+			},
+			success: function (response) {
+				$('#publisher_writer').empty();
+				$('#publisher_writer').text(response);
+			}
+		});
 	});
 
 	var $PublishersBacklink_modal = jQuery('#publishersBacklinkOutreachModal');
 	jQuery(document).on('click', '.publishers-backlink-outreach', function (e) {
 		e.preventDefault();
-		var campaign_niche = jQuery("#campaign_niche"). val();
+		//var campaign_niche = jQuery("#campaign_niche"). val();
+		var campaign_websites = jQuery("#campaign_websites"). val();
 		var campaign_type = jQuery("#campaign_type"). val();
 		var campaign_id = jQuery('#campaign_id').val();
-		if(campaign_niche != "" && campaign_type != "" ){
+		if(campaign_websites != "" && campaign_type != "" ){
 			jQuery.ajax({
 				url: base_url + "secure/campaigns/publishers_list",
 				type: "POST",
 				data: {
-					"niches": campaign_niche,
+					"websites": campaign_websites,
 					"type": campaign_type,
 					"campaign_id": campaign_id,
 				},
@@ -898,7 +983,7 @@ jQuery(document).ready(function () {
 			});
 		}
 		else{
-			alert('Please select the niche and type first.'); 
+			alert('Please select the websites and type first.'); 
 		}
 	});
 
@@ -976,7 +1061,7 @@ jQuery(document).ready(function () {
 		
 		if(jQuery('select[name*="publisher[]"]').length > 0)
 		{
-			var i = 1;
+			var i = 0;
 			jQuery('select[name*="publisher[]"]').each(function()
 		    {
 			    $(`#publisher_`+i).empty();
@@ -991,6 +1076,77 @@ jQuery(document).ready(function () {
 		}
 		$(this).text('Selected');
 		$(this).removeClass('selected-outreach-publisher');
+	});
+
+	jQuery(document).on('click','.add-more-articles',function(event){
+		event.stopImmediatePropagation();
+		var current_obj=$(this);
+		var data_json = JSON.stringify(current_obj.data('json'));
+		var campaign_id = jQuery('#campaign_id').val();
+		var article_list = [];
+		var template = '';
+		var selected_backlink = [];
+		$(".backlink-articles-id").each(function() {
+			selected_backlink.push($(this).val());
+		});
+		var campaign_websites = jQuery("#campaign_websites"). val();
+		console.log(selected_backlink);
+		if(campaign_websites){
+			$('#loading-image').show();
+			jQuery.ajax({
+				url: base_url + "secure/campaigns/articles_build_backlinks_list",
+				type: "POST",
+				data: {
+					"websites": campaign_websites,
+					"selected_backlink": selected_backlink,
+				},
+				success: function (response) {
+					$BuildBacklinks_modal.find('.modal-body').html(response); 
+					$("input:checkbox[class=check_article_backlink]:checked").each(function () {
+						article_list.push($(this).val());
+						console.log($(this).val());
+					});
+					var article_json = [];
+					var niche_type = $('#campaign_niche').val();
+					var links = $('#campaign_type').val();
+					if(niche_type == "" || links == "")
+					{
+						alert('Niche Type and Links should be selected to add backlinks.');
+						return false;
+					}
+					var campaign_quantity = jQuery("#campaign_quantity"). val();
+					campaign_quantity = parseInt(campaign_quantity) + 1;
+					jQuery("#campaign_quantity"). val(campaign_quantity);
+					if(article_list.length>1){
+						article_json.push(data_json);
+						template="col";
+					}else{
+						article_json = article_list;
+					}
+					article_json = article_list;
+					jQuery.ajax({
+						url: base_url + "secure/campaigns/get_all_backlink",
+						type: "POST",
+						data: {
+							"article_list": article_json,
+							"campaign_quantity": campaign_quantity,
+							"niches": niche_type,
+							"type": links,
+							"template": template,
+							"campaign_id" :campaign_id
+						},
+						success: function (response) {
+							$('#backlink-list').html(response);
+						}
+					});
+				},
+				complete: function(){
+					$('#loading-image').hide();
+				}
+			});
+		}
+		
+		
 	});
 	
 	jQuery(document).on('click', '.selected-build-backlink', function (event) {
@@ -1018,13 +1174,13 @@ jQuery(document).ready(function () {
 		});
 		console.log({article_list});
 		var campaign_quantity = jQuery("#campaign_quantity"). val();
-		if(article_list.length>0){
+		if(article_list.length>1){
 			article_json.push(data_json);
 			template="col";
 		}else{
-			
 			article_json = article_list;
 		}
+		article_json = article_list;
 		console.log({article_json});
 		jQuery.ajax({
 			url: base_url + "secure/campaigns/get_all_backlink",
@@ -1039,13 +1195,13 @@ jQuery(document).ready(function () {
 			},
 			success: function (response) {
 				$('<span class="text-success font-weight-bold">Selected</span>').insertAfter(current_obj);
-				if(template=="col") {
-					$('#backlink-list .backlink-list-mid-col').append(response);
-				}else{
-					$('#backlink-list').html(response);
-				}
-				current_obj.remove();			
-				
+				// if(template=="col") {
+				// 	$('#backlink-list .backlink-list-mid-col').append(response);
+				// }else{
+				// 	$('#backlink-list').html(response);
+				// }
+				$('#backlink-list').html(response);
+				current_obj.remove();	
 			}
 		});
 		
@@ -1178,11 +1334,33 @@ jQuery(document).ready(function () {
 
 	jQuery(document).on('click', '.delete-backlink', function (e) {
 		e.preventDefault();
-		//console.log(backlink_row[1]);
 		var backlink_id = jQuery(this).data("backlink-id");
 		var column_id ="#backlink_column_"+backlink_id;
 		jQuery(column_id).remove();
-		
+		var wp_articles_id = new Array();
+		$('.backlink-wp-articles-id').each(function() {
+			wp_articles_id.push($(this).val());
+		});
+		var col = jQuery(this).data('col');
+		if(wp_articles_id){
+			jQuery.ajax({
+				url: base_url + "/secure/campaigns/delete_backlink",
+				type: "POST",
+				data: {
+					"backlink_id": wp_articles_id,
+					"col_index": col
+				},
+				success: function (response) {
+					var c = 0;
+					jQuery('.delete-backlink').each(function()
+					{
+						jQuery(this).attr('data-col',c);
+						c++;
+					});
+					setFlashes(response.flashes.type, response.flashes.message);
+				}
+			});
+		}
 	});
 
 	jQuery(document).on('click', '.deleteBacklink', function (e) {
@@ -1412,6 +1590,52 @@ jQuery(document).ready(function () {
 		}
 	})
 	.change();*/
+
+	jQuery('#keywordanalysis-form').validate({
+		
+		submitHandler: function (form) {
+			console.log(new FormData(form));
+			var $post_form_data = new FormData(form);
+			//console.log(new FormData($(form)));
+			jQuery.ajax({
+				url: base_url + "secure/keywordanalysis/add",
+				data: $(form).serialize(),
+				type: "POST",
+				success: function (response) {
+
+					setFlashes(response.flashes.type, response.flashes.message);
+					if(response.flashes.redirect){
+						window.location = response.flashes.redirect;
+					}
+					
+				}
+			});
+		}
+	});
+	jQuery('#cta_background_type').change(function(){
+		var background_type = jQuery(this).val();
+		if(background_type =='image'){
+
+			jQuery(".background-show-image").show();
+			jQuery(".background-show-video").hide();
+			jQuery(".background-show-color").hide();
+
+		}
+		if(background_type =='video'){
+
+			jQuery(".background-show-image").hide();
+			jQuery(".background-show-video").show();
+			jQuery(".background-show-color").hide();
+
+		}
+		if(background_type =='color'){
+
+			jQuery(".background-show-image").hide();
+			jQuery(".background-show-video").hide();
+			jQuery(".background-show-color").show();
+
+		}
+	});
 });
 
 var showConfirmation = function (el) {
@@ -1675,4 +1899,25 @@ jQuery(document).on('click', "button[name=submitForm]",function (e){
 		}
 	}
 	return true;
+});
+jQuery(document).on('blur', "#publisher_url",function (e){
+	var url = $('#publisher_url').val();
+	jQuery.ajax({
+		url: base_url + "secure/publishers/semrush_api",
+		type: "POST",
+		data: {
+			"url": url
+		},
+		dataType: "json",
+		success: function (response) {
+			$('#publisher_url_domainauthority').val(response['da']);
+			$('#publisher_url_referringdomains').val(response['rd']);
+			$('#publisher_url_domainauthority').attr('readonly',true);
+			$('#publisher_url_referringdomains').attr('readonly',true);
+			if(response['da'] > 0 && response['rd'] > 0)
+				$('#publisher_status').val('Active').trigger('change');
+			else
+				$('#publisher_status').val('Fetching SEO Metrics').trigger('change');
+		}
+	});
 });

@@ -97,6 +97,10 @@
 						<span class="fas fa-tag hw-sidebar-account-list-icon"></span>
 						Meta Tags
 					</a>
+					<a href="<?php echo site_url('secure/cta') ?>" class="list-group-item list-group-item-action hw-sidebar-list-group-item">
+						<span class="fas fa-book hw-sidebar-account-list-icon"></span>
+						CTA Library
+					</a>
 					<a href="<?php echo site_url('secure/emailconfig') ?>" class="list-group-item list-group-item-action hw-sidebar-list-group-item">
 						<span class="fas fa-envelope hw-sidebar-account-list-icon"></span>
 						Mail Send Settings

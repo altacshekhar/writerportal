@@ -13,6 +13,7 @@ jQuery(document).ready(function(){
     jQuery(".primary-keyword-phrase").keydown(); 
     
     jQuery(".paragraph-warning .calc-length-editor").keydown(function(){ 
+        var warn_error_count= jQuery('#warn_error_count').val();
         var currentparagraph 	= jQuery(this);
         var stringFromTextArea = currentparagraph.html();
         paragraph_content = stringFromTextArea.replace(/<br>/gi, ' ');
@@ -27,10 +28,12 @@ jQuery(document).ready(function(){
         var tooltip_title = '';
         if(sentences_length < 3 ){
             tooltip_title += '<small class="d-block">The paragraph is less than 3 sentences long.</small>';
+            warn_error_count++;
             
         }
         if(sentences_length > 6 ){
             tooltip_title += '<small class="d-block">The paragraph is more than 6 sentences long.</small>';
+            warn_error_count++;
            
         }
         var words = [];
@@ -87,6 +90,7 @@ jQuery(document).ready(function(){
        
     });
     jQuery(".paragraph-warning .calc-length-editor").keydown(); 
+    jQuery('#warn_error_count').val(warn_error_count);
 });
 
 function max(input) {

@@ -27,13 +27,11 @@ class Publisher_report_model extends MY_Model
             $table_user = $this->user_model->getTableName();
             $table_user_PK = $this->user_model->getTablePrimaryKey();
             $column_order = array(
-                $table_publisher . '.publisher_createdby',
-                $table_publisher . '.date_added',
-                $table_publisher . '.date_added'
+                'user_name',
+                $table_publisher . '.publisher_id',
             );
             // $column_search_global = array(
-            //     $table_publisher . '.publisher_createdby',
-            //     $table_publisher . '.date_added'
+            //     'user_name'
             // );
             $column_search = array($table_publisher . '.publisher_createdby', $table_publisher . '.date_added',
             $table_publisher . '.date_added');
@@ -65,7 +63,14 @@ class Publisher_report_model extends MY_Model
             //pre_exit($post_array);
             if(isset($post_array['order'])) // here order processing
             {
-                $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                if($post_array['order']['0']['column'] == 1)
+                {
+                    $this->db->order_by('count('.$column_order[$post_array['order']['0']['column']].')',$post_array['order']['0']['dir'],false);
+                }
+                else
+                {
+                    $this->db->order_by($column_order[$post_array['order']['0']['column']], $post_array['order']['0']['dir']);
+                }
             }
             else if(isset($this->order))
             {

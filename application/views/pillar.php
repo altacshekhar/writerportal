@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-<div id="page-title" class="jumbotron-page-title pt-3 ">
+<div id="page-title" class="jumbotron-page-title pt-3">
 	<div class="container">
 		<div class="page-title-title">
 			<h1 class="text-white">

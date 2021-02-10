@@ -22,7 +22,7 @@ class Articlesbrief extends Admin_Controller
 
     public function index()
     {
-		//pre_exit($this->session->userdata());
+		$this->load->model('campaign_model');
 		if (!$this->user_model->loggedin()) {redirect('/', 'refresh');}
 		$user_type = $this->session->userdata('user_type');
 		if($user_type == 5)
@@ -30,8 +30,8 @@ class Articlesbrief extends Admin_Controller
 			redirect('secure/publishers','refresh');
 		}
 		$this->data['subview'] = 'secure/articlebrief/index';
-		
-        $this->load->view('_main_layout', $this->data);
+		$this->data['campaigns'] = $this->campaign_model->get_by([]); 
+		$this->load->view('_main_layout', $this->data);
         
     }
 
@@ -129,7 +129,6 @@ class Articlesbrief extends Admin_Controller
 			$user_type = $user_info['user_type'];
 			if($articlebrief_row->brief_id && ($user_type == 1 || $user_type == 6))
 			{
-				
 				$delbutton = '<a class="dropdown-item"
 					href="' . site_url('/secure/linkbuildingarticle/delete/' . $articlebrief_row->brief_id .'/'.$articlebrief_row->article_id) . '"
 					data-toggle="confirmation"
@@ -497,7 +496,7 @@ class Articlesbrief extends Admin_Controller
 	  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
 		return $regs['domain'];
 	  }
-	  return false;
+	  return '';
 	}
 
 	public function report()
@@ -535,7 +534,7 @@ class Articlesbrief extends Admin_Controller
 			$article_titles = $articlebrief_row->article_title;
 			$view = '<a href="javascript:void(0)" class="view-link-articles" data-input="'.$article_titles.'" data-toggle="tooltip" data-placement="top" title="" data-original-title="Articles"><span class="fa fa-eye"></span></a>';
 			$row[] 	= $articlebrief_row->user_name;
-			$row[] 	= $articlebrief_row->draft + $articlebrief_row->pending + $articlebrief_row->nostatus;
+			$row[] 	= $articlebrief_row->draft + $articlebrief_row->pending;
 			$row[] 	= $articlebrief_row->submitted;
 			$row[] 	= $articlebrief_row->approved;
 			$row[] 	= $articlebrief_row->published;

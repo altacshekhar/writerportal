@@ -90,7 +90,7 @@ class Livelinks extends Admin_Controller
 				}  
             $row[] 	= $published_date;
             $row[] 	= $livelink_row->brief_live_url;
-            $row[] 	= $livelink_row->total_backlink;
+            $row[] 	= count(explode(',',$livelink_row->backlink_anchortext));
 			$row[] 	= $livelink_row->brief_article_cost;
 			$row[] 	= $live_validation_date;
 			$row[] 	= $live_validation_status;

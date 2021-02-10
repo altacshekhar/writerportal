@@ -29,11 +29,11 @@ if($article['language_id']=='en'){
 			<a class="breadcrumb-item" href="<?php echo site_url('/secure/linkbuilding') ?>">Link Building</a>
 			<a class="breadcrumb-item" href="<?php echo site_url('/secure/linkbuildingarticle') ?>">Articles</a>
 			<a class="breadcrumb-item active" href="<?php echo site_url('/secure/articlesbrief')?>">Edit Article</a>
-			
+
 		</nav> -->
 		<?php }?>
 			<div class="form-actions inline-spacing mt-3 mb-2">
-				<?php 
+				<?php
 					$keyword = $article['article_title'];
 					if($article['article_meta_keyword']){
 						$keyword = $article['article_meta_keyword'];
@@ -205,11 +205,11 @@ if($article['language_id']=='en'){
 						<i class="fas fa-trash-alt"></i> Delete
 					</button>';
 				}
-				
+
 				if($article['article_id'] && $article['article_i18_id']){
 				if ($article_status != 'deleted' && $article_status != 'draft' && ($user_type ==1 || $user_type==6)){
 					if($article['article_copyscape']==false && $article_status =='approved' ){?>
-					<button type="submit" name="submitForm" value="publish" class="btn btn-info btn-icon link-building-article-published" disabled>
+					<button type="submit" name="submitForm" value="publish" class="btn btn-info btn-icon link-building-article-published">
 						<i class="fas fa-check "></i>
 						Published
 					</button>
@@ -238,11 +238,11 @@ if($article['language_id']=='en'){
 				<button type="button" data-article="<?php echo $article['article_id'] ?>" data-brief="<?php echo $article['brief_id'] ?>"
 					data-lang="<?php echo $article['language_id'] ?>" data-keyword="<?php echo $keyword ?>" id="link-building-check-score" class="btn btn-secondary btn-icon link-building-check-score" <?php echo ($article['language_id']=='en') ? '' : 'disabled'?>>
 					<span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
-					<i class="fas fa-tachometer-alt"></i> 
+					<i class="fas fa-tachometer-alt"></i>
 					Check Score
 				</button>
 				<?php } ?>
-				
+
 
 			</div>
 			<div class="row">
@@ -264,7 +264,7 @@ if($article['language_id']=='en'){
 												</label>
 											</div>
 											<div class="col-md-4 text-right">
-												
+
 											</div>
 										</div>
 										<div class="input-group">
@@ -358,7 +358,7 @@ if($article['language_id']=='en'){
 												</label>
 											</div>
 											<div class="col-md-4 text-right">
-												
+
 											</div>
 										</div>
 										<div class="input-group">
@@ -394,7 +394,7 @@ if($article['language_id']=='en'){
 												</label>
 											</div>
 											<div class="col-md-4 text-right">
-												
+
 											</div>
 										</div>
 										<div class="input-group">
@@ -442,7 +442,7 @@ if($article['language_id']=='en'){
 											<div class="page-inner-header position-relative mb-2">
 											<div class="delete-paragraph-container">
 												<?php if($section_id && $section_count >= 0){?>
-												
+
 												<a class="deleteParagraph"
 													href="<?php echo site_url('/secure/articlesbrief/delete_paragraph/'.$lang.'/' . $section_id);?>"
 													data-toggle="confirmation" data-icon-type="error"
@@ -493,7 +493,7 @@ if($article['language_id']=='en'){
 														</label>
 													</div>
 													<div class="col-md-4 text-right">
-														
+
 													</div>
 												</div>
 												<div class="row">
@@ -539,7 +539,7 @@ if($article['language_id']=='en'){
 											</div>
 											<!--- Image or Video Section Start  --->
 											<div class="form-group text-right">
-												
+
 											</div>
 											<div class="collapse <?php if($paragraph['section_image'] ||  $paragraph['section_video'] ) echo 'show';?> image-video-collapse-<?php echo $section_count?> image-video-collapse">
 
@@ -825,7 +825,7 @@ if($article['language_id']=='en'){
 															</label>
 														</div>
 														<div class="col-md-4 text-right">
-															
+
 														</div>
 													</div>
 													<div class="input-group">
@@ -877,7 +877,7 @@ if($article['language_id']=='en'){
 											</div>
 											<!---- Callout Start ---->
 											<div class="form-group text-right">
-												
+
 											</div>
 											<!-- innner repeater -->
 											<div
@@ -944,7 +944,7 @@ if($article['language_id']=='en'){
 																	</label>
 																</div>
 																<div class="col-md-4 text-right">
-																	
+
 																</div>
 															</div>
 															<div class="input-group">
@@ -1022,28 +1022,28 @@ if($article['language_id']=='en'){
 											<i class="fas fa-plus"></i>
 											Add Another Paragraph
 										</a>
-										
+
 									</div>
 								</div>
 							</div>
 
 						</div>
 						<!-------------Paragraphs End---------------->
-						
+
 						<!-------------Backlink Start---------------->
 						<!-------------Backlink End---------------->
 					</div>
 				</div>
 				<div class="col-md-4">
 					<!-------------Sidebar Start---------------->
-					<div id="optimizecontent-result-container"> 
+					<div id="optimizecontent-result-container">
 						<?php
 							$this->load->view('secure/link_building_article/lbarticle_widget');
 						?>
 					</div>
 					<!------------- Sidebar End ---------------->
 					<!-------------Widget TF IDF---------------->
-					<div id="link-optimizecontent-result-container"> 
+					<div id="link-optimizecontent-result-container">
 						<?php
 							$this->load->view('component/optimizecontent_lb', $optimizecontent);
 						?>
@@ -1065,7 +1065,7 @@ if($article['language_id']=='en'){
 
 			</div>
 			<div class="col-md-3">
-				
+
 			</div>
 		</div>
 	  </div>
@@ -1078,7 +1078,7 @@ if($article['language_id']=='en'){
 			<div class="row">
 				<div class="col-md-8">
 					<!-------------Article Setting Start---------------->
-				
+
 					<!-------------Article Setting End---------------->
 
 				</div>

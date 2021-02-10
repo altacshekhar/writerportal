@@ -26,12 +26,12 @@
 					<span class="fas fa-upload"></span>
 					</a>
 				</div>
-				<div class="btn-group">
+				<!-- <div class="btn-group">
 					<a class="btn btn-white" href="<?php echo site_url('/secure/publishers/add'); ?>" role="button">
 						<span class="fas fa-user-plus"></span>
 						Add Publisher
 					</a>
-				</div>
+				</div> -->
 			</div>
 			
 		</div>
@@ -57,6 +57,27 @@
 						</div>
 					</div>
 					<div class="col-sm-4 ">
+						<div class="form-group">
+							<label class="control-label" for="publisher_status">Status</label>
+							<?php 
+							$publisher_status = array(
+								'' => '--Select All Status--',
+								'Fetching SEO Metrics' => 'Fetching SEO Metrics',
+								'Not Contacted' => 'Not Contacted',
+								'Waiting for reply' => 'Waiting for Reply',
+								'In Progress' => 'In Progress',
+								'Published' => 'Published',
+								'Not Interested' => 'Not Interested',
+								'Too Expensive' => 'Too Expensive',
+								'Not Relevant' => 'Not Relevant',
+								'Dead Link Alert' => 'Dead Link Alert',
+								'Blacklist' => 'Blacklisted',
+								'Manual Remove' => 'Manual Remove',
+								'Other' => 'Other'
+							);
+							echo form_dropdown("publisher_status", $publisher_status,'' ,'class="form-control select-2" data-column="1"' );
+							?>
+						</div>
 					</div>
 					<div class="col-sm-5">
 						<div class="form-group">
@@ -78,7 +99,7 @@
 				<thead>
 					<tr>
 						<th class="" style="width: 9rem;">Publisher</th>
-						<th class="text-center" style="width: 9rem;">Niche</th>
+						<th class="text-center" style="width: 9rem;">WEbsites</th>
 						<th class="text-center" style="width: 9rem;">Type</th>
 						<th style="width: 9.5rem;" class="text-center">Traffic</th>
 						<th style="width: 9.5rem;" class="text-center">DA</th>

@@ -24,6 +24,7 @@ class Pressrelease extends Frontend_Controller
         $this->load->model('channelui_model');
         $this->load->model('website_model');
         $this->load->model('metatag_model');
+        $this->load->model('contentarticlesbrief_model');
     }
 
     public function index($id = null, $lang = 'en')
@@ -237,7 +238,7 @@ class Pressrelease extends Frontend_Controller
                 'publish_date',
                 'article_toc_ordered',
                 'article_product_cta',
-                'article_content_cta',
+                'article_leadcapture_cta',
                 'meta_product_unique_key',
                 'article_skyscraper',
                 ), $lang);
@@ -326,6 +327,7 @@ class Pressrelease extends Frontend_Controller
             }
            
             $data_i18['article_meta_abstract'] = $this->input->post("article[$lang][article_description]");
+            $data_i18['article_content_cta']='signup';
             if($id){
                 $data_i18['meta_product_unique_key'] = $article['meta_product_unique_key'];
                 $data_i18['article_meta_author_url'] = $article['article_meta_author_url'];
@@ -348,7 +350,7 @@ class Pressrelease extends Frontend_Controller
                 $data_i18['article_meta_product_price'] = $article['article_meta_product_price'];
                 $data_i18['article_meta_product_ratingvalue'] = $article['article_meta_product_ratingvalue'];
                 $data_i18['article_product_cta'] = $article['article_product_cta'];
-                $data_i18['article_content_cta'] = $article['article_content_cta'];
+                $data_i18['article_leadcapture_cta'] = $article['article_leadcapture_cta'];
                 //$data_i18['article_icon'] = $article['article_icon'];
 
             }
@@ -413,9 +415,9 @@ class Pressrelease extends Frontend_Controller
                   {
                     $data_i18['article_product_cta'] = $metaDetail['product_cta'];    
                   }
-                  if(array_key_exists("content_cta",$metaDetail))
+                  if(array_key_exists("leadcapture_cta",$metaDetail))
                   {
-                    $data_i18['article_content_cta'] = $metaDetail['content_cta'];   
+                    $data_i18['article_leadcapture_cta'] = $metaDetail['leadcapture_cta'];   
                   }
 
             }
@@ -448,7 +450,7 @@ class Pressrelease extends Frontend_Controller
                         $data_paragraph = array();
                         //$unset_array = array('section_title', 'section_meta_video_name', 'section_meta_video_description', 'section_text','section_image_alt');
                         $data_paragraph_i18 = $paragraph;
-						//$data_paragraph_i18['section_heading_type']            = $paragraph['section_heading_type'];
+						$data_paragraph_i18['section_heading_type']            = $paragraph['section_heading_type'];
 						$data_paragraph_i18['section_title']            = $paragraph['section_title'];
 						$data_paragraph_i18['section_meta_video_name']  = $paragraph['section_meta_video_name'];
 						$data_paragraph_i18['section_meta_video_description'] = $paragraph['section_meta_video_description'];
@@ -716,6 +718,8 @@ class Pressrelease extends Frontend_Controller
         $this->data['meta_tags'] = (array) $this->article_model->get_meta_tags($lang);
         $this->data['languages'] = $this->article_model->get_languages();
         $this->data['optimizecontent'] = $this->get_optimizecontent_keyword_list($id, $lang, $keyword);
+        $this->data['articlesbrief'] = (array) $this->contentarticlesbrief_model->get($article['article_brief_id']);
+        $this->data['writers'] = $this->contentarticlesbrief_model->get_user_list();
         //$this->data['script_to_load'] = array(site_url('assets/js/seophrase.js'));
 		$this->load->view('_main_layout', $this->data);
     }

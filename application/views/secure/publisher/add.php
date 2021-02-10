@@ -22,6 +22,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							<?php
 								$data_publisher_url = array(
 									'name' => 'publisher_url',
+									'id' => 'publisher_url',
 									'value' => set_value('publisher_url', $publisher['publisher_url']),
 									'placeholder' => 'Url',
 									'class' => 'form-control'
@@ -36,8 +37,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						<div class="col-sm-2">
 								<?php
 									$publisher_status = array(
+										'Fetching SEO Metrics' => 'Fetching SEO Metrics',
 										'Not Contacted' => 'Not Contacted',
-										'Waiting for Reply' => 'Waiting for Reply',
+										'Waiting for reply' => 'Waiting for Reply',
 										'In Progress' => 'In Progress',
 										'Published' => 'Published',
 										'Not Interested' => 'Not Interested',
@@ -95,7 +97,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 					</div>
 					<div class="form-group row">
 						<label class="col-md-2 col-sm-6 h6 col-form-label" for="meta_product_language_id">
-							Email<span class="text-danger">*</span>
+							Email <!--<span class="text-danger">*</span>-->
 						</label>
 						<div class="col-sm-2">
 							<?php
@@ -110,14 +112,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							?> 
 						</div>
 						<label class="col-md-2 col-sm-6 h6 col-form-label" for="meta_product_language_id">
-							Contact Form 
+							Contact Form Url
 						</label>
 						<div class="col-sm-2">
 							<?php
 								$data_publisher_phone = array(
 									'name' => 'publisher_phone',
 									'value' => set_value('publisher_phone', $publisher['publisher_phone']),
-									'placeholder' => 'Contact Form',
+									'placeholder' => 'Contact Form Url',
 									'class' => 'form-control',
 									'type' => 'text'
 								);
@@ -147,7 +149,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-md-2 col-sm-6 h6 col-form-label" for="meta_product_language_id">
+						<!-- <label class="col-md-2 col-sm-6 h6 col-form-label" for="meta_product_language_id">
 							Niche<span class="text-danger">*</span>
 						</label>
 						<div class="col-md-4  col-sm-6">
@@ -173,6 +175,31 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 								?>
 							
+						</div> -->
+						<label class="col-md-2 col-sm-6 h6 col-form-label" for="campaign_websites">
+						Website<span class="text-danger">*</span>
+						</label>
+						<div class="col-md-3 col-sm-6">
+						<?php
+								$publisher_websites = array();
+								foreach ($websites as $website) {
+									if(array_key_exists('site_id', $website)){
+										$publisher_websites[strtolower($website['site_id'])] = ucwords($website['site_id']);
+									}
+								}
+									
+									if($publisher['publisher_websites']){
+										$selected_publisher_websites = explode(",",$publisher['publisher_websites']);
+										$selected_publisher_websites = array_map('ltrim',$selected_publisher_websites);
+									}else{
+										$selected_publisher_websites = '';	
+									}
+									//pre($publisher['publisher_websites']);
+									//pre($selected_publisher_websites);
+									$js = 'id="publisher_websites" multiple="multiple" class="select-2 form-control-sm" required="required" data-msg-required="Please select websites"';
+									echo form_dropdown("publisher_websites[]", $publisher_websites, $selected_publisher_websites, $js);
+									echo form_error("publisher_websites[]");
+								?>
 						</div>
 						<label class="col-md-auto col-sm-6 h6 col-form-label" for="meta_product_language_id">
 							Type<span class="text-danger">*</span>
@@ -212,7 +239,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 									'value' => set_value('publisher_url_traffic', $publisher['publisher_url_traffic']),
 									'placeholder' => 'Traffic',
 									'class' => 'form-control',
-									'type' => 'number'
+									'type' => 'number',
+									'readonly' => 'readonly'
 								);
 								echo form_input($data_publisher_url_traffic);
 								echo form_error('publisher_url_traffic');
@@ -225,9 +253,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							<?php
 								$data_publisher_url_domainauthority = array(
 									'name' => 'publisher_url_domainauthority',
+									'id' => 'publisher_url_domainauthority',
 									'value' => set_value('publisher_url_domainauthority', $publisher['publisher_url_domainauthority']),
 									'placeholder' => 'DA',
-									'class' => 'form-control'
+									'class' => 'form-control',
+									'readonly' => 'readonly'
 								);
 								echo form_input($data_publisher_url_domainauthority);
 								echo form_error('publisher_url_domainauthority');
@@ -240,9 +270,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							<?php
 								$data_publisher_url_referringdomains = array(
 									'name' => 'publisher_url_referringdomains',
+									'id' => 'publisher_url_referringdomains',
 									'value' => set_value('publisher_url_referringdomains', $publisher['publisher_url_referringdomains']),
 									'placeholder' => 'RD',
-									'class' => 'form-control'
+									'class' => 'form-control',
+									'readonly' => 'readonly'
 								);
 								echo form_input($data_publisher_url_referringdomains);
 								echo form_error('publisher_url_referringdomains');

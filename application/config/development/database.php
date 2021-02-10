@@ -139,11 +139,11 @@ $db['default'] = array(
 );*/
 
 $db['default'] = array(
-	'dsn'	=> 'pgsql:host=localhost;port=5433;dbname=hub_writer_portal_12Nov2020',
+	'dsn'	=> 'pgsql:host=localhost;port=5432;dbname=hub_writer_portal_seo',
 	'hostname' => 'localhost',
 	'username' => 'postgres',
-	'password' => 'root',
-	'database' => 'hub_writer_portal_12Nov2020',
+	'password' => 'postgres',
+	'database' => 'hub_writer_portal_seo',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

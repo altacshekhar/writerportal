@@ -74,12 +74,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	include_once 'copyscape_result_modal.php';
 	include_once 'article_master_modal.php';
 	include_once 'article_contributor_writer_modal.php';
+	include_once 'article_keyword_modal.php';
+	include_once 'article_brief_modal.php';
+	include_once 'brief_article_modal.php';
 	include_once 'seophrase_modal.php';
 	include_once 'upload_publishers_modal.php';
 	include_once 'publishers_report_modal_list.php';
 	include_once 'campaigns_report_modal.php';
 	include_once 'articlebrief_report_modal.php';
 	include_once 'livelinks_report_modal.php';
+	include_once 'cta_preview_modal.php';
+	include_once 'seo_rules_modal.php';
+	include_once 'brief_seo_rules_modal.php'
 	?>
 <a href="#site-header-wrapper" class="scroll-top-wrapper text-white show go-to">
 	<span class="scroll-top-inner">
@@ -97,10 +103,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <script src="<?php echo site_url('assets/js/app.js?t='.time()); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/js/article_master.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/js/article_contributor.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo site_url('assets/js/primary_keyword_phrase.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo site_url('assets/js/article_keyword.js'); ?>" type="text/javascript"></script>
+<script src="<?php //echo site_url('assets/js/seo_rules.js'); ?>" type="text/javascript"></script>
+<script src="<?php //echo site_url('assets/js/brief_seo_rules.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/vendor/atd-jquery/scripts/jquery.atd.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/vendor/atd-jquery/scripts/csshttprequest.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/vendor/fontawesome-iconpicker/dist/js/fontawesome-iconpicker.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo site_url('assets/vendor/youtube-background/jquery.youtube-background.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript">
+  jQuery(document).ready(function() {
+    jQuery('[data-youtube]').youtube_background();
+  });
+</script> 
 
 
 <?php if ($is_user_logged_in){?>

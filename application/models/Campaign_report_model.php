@@ -29,13 +29,13 @@ class Campaign_report_model extends MY_Model
         $table_user_PK = $this->user_model->getTablePrimaryKey();
         $table_link_briefs = $this->articlebrief_model->getTableName();
         $table_link_briefs_PK = $this->articlebrief_model->getTablePrimaryKey();
-        // $column_order = array(
-        //     $table_campaign . '.campaign_content_coordinator'
-        // );
-        $column_order = array('user_name');
+        $column_order = array(
+            'user_name',
+            'article_count',
+            'campaign_count'
+        );
         // $column_search_global = array(
-        //     $table_publisher . '.publisher_createdby',
-        //     $table_publisher . '.date_added'
+        //     'user_name'
         // );
         $column_search = array(
             $table_campaign . '.campaign_content_coordinator',

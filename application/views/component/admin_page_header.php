@@ -19,7 +19,7 @@
 	<link rel="shortcut icon" href="<?php echo site_url($menu['NavBrand']['favIcon']); ?>" type="image/x-icon" />
 	<link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i" rel="stylesheet" />
 	<!-- font-awesome style -->
-	<link href="<?php //echo site_url('assets/vendor/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet" crossorigin="anonymous"/>
+	<!-- <link href="<?php echo site_url('assets/vendor/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet" crossorigin="anonymous"/> -->
 	<link href="<?php echo site_url('assets/vendor/fontawesome-web/css/all.css'); ?>" rel="stylesheet" />
 	<!-- select2 style -->
 	<link href="<?php echo site_url('assets/vendor/select-2/css/select2.css'); ?>" rel="stylesheet" />
@@ -29,7 +29,6 @@
 	<link href="<?php echo site_url('assets/vendor/trumbowyg/ui/trumbowyg.min.css'); ?>" rel="stylesheet" />
 	<link href="<?php echo site_url('assets/vendor/trumbowyg/plugins/colors/ui/trumbowyg.colors.css'); ?>" rel="stylesheet" />
 	<link href="<?php echo site_url('assets/vendor/trumbowyg/plugins/table/ui/trumbowyg.table.min.css'); ?>" rel="stylesheet" />
-
 	<!-- jQuery UI style -->
 	<link href="<?php echo site_url('assets/vendor/jquery-ui/jquery-ui.min.css'); ?>" rel="stylesheet" />
 	<!-- Bootstrap -->
@@ -42,9 +41,7 @@
 	<!-- Custom Css -->
 	<link href="<?php echo site_url('assets/css/style.css'); ?>" rel="stylesheet" rel="stylesheet" />
 	<link href="<?php echo site_url('assets/vendor/atd-jquery/css/atd.css'); ?>" rel="stylesheet" rel="stylesheet" />
-	<script type="text/javascript">
-		var base_url = '<?php echo site_url(); ?>';
-	</script>
+	<script type="text/javascript"> var base_url = '<?php echo site_url(); ?>'; </script>
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -59,11 +56,10 @@
 			<!-- <nav class="navbar navbar-expand-md sticky-top navbar-dark"> -->
 			<nav id="navbar-sticky" class="navbar navbar-dark navbar-expand-md header-fullscreen sticky-header navbar-static-top">
 				<div class="container">
-					<button type="button" class="btn btn-link text-white right-sidebar-toggler" ><i class="fas fa-bars fa-lg"></i></button>
-				
-					
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#hubNavbarCollapse" aria-controls="navbarCollapse"
-					 aria-expanded="false" aria-label="Toggle navigation">
+					<a class="navbar-brand right-sidebar-toggler" href="javascript:void(0)">
+						<span class="navbar-toggler-icon"></span>
+					</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#hubNavbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="hubNavbarCollapse">
@@ -78,28 +74,40 @@
 								<a class="nav-link" href="<?php echo site_url('/secure/content') ?>">Content </a>
 							</li>
 						<?php } ?>
-						<?php  if($user_type && $user_type != 5 && $user_type != 6){ ?>
+						<?php /* if($user_type && $user_type != 5 && $user_type != 6){ ?>
 							<li class="nav-item <?php if($this->uri->segment(2)=="coach"  || $this->uri->segment(2)=="seocoach"){echo "active";}?>">
-								<!--<a class="nav-link" href="#<?php //echo site_url('/secure/coach') ?>">Coach</a>-->
+								<a class="nav-link" href="#<?php //echo site_url('/secure/coach') ?>">Coach</a>
 							</li>
-						<?php } ?>
+						<?php } */?>
 						<?php if($user_type >= 0){ ?>
 							<li class="nav-item <?php if($this->uri->segment(2)=="linkbuilding" || $this->uri->segment(2)=="publishers" || $this->uri->segment(2)=="campaigns" || $this->uri->segment(2)=="articlesbrief" || $this->uri->segment(2)=="livelinks" || $this->uri->segment(2)=="linkbuildingarticle"){echo "active";}?>">
 								<a class="nav-link" href="<?php echo site_url('/secure/linkbuilding') ?>">Link Building </a>
 							</li>
 						<?php } ?>
-							
+
 						</ul>
 					</div>
 				</div>
 			</nav>
 		</div>
 		<div class="bottom-bar">
-			<nav class="navbar navbar-expand-sm pt-0 pb-0">
+			<nav class="navbar navbar-expand-lg navbar-light bg-white pt-0 pb-0 shadow-sm">
 				<div class="container">
 					<div class="collapse navbar-collapse">
 						<ul class="navbar-nav">
-						<?php if($this->uri->segment(2)=="linkbuilding" || $this->uri->segment(2)=="publishers" || $this->uri->segment(2)=="campaigns" || $this->uri->segment(2)=="articlesbrief" || $this->uri->segment(2)=="livelinks"){ ?>
+						<?php if($this->uri->segment(2)=="articleslist" || $this->uri->segment(2)=="keyword" || $this->uri->segment(2)=="keywordanalysis" || $this->uri->segment(2)=="contentarticlesbrief"){ ?>
+							<?php if($user_type == 1 || $user_type == 3){ ?>
+							<li class="nav-item <?php if($this->uri->segment(2)=="keyword" || $this->uri->segment(2)=="keywordanalysis" || $this->uri->segment(2)=="contentarticlesbrief"){echo "active";}?>">
+								<a class="nav-link" href="<?php echo site_url('/secure/keyword') ?>">Keywords </a>
+							</li>
+							<?php } ?>
+							<?php if($user_type && ($user_type != 5 || $user_type != 6)){ ?>
+							<li class="nav-item <?php if($this->uri->segment(2)=="articleslist"){echo "active";}?>">
+								<a class="nav-link" href="<?php echo site_url('/secure/articleslist') ?>">Articles </a>
+							</li>
+							<?php } ?>
+						<?php } ?>
+							<?php if($this->uri->segment(2)=="linkbuilding" || $this->uri->segment(2)=="publishers" || $this->uri->segment(2)=="campaigns" || $this->uri->segment(2)=="articlesbrief" || $this->uri->segment(2)=="livelinks"){ ?>
 							<?php if($user_type == 1 || $user_type == 5 || $user_type == 6){ ?>
 							<li class="nav-item <?php if($this->uri->segment(2)=="publishers"){echo "active";}?>">
 								<a class="nav-link" href="<?php echo site_url('/secure/publishers') ?>">Publishers </a>
@@ -127,4 +135,5 @@
 			</nav>
 		</div>
 	</header>
+
 	<?php $this->load->view('component/admin_sidebar'); ?>

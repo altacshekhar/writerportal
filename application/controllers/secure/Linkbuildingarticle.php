@@ -209,7 +209,7 @@ class Linkbuildingarticle extends Admin_Controller
 		$image_upload_dir = $this->config->item('image_upload_dir');
         $path = FCPATH . $image_upload_dir;
         $paragraphs = array();
-           
+        //pre_exit($_POST);
         if ($id && $this->input->post("article[$lang][article_title]") == false) {
             $article    = $this->linkbuilding_article_model->getArticle($id, $lang, $brief_id);
             $language_array    = $this->linkbuilding_article_model->getArticleLanguages($id, $brief_id);
@@ -325,10 +325,22 @@ class Linkbuildingarticle extends Admin_Controller
                 $data_i18['article_skyscraper'] = 'false';
             }
 			$data_i18['article_status'] = 'submitted';
-			if($this->input->post('form_action') == 'savedraft'){
+			// if($this->input->post('form_action') == 'savedraft'){
+            //     $data_i18['article_status'] = 'draft';
+            // }elseif( $article['article_status'] == 'published' || $article['article_status'] == 'pending'){
+            //     $data_i18['article_status'] = 'pending';
+            // }
+            if($this->input->post('form_action') == 'savedraft'){
                 $data_i18['article_status'] = 'draft';
-            }elseif( $article['article_status'] == 'published' || $article['article_status'] == 'pending'){
-                $data_i18['article_status'] = 'pending';
+            }
+            elseif($this->input->post('form_action') == 'publish'){
+                $data_i18['article_status'] = 'published';
+            }
+            elseif($this->input->post('form_action') == 'submit'){
+                $data_i18['article_status'] = 'submitted';
+            }
+            elseif($this->input->post('form_action') == 'approve'){
+                $data_i18['article_status'] = 'approved';
             }
             $data['brief_id'] = $brief_id;
             if($article['brief_id']){
@@ -863,8 +875,8 @@ class Linkbuildingarticle extends Admin_Controller
 			$no_of_search_count = 20;
 			$content = strip_tags($content);
 			/* API URL */
-			//$url = 'https://wplseotools.hubworks.com/keywordphrase';
-			$url = 'https://whookqa.hubworks.com/keywordphrase';
+			$url = 'https://wplseotools.hubworks.com/keywordphrase';
+			//$url = 'https://whookqa.hubworks.com/keywordphrase';
 			/* Init cURL resource */
 			$ch = curl_init();
 			curl_setopt($ch,CURLOPT_URL,$url);
@@ -893,7 +905,8 @@ class Linkbuildingarticle extends Admin_Controller
 			));
 				
 			/* execute request */
-			$output = curl_exec($ch);
+            $output = curl_exec($ch);
+            //pre($output);
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 				//echo $httpCode;
 			$log_message .= 'Curl httpCode : = ' . $httpCode . PHP_EOL;
