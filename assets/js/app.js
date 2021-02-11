@@ -318,6 +318,11 @@ function croppieCreate(post_image_data) {
 }
 
 jQuery(document).ready(function () {
+	$(window).on('shown.bs.modal', function () {
+		jQuery(this).find(".select-2").each(function () {
+			initializeSelect2(jQuery(this));
+		});
+	});
 	jQuery(document).on('click', '#article-form button[type="submit"]', function (event) {
 		var inputval = $(this).val();
 		//alert(inputval);
@@ -1389,7 +1394,9 @@ jQuery(document).ready(function () {
 			}
 		});
 	});
-	$("#article-form").validate().form();
+	if ($("#article-form").length) {
+		$("#article-form").validate().form();
+	}
 
 	var $language_modal = jQuery('#language-modal');
 

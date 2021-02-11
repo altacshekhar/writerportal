@@ -55,13 +55,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	if ($is_user_logged_in && $user_type && $user_type!=4 ) {
 		if(isset($article['article_id'])){
 			include_once 'article_publish_modal.php';
-			
+
 		}
 	}
 	if ($is_user_logged_in) {
 		include_once 'thank_you_writer_modal.php';
 		include_once 'admin_sidebar.php';
-		
+
 	} else {
 		include_once 'login_modal.php';
 		include_once 'signup_modal.php';
@@ -110,12 +110,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <script src="<?php echo site_url('assets/vendor/atd-jquery/scripts/csshttprequest.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/vendor/fontawesome-iconpicker/dist/js/fontawesome-iconpicker.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo site_url('assets/vendor/youtube-background/jquery.youtube-background.js'); ?>" type="text/javascript"></script>
-<script type="text/javascript">
-  jQuery(document).ready(function() {
-    jQuery('[data-youtube]').youtube_background();
-  });
-</script> 
-
 
 <?php if ($is_user_logged_in){?>
 <script src="<?php echo site_url('assets/js/s_app.js?t='.time()); ?>" type="text/javascript"></script>
@@ -158,10 +152,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	if(isset($script_to_load) && is_array($script_to_load)){
 		if($article['language_id'] == '' ){
 		foreach ($script_to_load as $script) {
-			echo '<script src="'. $script .'" type="text/javascript"></script>';	
+			echo '<script src="'. $script .'" type="text/javascript"></script>';
 		}
 	  }
-	} 
+	}
 ?>
 </body>
 </html>

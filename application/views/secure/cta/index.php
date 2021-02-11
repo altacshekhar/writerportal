@@ -45,7 +45,7 @@
 						</div>
 					</div>
 					<div class="col-sm-3">
-					</div>	
+					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
 							<label class="control-label" for="datatableCtaSearch">.</label>

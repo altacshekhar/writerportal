@@ -833,15 +833,15 @@ if($article['language_id']=='en'){
 														<div class="form-group col-md-6 mb-2">
 															<label class="h6">Meta Video Seconds</label>
 															<?php
-																			$section_meta_video_seconds = isset($paragraph['section_meta_video_seconds']) ? $paragraph['section_meta_video_seconds'] : '';
-																			$data_section_meta_video_seconds = array(
-																				'name' => 'section_meta_video_seconds',
-																				'value' => set_value('section_meta_video_seconds', $section_meta_video_seconds, $html_escape=FALSE),
-																				'placeholder' => 'Please enter a meta video seconds of the Video',
-																													'class' => 'form-control article_meta_video_seconds'
-																			);
-																			echo form_input($data_section_meta_video_seconds);
-																			echo form_error('section_meta_video_seconds');
+																	$section_meta_video_seconds = isset($paragraph['section_meta_video_seconds']) ? $paragraph['section_meta_video_seconds'] : '';
+																	$data_section_meta_video_seconds = array(
+																		'name' => 'section_meta_video_seconds',
+																		'value' => set_value('section_meta_video_seconds', $section_meta_video_seconds, $html_escape=FALSE),
+																		'placeholder' => 'Please enter a meta video seconds of the Video',
+																											'class' => 'form-control article_meta_video_seconds'
+																	);
+																	echo form_input($data_section_meta_video_seconds);
+																	echo form_error('section_meta_video_seconds');
 																			?>
 														</div>
 														<div class="form-group col-md-6 mb-2">

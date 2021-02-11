@@ -1,12 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-<div id="page-title" class="jumbotron-page-title pt-3">
-	<div class="container">
-		<div class="page-title-title">
-
-		</div>
-	</div>
-</div>
-<?php
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 $brief_id = array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id'] : 0;
 //pre($articlebrief_cta);
 ?>
@@ -64,9 +56,9 @@ if(isset($articlesbrief['brief_status'])){
 			<hr>
 			<div class="row">
 				<div class="col-md-7">
-					<div class="form-group row pt-3">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Article Headline
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Article Headline
 							</label>
 						</div>
 						<div class="col-md-8 col-sm-6">
@@ -101,9 +93,10 @@ if(isset($articlesbrief['brief_status'])){
 							<small id="emailHelp" class="form-text text-muted"><?php echo form_error("brief_headline");?></small>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Article Introduction
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">
+								Article Introduction
 							</label>
 						</div>
 						<div class="col-md-8 col-sm-6">
@@ -134,9 +127,9 @@ if(isset($articlesbrief['brief_status'])){
 							<small class="form-text text-muted"> Enter Max to 200 characters in Article Introduction</small>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -176,14 +169,14 @@ if(isset($articlesbrief['brief_status'])){
 						<div class="col-md-2 col-sm-2">
 							<?php
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_1, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_1, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -224,14 +217,14 @@ if(isset($articlesbrief['brief_status'])){
 							<?php
 								//$headings = ['H1' => 'H1','H2' => 'H2','H3' => 'H3','H4' => 'H4','H5' => 'H5','H6' => 'H6'];
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_2, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_2, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Call To Action</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Call To Action</label>
 						</div>
 						<div class="col-md-8 col-sm-6">
 							<div class="cta-preview-1">
@@ -255,25 +248,30 @@ if(isset($articlesbrief['brief_status'])){
 								,'cta_background_color' => $articlebrief_cta[0]->brief_cta_background_color,'cta_background_video'=>$articlebrief_cta[0]->brief_cta_background_video,
 								'cta_form_id' => $articlebrief_cta[0]->brief_cta_form_id,'cta_seq_no' => 1];
 								//pre($brief_cta_data);
-								$this->load->view('secure/contentarticlebrief/cta_preview',$brief_cta_data);
+								$this->load->view('component/cta_preview',$brief_cta_data);
 								$brief_cta_data = ['cta_data' => $brief_cta_data];
 								$this->load->view('secure/contentarticlebrief/add-cta-form',$brief_cta_data);
 							}
 							else
 							{?>
-							<div class="input-group bg-dark show-brief-cta" style="cursor:pointer" data-cta="1" data-brief-id="<?php echo array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id']: '0'; ?>">
-								<div class="text-white mx-auto my-1"><img src="<?php echo base_url(); ?>assets/images/add.svg" style="height:30px"> Click to add CTA</div>
-								<?php
-								$data_cta_id_0 = array(
-									'name' => "cta_id[0]",
-									'value' => set_value("cta_id[0]", ''),
-									'required' => 'required',
-									'data-msg-required'=>"Please select the CTA",
-									'type' => 'hidden',
-									'class' => 'do-not-ignore'
-								);
-								echo form_input($data_cta_id_0);
-								?>
+							<div class="input-group">
+								<div class="card m-0 bg-light show-brief-cta w-100" style="cursor:pointer" data-cta="1" data-brief-id="<?php echo array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id']: '0'; ?>">
+									<div class="p-1 text-white text-center">
+										<i class="fas fa-plus mr-1"></i>
+										Click to add CTA
+									</div>
+									<?php
+									$data_cta_id_0 = array(
+										'name' => "cta_id[0]",
+										'value' => set_value("cta_id[0]", ''),
+										'required' => 'required',
+										'data-msg-required'=>"Please select the CTA",
+										'type' => 'hidden',
+										'class' => 'do-not-ignore'
+									);
+									echo form_input($data_cta_id_0);
+									?>
+								</div>
 							</div>
 							<?php
 							}
@@ -284,9 +282,9 @@ if(isset($articlesbrief['brief_status'])){
 							?>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -326,14 +324,14 @@ if(isset($articlesbrief['brief_status'])){
 						<div class="col-md-2 col-sm-2">
 							<?php
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_3, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_3, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -373,14 +371,14 @@ if(isset($articlesbrief['brief_status'])){
 						<div class="col-md-2 col-sm-2">
 							<?php
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_4, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_4, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -420,14 +418,14 @@ if(isset($articlesbrief['brief_status'])){
 						<div class="col-md-2 col-sm-2">
 							<?php
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_5, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_5, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Call To Action</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Call To Action</label>
 						</div>
 						<div class="col-md-8 col-sm-6">
 							<div class="cta-preview-2">
@@ -449,25 +447,30 @@ if(isset($articlesbrief['brief_status'])){
 								,'cta_background' => $articlebrief_cta[1]->brief_cta_background,'cta_background_image' => $articlebrief_cta[1]->brief_cta_background_image
 								,'cta_background_color' => $articlebrief_cta[1]->brief_cta_background_color,'cta_background_video'=>$articlebrief_cta[1]->brief_cta_background_video,
 								'cta_form_id' => $articlebrief_cta[1]->brief_cta_form_id,'cta_seq_no' => 2];
-								$this->load->view('secure/contentarticlebrief/cta_preview',$brief_cta_data);
+								$this->load->view('component/cta_preview',$brief_cta_data);
 								$brief_cta_data = ['cta_data' => $brief_cta_data];
 								$this->load->view('secure/contentarticlebrief/add-cta-form',$brief_cta_data);
 							}
 							else
 							{?>
-							<div class="input-group bg-dark show-brief-cta" style="cursor:pointer" data-cta="2" data-brief-id="<?php echo array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id']: '0'; ?>">
-								<div class="text-white mx-auto my-1"><img src="<?php echo base_url(); ?>assets/images/add.svg" style="height:30px"> Click to add CTA</div>
-								<?php
-								$data_cta_id_1 = array(
-									'name' => "cta_id[1]",
-									'value' => set_value("cta_id[1]", ''),
-									'required' => 'required',
-									'data-msg-required'=>"Please select the CTA",
-									'type' => 'hidden',
-									'class' => 'do-not-ignore'
-								);
-								echo form_input($data_cta_id_1);
-								?>
+							<div class="input-group" >
+								<div class="card m-0 bg-light show-brief-cta w-100"style="cursor:pointer" data-cta="2" data-brief-id="<?php echo array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id']: '0'; ?>">
+									<div class="p-1 text-white text-center">
+										<i class="fas fa-plus mr-1"></i>
+										Click to add CTA
+									</div>
+									<?php
+									$data_cta_id_1 = array(
+										'name' => "cta_id[1]",
+										'value' => set_value("cta_id[1]", ''),
+										'required' => 'required',
+										'data-msg-required'=>"Please select the CTA",
+										'type' => 'hidden',
+										'class' => 'do-not-ignore'
+									);
+									echo form_input($data_cta_id_1);
+									?>
+								</div>
 							</div>
 							<?php
 							}
@@ -475,9 +478,9 @@ if(isset($articlesbrief['brief_status'])){
 							</div>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -517,14 +520,14 @@ if(isset($articlesbrief['brief_status'])){
 						<div class="col-md-2 col-sm-2">
 							<?php
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_6, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_6, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
 					</div>
-					<div class="form-group add-form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Paragraph Title</label>
+					<div class="row form-row form-group add-form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Paragraph Title</label>
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="input-group">
@@ -566,7 +569,7 @@ if(isset($articlesbrief['brief_status'])){
 						<div class="col-md-2 col-sm-2">
 							<?php
 								$headings = ['h2' => 'H2','h3' => 'H3'];
-								echo form_dropdown("headings[]", $headings, $para_heading_7, 'class="form-control" data-msg-required="Please select "' );
+								echo form_dropdown("headings[]", $headings, $para_heading_7, 'class="custom-select" data-msg-required="Please select "' );
 								echo form_error("headings[]");
 							?>
 						</div>
@@ -592,9 +595,9 @@ if(isset($articlesbrief['brief_status'])){
 								$para_title = $paragraphs->paragraph_title;
 								$para_heading = $paragraphs->heading;
 								?>
-								<div class="form-group add-form-group row">
-								<div class="col-md-4 col-sm-6 h6 col-form-label">
-									<label class="h6" for="article_title">Paragraph Title</label>
+								<div class="row form-row form-group add-form-group">
+								<div class="col-md-4 col-sm-6">
+									<label class="col-form-label" for="article_title">Paragraph Title</label>
 								</div>
 								<div class="col-md-6 col-sm-6">
 									<div class="input-group">
@@ -622,7 +625,7 @@ if(isset($articlesbrief['brief_status'])){
 								<div class="col-md-2 col-sm-2">
 								<?php
 									$headings = ['h2' => 'H2','h3' => 'H3'];
-									echo form_dropdown("headings[]", $headings, $para_heading, 'class="form-control" data-msg-required="Please select "' );
+									echo form_dropdown("headings[]", $headings, $para_heading, 'class="custom-select" data-msg-required="Please select "' );
 									echo form_error("headings[]");
 								?>
 								</div>
@@ -631,17 +634,17 @@ if(isset($articlesbrief['brief_status'])){
 						}
 						?>
 
-					<div class="form-group overflow-hidden row">
-						<div class="col-md-12 text-center">
-						<a class="add-more-link-muted add-another-paragraph" href="javascript:;" data-repeater-create="">
-							<i class="fas fa-plus"></i>
-							Add Another Paragraph
-						</a>
+					<div class="row form-row form-group mb-3">
+						<div class="col-md-6 offset-4">
+							<a class="add-more-link-muted add-another-paragraph" href="javascript:;" data-repeater-create="">
+								<i class="fas fa-plus"></i>
+								Add Another Paragraph
+							</a>
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-md-4 col-sm-6 h6 col-form-label">
-							<label class="h6" for="article_title">Call To Action</label>
+					<div class="row form-row form-group">
+						<div class="col-md-4 col-sm-6">
+							<label class="col-form-label" for="article_title">Call To Action</label>
 						</div>
 						<div class="col-md-8 col-sm-6">
 							<div class="cta-preview-3">
@@ -664,24 +667,29 @@ if(isset($articlesbrief['brief_status'])){
 								,'cta_background' => $articlebrief_cta[2]->brief_cta_background,'cta_background_image' => $articlebrief_cta[2]->brief_cta_background_image
 								,'cta_background_color' => $articlebrief_cta[2]->brief_cta_background_color,'cta_background_video'=>$articlebrief_cta[2]->brief_cta_background_video,
 								'cta_form_id' => $articlebrief_cta[2]->brief_cta_form_id,'cta_seq_no' => 3];
-								$this->load->view('secure/contentarticlebrief/cta_preview',$brief_cta_data);
+								$this->load->view('component/cta_preview',$brief_cta_data);
 								$brief_cta_data = ['cta_data' => $brief_cta_data];
 								$this->load->view('secure/contentarticlebrief/add-cta-form',$brief_cta_data);
 							}
 							else
 							{?>
-							<div class="input-group bg-dark show-brief-cta" style="cursor:pointer" data-cta="3" data-brief-id="<?php echo array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id']: '0'; ?>">
-								<div class="text-white mx-auto my-1"><img src="<?php echo base_url(); ?>assets/images/add.svg" style="height:30px"> Click to add CTA</div>
-								<?php
-								$data_cta_id_2 = array(
-									'name' => "cta_id[2]",
-									'required' => 'required',
-									'data-msg-required'=>"Please select the CTA",
-									'type' => 'hidden',
-									'class' => 'do-not-ignore'
-								);
-								echo form_input($data_cta_id_2);
-								?>
+							<div class="input-group">
+								<div class="card m-0 bg-light show-brief-cta w-100" style="cursor:pointer" data-cta="3" data-brief-id="<?php echo array_key_exists('brief_id',$articlesbrief) ? $articlesbrief['brief_id']: '0'; ?>">
+									<div class="p-1 text-white text-center">
+										<i class="fas fa-plus mr-1"></i>
+										Click to add CTA
+									</div>
+									<?php
+									$data_cta_id_2 = array(
+										'name' => "cta_id[2]",
+										'required' => 'required',
+										'data-msg-required'=>"Please select the CTA",
+										'type' => 'hidden',
+										'class' => 'do-not-ignore'
+									);
+									echo form_input($data_cta_id_2);
+									?>
+								</div>
 							</div>
 							<?php
 							}?>

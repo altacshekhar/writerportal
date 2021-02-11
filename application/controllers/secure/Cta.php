@@ -28,7 +28,7 @@ class Cta extends Admin_Controller
 		$this->data['subview'] = 'secure/cta/index';
         $this->load->view('_main_layout', $this->data);
 	}
-	
+
 	public function ajax_list()
     {
 		$post_array = $_POST;
@@ -39,7 +39,7 @@ class Cta extends Admin_Controller
             $no++;
             $row = array();
 			$delbutton = '';
-			
+
 				$delbutton = '<a class="dropdown-item"
 					href="' . site_url('/secure/cta/delete/' . $cta_row->cta_lookup_id) . '"
 					data-toggle="confirmation"
@@ -55,7 +55,7 @@ class Cta extends Admin_Controller
 					data-target="#cta_list_table">
 					<span><i class="fas fa-trash-alt text-danger"></i><span>Delete</span></span>
 				</a>';
-			
+
 			$actions = 	'<div class="btn-group-xs">'.
 					'<div class="dropdown">'.
 						'<button type="button" class="btn btn-default btn-sm btn-block dropdown-toggle" data-toggle="dropdown">Action</button>'.
@@ -123,7 +123,7 @@ class Cta extends Admin_Controller
 				'cta_button_text',
 				'cta_button_color',
 				'cta_form_id'
-				
+
 			);
 			$data = $this->cta_model->array_from_post($post_array);
 			$data['cta_language_id']= 'en';
@@ -238,7 +238,7 @@ class Cta extends Admin_Controller
 
 	public function getMetatagInfo($product_id, $language_id, $author)
     {
-	
+
 		$where   = "meta_product_unique_key='" .  $product_id . "' AND meta_product_language_id = '" . $language_id . "'";
 		$metatag_row =  (array) $this->metatag_model->get_by($where, TRUE);
 		$this->output
@@ -248,5 +248,5 @@ class Cta extends Admin_Controller
 		//pre($metatag_row);
 		//die;
 	}
-	
+
 }

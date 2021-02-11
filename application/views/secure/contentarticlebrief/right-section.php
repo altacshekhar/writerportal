@@ -1,16 +1,16 @@
-                <div class="container">
-						<ul class="nav nav-tabs brief-nav-tabs" id="sideTab" role="tablist">
-							<li class="nav-item">
-								<a class="nav-link active" id="top-results-tab" data-toggle="tab" href="#topresults" role="tab" aria-controls="topresults" aria-selected="true">Top Results</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" id="topics-tab" data-toggle="tab" href="#topics" role="tab" aria-controls="topics" aria-selected="false">Topics</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" id="questions-tab" data-toggle="tab" href="#questions" role="tab" aria-controls="questions" aria-selected="false">Questions</a>
-							</li>
-						</ul>
-					</div>
+
+	<ul class="nav nav-tabs brief-nav-tabs" id="sideTab" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link active" id="top-results-tab" data-toggle="tab" href="#topresults" role="tab" aria-controls="topresults" aria-selected="true">Top Results</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="topics-tab" data-toggle="tab" href="#topics" role="tab" aria-controls="topics" aria-selected="false">Topics</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="questions-tab" data-toggle="tab" href="#questions" role="tab" aria-controls="questions" aria-selected="false">Questions</a>
+		</li>
+	</ul>
+
 					<div class="tab-content" id="sideTabContent">
 						<!-- Top Results Tab -->
 						<div class="tab-pane fade show active" id="topresults" role="tabpanel" aria-labelledby="top-results-tab">
@@ -41,7 +41,7 @@
 										<p>Find and compare top Employee Scheduling software on Capterra, with our free ... app that's both powerful, affordable and easy to use, especially for the mobile ...</p>
 										<div id="accordion-1" class="accordion">
 											<div class="card border-default">
-												
+
 												<div class="alert alert-secondary alert-default d-flex mb-1 m-0 collapsed" id="heading-1-1" data-toggle="collapse" role="button" data-target="#collapse-1-1" aria-expanded="false" aria-controls="collapse-1-1" style="">
 													<div>
 													<h6 class="text-default mb-0"><i class="icon-action fa fa-chevron-down" style="font-size: 12px"></i> Outline 1</h6>
@@ -58,7 +58,7 @@
 													</p>
 
 												</div>
-												
+
 												<div class="alert alert-secondary d-flex mb-1 m-0 collapsed" id="heading-1-1" data-toggle="collapse" role="button" data-target="#collapse-1-2" aria-expanded="false" aria-controls="collapse-1-2" style="">
 													<div>
 													<h6 class="text-default mb-0"><i class="icon-action fa fa-chevron-down" style="font-size: 12px"></i> Outline 2</h6>
@@ -66,19 +66,19 @@
 													<button type="button" class="btn-circle btn-corner"><i class="fas fa-copy"></i></button>
 													</div>
 												</div>
-												
+
 												<div id="collapse-1-2" class="collapse" aria-labelledby="heading-1-2" data-parent="#accordion-1" style="">
 													<div class="card-body pb-0 pr-0">
 														<div class="kw-group-items">
 														Outline Item 2
-														</div>							
+														</div>
 													</div>
 												</div>
-											</div>				
+											</div>
 										</div>
 									</div>
 								</div>
-								<!-- End of Overview Tab --> 
+								<!-- End of Overview Tab -->
 								<!-- Start of links Tab -->
 								<div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab">
 									<div class="container">
@@ -176,7 +176,7 @@
 										</div>
 									</div>
 								</div>
-								<!-- End of SERP Tab --> 
+								<!-- End of SERP Tab -->
 								<!-- People Also Ask Tab -->
 								<div class="tab-pane fade" id="peoplealsoask" role="tabpanel" aria-labelledby="people-also-ask-tab">
 									<div class="container">
@@ -199,7 +199,7 @@
 										</div>
 									</div>
 								</div>
-								<!-- End of People Also Ask Tab --> 
+								<!-- End of People Also Ask Tab -->
 								<!-- Quora Tab -->
 								<div class="tab-pane fade" id="quora" role="tabpanel" aria-labelledby="quora-tab">
 									<div class="container">
@@ -222,7 +222,7 @@
 										</div>
 									</div>
 								</div>
-								<!-- End of Quora Tab --> 
+								<!-- End of Quora Tab -->
 								<!-- Reddit Tab -->
 								<div class="tab-pane fade" id="reddit" role="tabpanel" aria-labelledby="reddit-tab">
 									<div class="container">
@@ -245,7 +245,7 @@
 										</div>
 									</div>
 								</div>
-								<!-- End of Reddit Tab --> 
+								<!-- End of Reddit Tab -->
 							</div>
 						</div>
 						<!-- End of Questions-->

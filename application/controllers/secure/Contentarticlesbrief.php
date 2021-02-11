@@ -24,7 +24,7 @@ class Contentarticlesbrief extends Admin_Controller
 		$this->load->library('Pdf');
 		$this->load->helper("file");
 		//$this->data['websites'] = $this->articlebrief_model->get_github_repo();
-       
+
     }
 
     public function index($keyword_id = NULL)
@@ -51,7 +51,7 @@ class Contentarticlesbrief extends Admin_Controller
 		}*/
 	    $this->data['subview'] = 'secure/contentarticlebrief/add';
         $this->load->view('_main_layout', $this->data);
-        
+
     }
 
     public function add($keyword_id, $id = NULL)
@@ -117,14 +117,14 @@ class Contentarticlesbrief extends Admin_Controller
 			{
 				$data['brief_word_length'] = $this->input->post('brief_word_length');
 				$data['brief_assigned_to'] = $this->input->post('brief_assigned_to');
-					
+
 				if($this->input->post('brief_article_site_structure') == 'cluster'){
-                   
+
 					$data['brief_article_type'] = $this->input->post('articleClusterType');
 					$data['brief_article_site_structure'] = $this->input->post('brief_article_site_structure');
 					if($this->input->post('articleClusterType') == 'pillar'){
 						$data['brief_article_permalink'] = $this->create_unique_slug(slugify(trim($this->input->post('brief_primary_keyword'))));
-	
+
 					}elseif($this->input->post('articleClusterType') == 'supporting'){
 						if($this->input->post('brief_article_pillar')){
 							$brief_article_pillar = explode("/",$this->input->post('brief_article_pillar'));
@@ -139,7 +139,7 @@ class Contentarticlesbrief extends Admin_Controller
 					$data['brief_article_category'] = $this->input->post('brief_article_category');
 					$data['brief_article_tags'] = $this->input->post('brief_article_tags');
 					$data['brief_article_site_structure'] = $this->input->post('brief_article_site_structure');
-	
+
 					if($this->input->post('brief_article_skyscraper') == 'true'){
 						$data['brief_article_skyscraper'] = $this->input->post('brief_article_skyscraper');
 					}
@@ -171,7 +171,7 @@ class Contentarticlesbrief extends Admin_Controller
 					$save_article_i18['article_meta_product_id'] = get_product_id($website);
 					$save_article_i18['meta_product_unique_key'] = get_product_id($website);
 					$save_article_i18['article_meta_author'] = '';
-					$save_article_i18['article_icon'] =  $this->input->post('brief_article_icon');  
+					$save_article_i18['article_icon'] =  $this->input->post('brief_article_icon');
 					$save_article_i18['article_permalink'] = $data['brief_article_permalink'];
 					$save_article_i18['article_status'] = 'content brief';
 					$save_article_i18['keywords'] =  $this->input->post('brief_primary_keyword');
@@ -180,7 +180,7 @@ class Contentarticlesbrief extends Admin_Controller
 					$save_article_i18['article_description'] = $data['brief_introduction'];
 					$save_article_i18['language_id'] = 'en';
 					$save_article_i18['article_id'] = $last_article_id;
-					$this->article_i18_model->save($save_article_i18);  
+					$this->article_i18_model->save($save_article_i18);
 					$article_id = $last_article_id;
 				}
 			}
@@ -194,7 +194,7 @@ class Contentarticlesbrief extends Admin_Controller
 				$brief_para_ids = [];
 				if(array_key_exists('brief_para_id',$this->input->post()))
 				{
-					$brief_para_ids = $this->input->post('brief_para_id'); 
+					$brief_para_ids = $this->input->post('brief_para_id');
 				}
 				for($i = 0; $i < count($para_title); $i++)
 				{
@@ -246,14 +246,14 @@ class Contentarticlesbrief extends Admin_Controller
 				'brief_cta_form_id'
 			);
 			$brief_data = $this->contentarticlebrief_cta_model->array_from_post($brief_post_array);
-			
+
 			if($brief_data)
 			{
 				$brief_cta = $brief_data['cta_id'];
 				$brief_cta_ids = [];
 				if(array_key_exists('brief_cta_id',$this->input->post()))
 				{
-					$brief_cta_ids = $this->input->post('brief_cta_id'); 
+					$brief_cta_ids = $this->input->post('brief_cta_id');
 				}
 				for($i = 0; $i < count($brief_cta); $i++)
 				{
@@ -324,27 +324,27 @@ class Contentarticlesbrief extends Admin_Controller
 					if($send){
 						delete_files($filename);
 					}
-					
+
 				}
 				$this->session->set_flashdata('success', '<span class="font-weight-bold alert-link css-truncate css-truncate-target"></span> Article Brief has been created!');
-				
+
 			}elseif($id){
 				$this->session->set_flashdata('success', '<span class="font-weight-bold alert-link css-truncate css-truncate-target"></span> Article Brief has been updated!');
 			}
-			
+
 			if ($this->user_model->loggedin()) {
 				redirect('secure/keyword', 'refresh');
 			}
 		}
 		$this->data['keyword_id'] = $keyword_id;
-		$this->data['writers'] = $this->get_user_list(); 
+		$this->data['writers'] = $this->get_user_list();
 		$this->data['optimizecontent'] = $this->get_brief_keyword_list($keyword_id);
 		//pre_exit($this->data['optimizecontent']);
 		$this->data['pillar_list'] = $this->article_model->get_pillar_article($website);
         $this->data['subview'] = 'secure/contentarticlebrief/add';
         $this->load->view('_main_layout', $this->data);
     }
-    
+
     public function edit($id = null)
     {
 		if(!$id && !$this->user_is_admin && $this->session_id != $id){
@@ -358,7 +358,7 @@ class Contentarticlesbrief extends Admin_Controller
 		$this->load->model('keyword_model');
 		//$this->db->where('user_id', $user_id);
 		$keyword = (array) $this->keyword_model->get($keyword_id, true);
-        return $keyword['keyword'];	
+        return $keyword['keyword'];
 	}
 
 	public function get_website($keyword_id)
@@ -366,7 +366,7 @@ class Contentarticlesbrief extends Admin_Controller
 		$this->load->model('keyword_model');
 		//$this->db->where('user_id', $user_id);
 		$keyword = (array) $this->keyword_model->get($keyword_id, true);
-        return $keyword['website'];	
+        return $keyword['website'];
 	}
 
 
@@ -382,9 +382,9 @@ class Contentarticlesbrief extends Admin_Controller
             $return_array[$row['user_id']] =  ucwords($row['user_name']);
         }
 
-        return $return_array;	
+        return $return_array;
 	}
-	
+
 	public function get_user_info($user_id)
 	{
 		$this->load->model('user_model');
@@ -395,7 +395,7 @@ class Contentarticlesbrief extends Admin_Controller
 
 	public function get_brief_keyword_list($keyword_id)
     {
-		
+
 		$this->db->select("keyword_content_performance");
 		$this->db->where('keyword_id', (int) $keyword_id);
 		$result_array = $this->db->get('article_keyword')->result_array();
@@ -424,7 +424,7 @@ class Contentarticlesbrief extends Admin_Controller
 		$this->pdf->setPaper('A4','portrait');//landscape
 		$this->pdf->render();
 		$this->pdf->stream($filename, array('Attachment'=>1));
-		//'Attachment'=>0 for view and 'Attachment'=>1 for download file     
+		//'Attachment'=>0 for view and 'Attachment'=>1 for download file
 		//pre($brief);
 	}
 
@@ -433,27 +433,27 @@ class Contentarticlesbrief extends Admin_Controller
         $return['is_redirect'] = 'no';
         if ($this->user_model->loggedin()) {
 				$briefid = $this->input->post("article_brief");
-                $data = []; 
-                $data_i18  = []; 
+                $data = [];
+                $data_i18  = [];
                 $search = array("http://", "https://", "www.");
 				$website = rtrim(str_replace($search, "", site_url()),"/");
 				$data['article_website'] = $website;
 				$brief = $this->contentarticlesbrief_model->get_article_brief($briefid);
-                //$data['site_id'] = $this->input->post('website'); 
+                //$data['site_id'] = $this->input->post('website');
                 $data['user_id'] = $this->session->userdata('id');
                 $data['article_author'] = $this->session->userdata('full_name');
 				$data['article_brief_id'] = $brief['brief_id'];
 				$data_i18['keywords'] = trim(ucwords($brief['brief_primary_keyword']));
 				$data_i18['article_meta_keyword'] = trim(ucwords($brief['brief_primary_keyword']));
-               
-                
-                $data_i18['article_site_id'] = $brief['website'];  
-                $data_i18['language_id'] = $lang;  
+
+
+                $data_i18['article_site_id'] = $brief['website'];
+                $data_i18['language_id'] = $lang;
                 $data_i18['article_status'] = 'draft';
                 $data_i18['article_title'] = '';
                 $data_i18['article_description'] = '';
                 if($brief['brief_article_site_structure'] == 'cluster'){
-                   
+
                     $data['article_type'] = $brief['brief_article_type'];
                     $data_i18['article_site_structure_type'] = $brief['brief_article_site_structure'];
 
@@ -467,7 +467,7 @@ class Contentarticlesbrief extends Admin_Controller
                     }
 
                 }elseif($brief['brief_article_site_structure'] == 'blog'){
-                    
+
                     $data['article_type'] = $brief['brief_article_type'];
                     $data['article_category'] = $brief['brief_article_category'];
                     $data_i18['article_tags'] = $brief['brief_article_tags'];
@@ -495,63 +495,63 @@ class Contentarticlesbrief extends Admin_Controller
                         }
                         if(array_key_exists("meta_category",$metaDetail))
                         {
-                          $data_i18['article_meta_category'] = $metaDetail['meta_category'];   
+                          $data_i18['article_meta_category'] = $metaDetail['meta_category'];
                         }
                         if(array_key_exists("meta_product_name",$metaDetail))
                         {
-                          $data_i18['article_meta_product_name'] = $metaDetail['meta_product_name'];   
+                          $data_i18['article_meta_product_name'] = $metaDetail['meta_product_name'];
                         }
                         if(array_key_exists("meta_product_description",$metaDetail))
                         {
-                          $data_i18['article_meta_product_desc'] = $metaDetail['meta_product_description']; 
+                          $data_i18['article_meta_product_desc'] = $metaDetail['meta_product_description'];
                         }
                         if(array_key_exists("meta_product_image",$metaDetail))
                         {
-                          $data_i18['article_meta_product_image'] = $metaDetail['meta_product_image'];   
+                          $data_i18['article_meta_product_image'] = $metaDetail['meta_product_image'];
                         }
                         if(array_key_exists("meta_product_icon",$metaDetail))
                         {
-                          $data_i18['article_meta_product_icon'] = $metaDetail['meta_product_icon'];   
+                          $data_i18['article_meta_product_icon'] = $metaDetail['meta_product_icon'];
                         }
                         if(array_key_exists("meta_product_id",$metaDetail))
                         {
-                          $data_i18['article_meta_product_id'] = $metaDetail['meta_product_id']; 
+                          $data_i18['article_meta_product_id'] = $metaDetail['meta_product_id'];
                         }
                         if(array_key_exists("meta_product_part_id",$metaDetail))
                         {
-                          $data_i18['article_meta_part_id'] = $metaDetail['meta_product_part_id'];  
+                          $data_i18['article_meta_part_id'] = $metaDetail['meta_product_part_id'];
                         }
                         if(array_key_exists("meta_product_review_count",$metaDetail))
                         {
-                          $data_i18['article_meta_product_reviewcount'] = $metaDetail['meta_product_review_count'];   
+                          $data_i18['article_meta_product_reviewcount'] = $metaDetail['meta_product_review_count'];
                         }
                         if(array_key_exists("meta_product_price_currency",$metaDetail))
                         {
-                          $data_i18['article_meta_product_price_currency'] = $metaDetail['meta_product_price_currency'];   
+                          $data_i18['article_meta_product_price_currency'] = $metaDetail['meta_product_price_currency'];
                         }
                         if(array_key_exists("meta_product_brand",$metaDetail))
                         {
-                          $data_i18['article_meta_product_brand'] = $metaDetail['meta_product_brand'];  
+                          $data_i18['article_meta_product_brand'] = $metaDetail['meta_product_brand'];
                         }
                         if(array_key_exists("meta_product_price",$metaDetail))
                         {
-                          $data_i18['article_meta_product_price'] = $metaDetail['meta_product_price']; 
+                          $data_i18['article_meta_product_price'] = $metaDetail['meta_product_price'];
                         }
                         if(array_key_exists("meta_product_rating_value",$metaDetail))
                         {
-                          $data_i18['article_meta_product_ratingvalue'] = $metaDetail['meta_product_rating_value'];   
+                          $data_i18['article_meta_product_ratingvalue'] = $metaDetail['meta_product_rating_value'];
                         }
                         if(array_key_exists("product_cta",$metaDetail))
                         {
-                          $data_i18['article_product_cta'] = $metaDetail['product_cta'];    
+                          $data_i18['article_product_cta'] = $metaDetail['product_cta'];
                         }
                         if(array_key_exists("content_cta",$metaDetail))
                         {
-                          $data_i18['article_content_cta'] = $metaDetail['content_cta'];   
+                          $data_i18['article_content_cta'] = $metaDetail['content_cta'];
                         }
                         if(array_key_exists("meta_product_unique_key",$metaDetail))
                         {
-                          $data_i18['meta_product_unique_key'] = $metaDetail['meta_product_unique_key'];   
+                          $data_i18['meta_product_unique_key'] = $metaDetail['meta_product_unique_key'];
                         }
                     }
                 }
@@ -596,7 +596,7 @@ class Contentarticlesbrief extends Admin_Controller
 
                     }
                     if($brief['brief_article_site_structure'] == 'cluster' && $brief['brief_article_type'] == 'supporting'){
-                       
+
 						$data_i18['article_pillar_id'] = $brief['brief_article_pillar_id'];
 
                     }
@@ -609,7 +609,7 @@ class Contentarticlesbrief extends Admin_Controller
 					$this->contentarticlesbrief_model->save($data_brief_update, $brief['brief_id']);
 
                 }
-                
+
                 $article_type = $data['article_type'];
                 if($data['article_type'] == 'news'){
 
@@ -620,50 +620,50 @@ class Contentarticlesbrief extends Admin_Controller
 
                     $return['is_redirect'] = 'yes';
                     $return['redirect'] = site_url($redirect_url);
-                   
+
          }else{
-                    //$return['redirect'] = site_url('article/en'); 
+                    //$return['redirect'] = site_url('article/en');
 		 }
-		 
+
         if($json_output){
             $this->output->set_content_type('application/json')->set_output(json_encode($return));
         }else{
             return $return;
         }
-                
+
 	}
-	
+
 	public function test(){
 		$slug = $this->create_unique_slug($string='staffing/business-crisis-management');
 		//$brief = $this->contentarticlesbrief_model->get_article_brief(1);
 		pre($slug);
 	  }
-	  
+
 	public function create_unique_slug($slug, $table='articles_translate_i18', $field='article_permalink', $key=NULL, $value=NULL)
 	{
 		$i = 0;
 		$params = array ();
 		$params[$field] = $slug;
-	 
-		if($key)$params["$key !="] = $value; 
-	 
+
+		if($key)$params["$key !="] = $value;
+
 		while ($this->db->where($params)->get($table)->num_rows())
-		{   
+		{
 			if (!preg_match ('/-{1}[0-9]+$/', $slug ))
 				$slug .= '-' . ++$i;
 			else
 				$slug = preg_replace ('/[0-9]+$/', ++$i, $slug );
-			 
+
 			$params [$field] = $slug;
-		}   
-		return $slug;   	
+		}
+		return $slug;
 	}
 
 	public function loadeditedPreview()
 	{
 		$cta_data = $this->input->post();
 		echo '<button type="button" class="btn btn-sm mb-1 btn-secondary show-brief-cta" data-cta-id="'.$cta_data['cta_id'].'">Edit CTA</button>';
-		echo $this->load->view('secure/contentarticlebrief/cta_preview',$cta_data,true);
+		echo $this->load->view('component/cta_preview',$cta_data,true);
 		$cta_data = ['cta_data' => $cta_data];
 		echo $this->load->view('secure/contentarticlebrief/add-cta-form',$cta_data,true);
 	}

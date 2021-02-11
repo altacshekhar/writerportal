@@ -18,77 +18,7 @@ $statue_selects .= "<option value='Published'>Published</option>";
 $statue_selects .= "<option value='Deleted'>Deleted</option>";
 $statue_selects .= "<option value='Draft'>Draft</option>";
 ?>
-<style>
-	#wrapper{
-		width: 100%;
-		max-width: 1400px;
-		min-width: 320px;
-		margin: 0 auto;
-		padding-right: 2rem;
-    	padding-left: 2rem;
-	}
-	#wrapper .left-side-menu {
-		width: 280px;
-		z-index: 999;
-		bottom: 0;
-		position: fixed;
-		top: 62px;
-		left: 0;
-		display: none;
-		background-color: #fff
-	}
-	#wrapper .content-page {
-		margin-top: 2rem;
-		overflow: hidden;
-		min-height: 80vh;
-	}
-	.user {
-		background-color: rgba(222, 226, 230, .4);
-		position: relative;
-		cursor: default;
-		padding: 1.25rem;
-		text-align: center;
-		border:1px solid #e4e7ed;
-	}
-	.user__img {
-		width: 4rem;
-		height: 4rem;
-		border-radius: 50%;
-		margin-bottom:1rem;
-	}
-	.user__name {
-		display: block;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		font-size: 1.14rem;
-	}
-	.user__email {
-		font-size: .8462rem;
-		color: #999;
-		margin-top: .1rem;
-		display: block;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
 
-	.content__title {
-    	margin-bottom: 1rem;
-	}
-
-	.hw-sidebar-body {
-		background-color: #FFFFFF;
-		border: 1px solid #e4e7ed;
-		border-top:0;
-		padding: 0.75rem 0;
-	}
-
-	.hw-sidebar-body .list-group-item{
-		border:0
-	}
-
-</style>
 <div id="wrapper" class="clearfix position-relative">
 	<div class="left-side-menu ">
 		<div class="user">
@@ -107,7 +37,7 @@ $statue_selects .= "<option value='Draft'>Draft</option>";
 				<div class="list-group">
 					<a href="<?php echo site_url('/secure/articleslist') ?>" class="list-group-item list-group-item-action">
 						<span class="fas fa-home hw-sidebar-account-list-icon"></span>
-						Content 
+						Content
 					</a>
 					<a href="<?php echo site_url('secure/user/edit/'.$user_id) ?>" class="list-group-item list-group-item-action">
 						<span class="fas fa-user-circle hw-sidebar-account-list-icon"></span>
@@ -208,7 +138,7 @@ $statue_selects .= "<option value='Draft'>Draft</option>";
 									<label class="control-label" for="user_select">Author</label>
 									<select id="user_select" class="form-control select-2" data-column="1">
 										<option value=''>Select Author (all)</option>
-										<?php 
+										<?php
 										foreach ($users as $key=>$value) {?>
 										<option value='<?php echo $key ?>'><?php echo ucwords($value) ?></option>
 										<?php }?>
