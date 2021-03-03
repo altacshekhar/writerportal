@@ -1,0 +1,252 @@
+{
+	"NavBrand": [
+		{
+			"logo": "http://localhost:4000/assets/images/logo-hubworks.png",
+			"logoAlt": "Business Management Apps for Apple, Android, and Microsoft Tablets",
+			"brandLink": "http://localhost:4000",
+			"title": "Hubworks",
+			"description": "Small Business Software | Back Office | Inventory | Employee Scheduling | Point of Sale",
+			"favIcon": "http://localhost:4000/assets/favicon.png"
+		}
+	],
+	"TopBar": [
+		{
+			"text": "Blog",
+			"image": null,
+			"link": "http://hubworks.com/blog",
+			"show": true
+		},
+		{
+			"text": "Resources",
+			"image": null,
+			"link": "http://hubworks.com/resources.html",
+			"show": true
+		},
+		{
+			"text": "Webinars",
+			"image": null,
+			"link": "http://webinar.hubworks.com/webinar/webinar.html?site=hubworks",
+			"show": true,
+			"external": true
+		},
+		{
+			"text": "Resellers",
+			"image": null,
+			"link": "http://hubworks.com/resellers.html",
+			"show": true
+		},
+		{
+			"text": "Developers",
+			"image": null,
+			"link": "http://hubworks.com/developers.html",
+			"show": true
+		},
+		{
+			"text": "Questions? 1-800-676-1281",
+			"image": null,
+			"link": "http://hubworks.com/contact-us.html",
+			"show": true
+		},
+		{
+			"text": "Region",
+			"image": "region.flag",
+			"link": "http://hubworks.com/region.html",
+			"show": false
+		}
+	],
+	"TopMainNav": [
+		{
+			"name": "App Store",
+			"link": "http://hubworks.com/app-store.html"
+		},
+		{
+			"name": "Integrations",
+			"link": "http://hubworks.com/integrations.html",
+			"class": null
+		},
+		{
+			"name": "Shop Hardware",
+			"link": "https://store.hubworks.com",
+			"class": "url-link"
+		},
+		{
+			"name": "Cart",
+			"link": "https://store.hubworks.com",
+			"class": "cart"
+		}
+	],
+	"FooterMain": [
+		{
+			"title": "Resources",
+			"subcategories": [
+				{
+					"name": "Support",
+					"link": "http://hubworks.com/support.html"
+				},
+				{
+					"name": "Shop Hardware",
+					"link": "http://hubworks.com/hardware-store.html"
+				},
+				{
+					"name": "Blog",
+					"link": "http://hubworks.com/blog"
+				},
+				{
+					"name": "Webinars",
+					"link": "http://webinar.hubworks.com/webinar/webinar.html?site=hubworks",
+					"external": true
+				},
+				{
+					"name": "Resource Center",
+					"link": "http://hubworks.com/resources.html"
+				},
+				{
+					"name": "Customers",
+					"link": "http://hubworks.com/customers.html"
+				},
+				{
+					"name": "Excel Schedule Template Download",
+					"link": "http://hubworks.com/resources/free-excel-employee-scheduling-template.html"
+				}
+			]
+		},
+		{
+			"title": "Industries",
+			"subcategories": [
+				{
+					"name": "C Store and Gas",
+					"link": "http://hubworks.com/industries/convenience-store-software-hubworks.html"
+				},
+				{
+					"name": "Healthcare",
+					"link": "http://hubworks.com/industries/healthcare-software-hubworks.html"
+				},
+				{
+					"name": "Hospitals",
+					"link": "http://hubworks.com/industries/hospital-software-hubworks.html"
+				},
+				{
+					"name": "Hotels",
+					"link": "http://hubworks.com/industries/hotel-software-hubworks.html"
+				},
+				{
+					"name": "Restaurants",
+					"link": "http://hubworks.com/industries/restaurant-software-hubworks.html"
+				},
+				{
+					"name": "Retail",
+					"link": "http://hubworks.com/industries/retail-store-software-hubworks.html"
+				},
+				{
+					"name": "Theaters",
+					"link": "http://hubworks.com/industries/theater-software-hubworks.html"
+				},
+				{
+					"name": "Theme Parks",
+					"link": "http://hubworks.com/industries/theme-park-software-hubworks.html"
+				},
+				{
+					"name": "Law Enforcement",
+					"link": "http://hubworks.com/industries/law-enforcement-software-hubworks.html"
+				},
+				{
+					"name": "Hospitality",
+					"link": "http://hubworks.com/industries/hospitality-software-hubworks.html"
+				},
+				{
+					"name": "Non Profits",
+					"link": "http://hubworks.com/industries/non-profit-software-hubworks.html"
+				}
+			]
+		},
+		{
+			"title": "Top Articles",
+			"subcategories": [
+				{
+					"name": "Best Online Business Management Apps",
+					"link": "http://hubworks.com/blog/online-business-management-apps.html"
+				},
+				{
+					"name": "Discover Free Mobile Applications at Hubworks",
+					"link": "http://hubworks.com/blog/free-mobile-applications-for-business-owner.html"
+				},
+				{
+					"name": "The New Technologies Modern SMBs are Using Today to Gain a Competitive Advantage",
+					"link": "http://hubworks.com/blog/new-technologies-modern-smbs-using-today-gain-competitive-advantage.html"
+				},
+				{
+					"name": "61 Essential Steps for Starting a Business",
+					"link": "http://hubworks.com/blog/essential-steps-starting-business.html"
+				},
+				{
+					"name": "13 Technologies That Will Change Small Business",
+					"link": "http://hubworks.com/blog/technologies-will-change-small-business.html"
+				}
+			]
+		},
+		{
+			"title": "More",
+			"subcategories": [
+				{
+					"name": "Contact Us",
+					"link": "http://hubworks.com/contact-us.html"
+				},
+				{
+					"name": "Developers / API",
+					"link": "http://hubworks.com/developers.html"
+				},
+				{
+					"name": "Resellers",
+					"link": "http://hubworks.com/resellers.html"
+				},
+				{
+					"name": "Apple iPhone App",
+					"link": "https://itunes.apple.com/us/developer/hubworks-interactive-llc/id992191245",
+					"external": true
+				},
+				{
+					"name": "Google Android App",
+					"link": "https://play.google.com/store/apps/developer?id=Hubworks+Interactive,+LLC&hl=en",
+					"external": true
+				}
+			]
+		}
+	],
+	"SocialMedia": [
+		{
+			"name": "Facebook",
+			"class": "social-facebook",
+			"icon": "<i class=\"fab fa-facebook-f fa-fw\"></i>",
+			"link": "https://www.facebook.com/HubWorksApp",
+			"external": true
+		},
+		{
+			"name": "Twitter",
+			"class": "social-twitter",
+			"icon": "<i class=\"fab fa-twitter fa-fw\"></i>",
+			"link": "https://twitter.com/HubworksApp",
+			"external": true
+		},
+		{
+			"name": "Google Plus",
+			"class": "social-google",
+			"icon": "<i class=\"fab fa-google-plus-g fa-fw\"></i>",
+			"link": "https://plus.google.com/+HubWorksApp",
+			"external": true
+		},
+		{
+			"name": "YouTube",
+			"class": "social-youtube",
+			"icon": "<i class=\"fab fa-youtube fa-fw\"></i>",
+			"link": "https://www.youtube.com/c/HubWorksApp",
+			"external": true
+		},
+		{
+			"name": "linkedIn",
+			"class": "social-linkedin",
+			"icon": "<i class=\"fab fa-linkedin-in fa-fw\"></i>",
+			"link": "https://www.linkedin.com/company/hubworks",
+			"external": true
+		}
+	]
+}

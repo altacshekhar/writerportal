@@ -1,0 +1,271 @@
+{
+	"MetaData": {
+		"name": "Hubworks",
+		"title": "Hubworks | Contribute your Article, Press Release and Recipe",
+		"description": "Become an official contributing writer with Hubworks, submit your article, press release or recipe and get featured on our website if your post is accepted."
+	},
+	"NavBrand": {
+		"brandLink": "https://hubworks.com/",
+		"logo": "hubworks-logo-white.svg",
+		"logoAlt": "Business Management Apps",
+		"title": "Hubworks",
+		"description": "Small Business Software | Back Office | Inventory | Employee Scheduling | Point of Sale",
+		"favIcon": "hubworks.png"
+	},
+	"TopBar": [
+		{
+			"text": "Blog",
+			"link": "https://hubworks.com/blog/",
+			"external": true
+		},
+		{
+			"text": "Resources",
+			"link": "http://hubworks.com/resources.html",
+			"external": true
+		},
+		{
+			"text": "Webinars",
+			"link": "http://webinar.hubworks.com/webinar/webinar.html?site=hubworks",
+			"external": true
+		},
+		{
+			"text": "Resellers",
+			"link": "http://hubworks.com/resellers.html",
+			"external": true
+		},
+		{
+			"text": "Developers",
+			"link": "http://hubworks.com/developers.html",
+			"external": true
+		},
+		{
+			"text": "Questions? 1-800-676-1281",
+			"link": "http://hubworks.com/contact-us.html",
+			"external": true
+		},
+		{
+			"text": "Region",
+			"link": "http://hubworks.com/region.html",
+			"external": true
+		}
+	],
+	"TopMainNav": [
+		{
+			"text": "App Store",
+			"link": "http://hubworks.com/app-store.html",
+			"external": true
+		},
+		{
+			"text": "Integrations",
+			"link": "http://hubworks.com/integrations.html",
+			"external": true
+		}
+	],
+	"FooterMain": [
+		{
+			"title": "Resources",
+			"subcategories": [
+				{
+					"text": "Support",
+					"link": "http://hubworks.com/support.html",
+					"external": true
+				},
+				{
+					"text": "Blog",
+					"link": "http://hubworks.com/blog/",
+					"external": true
+				},
+				{
+					"text": "Webinars",
+					"link": "http://webinar.hubworks.com/webinar/webinar.html?site=hubworks",
+					"external": true
+				},
+				{
+					"text": "Resource Center",
+					"link": "http://hubworks.com/resources.html",
+					"external": true
+				},
+				{
+					"text": "Customers",
+					"link": "http://hubworks.com/customers.html",
+					"external": true
+				},
+				{
+					"text": "Excel Schedule Template Download",
+					"link": "http://hubworks.com/resources/free-excel-employee-scheduling-template.html",
+					"external": true
+				}
+			]
+		},
+		{
+			"title": "Industries",
+			"subcategories": [
+				{
+					"text": "C Store and Gas",
+					"link": "http://hubworks.com/industries/convenience-store-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Healthcare",
+					"link": "http://hubworks.com/industries/healthcare-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Hospitals",
+					"link": "http://hubworks.com/industries/hospital-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Hotels",
+					"link": "http://hubworks.com/industries/hotel-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Restaurants",
+					"link": "http://hubworks.com/industries/restaurant-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Retail",
+					"link": "http://hubworks.com/industries/retail-store-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Theaters",
+					"link": "http://hubworks.com/industries/theater-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Theme Parks",
+					"link": "http://hubworks.com/industries/theme-park-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Law Enforcement",
+					"link": "http://hubworks.com/industries/law-enforcement-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Hospitality",
+					"link": "http://hubworks.com/industries/hospitality-software-hubworks.html",
+					"external": true
+				},
+				{
+					"text": "Non Profits",
+					"link": "http://hubworks.com/industries/non-profit-software-hubworks.html",
+					"external": true
+				}
+			]
+		},
+		{
+			"title": "Top Articles",
+			"subcategories": [
+				{
+					"text": "12 Steps to a Microsoft Excel Employee Shift Schedule",
+					"link": "https://hubworks.com/blog/twelve-steps-to-a-microsoft-excel-employee-shift-schedule.html",
+					"external": true
+				},
+				{
+					"text": "The 15 Best Inventory Tracker Apps for Your Mobile Devices",
+					"link": "https://hubworks.com/blog/the-15-best-inventory-tracker-apps-for-your-mobile-devices.html",
+					"external": true
+				},
+				{
+					"text": "29 Extensions and Tools to Supercharge Your Google Calendar",
+					"link": "https://hubworks.com/blog/extensions-and-tools-to-supercharge-your-google-calendar.html",
+					"external": true
+				},
+				{
+					"text": "How to Create and Manage an Inventory System Excel Template",
+					"link": "https://hubworks.com/blog/how-to-create-and-manage-an-inventory-system-excel-template.html",
+					"external": true
+				},
+				{
+					"text": "6 Different Management Styles (And How to Use Them)",
+					"link": "https://hubworks.com/blog/six-different-management-styles-and-how-to-use-them.html",
+					"external": true
+				},
+				{
+					"text": "7 Office Time Management Games That Will Help Employees See the Bigger Picture",
+					"link": "https://hubworks.com/blog/seven-office-time-management-games-that-will-help-employees-see-the-bigger-picture.html",
+					"external": true
+				},
+				{
+					"text": "5 Companies With A Unique Onboarding Process and What Makes Them Successful",
+					"link": "https://hubworks.com/blog/five-companies-with-a-unique-onboarding-process-and-what-makes-them-successful.html",
+					"external": true
+				}
+			]
+		},
+		{
+			"title": "More",
+			"subcategories": [
+				{
+					"text": "Contact Us",
+					"link": "http://hubworks.com/contact-us.html",
+					"external": true
+				},
+				{
+					"text": "Developers / API",
+					"link": "http://hubworks.com/developers.html",
+					"external": true
+				},
+				{
+					"text": "Resellers",
+					"link": "http://hubworks.com/resellers.html",
+					"external": true
+				},
+				{
+					"text": "Apple iPhone App",
+					"link": "https://itunes.apple.com/us/developer/hubworks-interactive-llc/id992191245",
+					"external": true
+				},
+				{
+					"text": "Google Android App",
+					"link": "https://play.google.com/store/apps/developer?id=Hubworks+Interactive,+LLC&hl=en",
+					"external": true
+				}
+			]
+		}
+	],
+	"SocialMedia": [
+		{
+			"text": "Facebook",
+			"class": "social-facebook",
+			"icon": "<i class=\"fab fa-facebook-f fa-fw\"></i>",
+			"link": "https://www.facebook.com/HubWorksApp",
+			"external": true
+		},
+		{
+			"text": "Twitter",
+			"class": "social-twitter",
+			"icon": "<i class=\"fab fa-twitter fa-fw\"></i>",
+			"link": "https://twitter.com/HubworksApp",
+			"external": true
+		},
+		{
+			"text": "Google Plus",
+			"class": "social-google",
+			"icon": "<i class=\"fab fa-google-plus-g fa-fw\"></i>",
+			"link": "https://plus.google.com/+HubWorksApp",
+			"external": true
+		},
+		{
+			"text": "YouTube",
+			"class": "social-youtube",
+			"icon": "<i class=\"fab fa-youtube fa-fw\"></i>",
+			"link": "https://www.youtube.com/c/HubWorksApp",
+			"external": true
+		},
+		{
+			"text": "linkedIn",
+			"class": "social-linkedin",
+			"icon": "<i class=\"fab fa-linkedin-in fa-fw\"></i>",
+			"link": "https://www.linkedin.com/company/hubworks",
+			"external": true
+		}
+	],
+	"CopyrightText":{
+		"text": "&copy; %year% Hubworks · SMB Software | Back Office | Inventory | Employee Scheduling | Point of Sale <br> 3191 Red Hill Ave. Costa Mesa CA 92626 USA · <a href='https://hubworks.com/terms-of-use.html' target='_blank'> <span>Terms of Use</span></a> · <a href='https://hubworks.com/privacy-policy.html' target='_blank'> <span>Privacy Policy</span> </a>"
+	}
+}
