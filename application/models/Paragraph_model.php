@@ -50,6 +50,29 @@ class Paragraph_model extends MY_Model
 					$list_paragraph[$row->section_id]['callouts'][0] =  $this->callouts_i18_model->get_new();
 				}
 
+				$social_media_callouts = $this->get_social_media_callouts_i18_list($row->section_id, $language_id);
+				//pre($social_media_callouts);
+				if($social_media_callouts){
+					foreach ($social_media_callouts as $social_media_callout) {
+						//pre($social_media_callout);
+						$list_paragraph[$row->section_id]['social_media_callout_i18_id'] =  $social_media_callout['social_media_callout_i18_id'];
+						$list_paragraph[$row->section_id]['social_media_callout_title'] =  $social_media_callout['social_media_callout_title'];
+						$list_paragraph[$row->section_id]['social_media_platforms'] =  $social_media_callout['social_media_platforms'];
+					}
+					
+				}else{
+					//$this->load->model('social_media_callouts_i18_model');
+					$list_paragraph[$row->section_id]['social_media_callout_i18_id'] =  '';
+					$list_paragraph[$row->section_id]['social_media_callout_title'] =  '';
+					$list_paragraph[$row->section_id]['social_media_platforms'] =  '';
+				}
+					
+				
+
+
+
+
+
 				$ingredients = $this->get_ingredients_i18_list($row->section_id, $language_id);
 
 				if($ingredients)
@@ -77,6 +100,7 @@ class Paragraph_model extends MY_Model
 			$this->load->model('steps_i18_model');
 			$list_paragraph[0] =  $this->get_new_t(true);
 			$list_paragraph[0]['callouts'][0] =  $this->callouts_i18_model->get_new();
+			$list_paragraph[0]['social_media_callouts'][0] =  $this->social_media_callouts_i18_model->get_new();
 			$list_paragraph[0]['ingredients'][0] =  $this->ingredients_i18_model->get_new();
 			$list_paragraph[0]['steps'][0] =  $this->steps_i18_model->get_new();
 		}
@@ -88,6 +112,15 @@ class Paragraph_model extends MY_Model
 		$this->load->model('callouts_i18_model');
 		$callouts = $this->callouts_i18_model->get_by('section_id=' . $section_id);
 		return json_decode(json_encode($callouts), TRUE);
+	}
+
+	public function get_social_media_callouts_i18_list($section_id, $language_id)
+    {
+		$this->load->model('social_media_callouts_i18_model');
+		$social_media_callouts = $this->social_media_callouts_i18_model->get_by('section_id=' . $section_id);
+		//pre($social_media_callouts);
+		//die;
+		return json_decode(json_encode($social_media_callouts), TRUE);
 	}
 
 	public function get_ingredients_i18_list($section_id, $language_id)

@@ -1746,6 +1746,22 @@ var repeaterReload = function (object, response) {
 	setFlashes(response.flashes.type, response.flashes.message);
 	dismissConfirmation();
 };
+
+var calloutReload = function (object, response) {
+	alert('callout');
+	if(response.success ==1){
+		var target = jQuery(object).data('target');
+		$(target).collapse('hide');
+		$(target).find(".social_media_callout_title").val(''); 
+		/*jQuery(target).fadeTo(700, 0).slideUp(500, function () {
+			//jQuery(this).remove();
+		});*/
+	}
+	setFlashes(response.flashes.type, response.flashes.message);
+	dismissConfirmation();
+};
+
+
 var executeAction = function (object, response) {
 	var target = jQuery(object).data('target');
 	dismissConfirmation();

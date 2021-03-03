@@ -412,7 +412,6 @@ if($article['language_id']=='en'){
 													'maxlength' => 70,
 													'rangelength' => '[10, 70]',
 													'required' => 'required',
-													'check_keyword' => $primary_keyword_rule,
 													'data-msg-required'=>"Please enter a short description of the image",
 													'class' => 'form-control article_image_alt calc-length primary-keyword-phrase seo-content-keywords'
 												);
@@ -546,13 +545,14 @@ if($article['language_id']=='en'){
 																			'placeholder' => 'Paragraph title max 70 characters in length',
 																			'class' => 'form-control calc-length primary-keyword-phrase seo-content-keywords section_title'
 																		);
-																		if($section_count == 0){
+																		$data_section_title['check_keyword_paragraph'] =	'true';
+																		/*if($section_count == 0){
 																			
 																			$data_section_title['check_keyword'] = $primary_keyword_rule;	
 																		}else{
 																			
 																			$data_section_title['check_keyword'] =	'true';
-																		}
+																		}*/
 																		echo form_input($data_section_title);
 																		echo form_error('section_title');
 																		?>
@@ -575,7 +575,7 @@ if($article['language_id']=='en'){
 																	}else{
 																		$selected_heading_type = 'h2';
 																	}
-																	echo form_dropdown("section_heading_type", $heading_type, $selected_heading_type, 'class="form-control-sm select-2"' );
+																	echo form_dropdown("section_heading_type", $heading_type, $selected_heading_type, 'class="form-control-sm select-2 section_heading_type"' );
 																	echo form_error("section_heading_type");
 
 																	?>
@@ -676,7 +676,7 @@ if($article['language_id']=='en'){
 													<div class="form-group mb-2 section-video-found hide">
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video name</label>
+																<label class="h6">Meta Video Name</label>
 																<?php
 																$section_meta_video_name = isset($paragraph['section_meta_video_name']) ? $paragraph['section_meta_video_name'] : '';
 																$data_section_meta_video_name = array(
@@ -707,7 +707,7 @@ if($article['language_id']=='en'){
 
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video url</label>
+																<label class="h6">Meta Video Url</label>
 																<?php
 																	$section_meta_video_url = isset($paragraph['section_meta_video_url']) ? $paragraph['section_meta_video_url'] : '';
 																	$data_section_meta_video_url = array(
@@ -721,7 +721,7 @@ if($article['language_id']=='en'){
 																?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video thumbnail 1x1</label>
+																<label class="h6">Meta Video Thumbnail 1x1</label>
 																<?php
 																	$section_meta_video_thumbnail_1x1 = isset($paragraph['section_meta_video_thumbnail_1x1']) ? $paragraph['section_meta_video_thumbnail_1x1'] : '';
 																	$data_section_meta_video_thumbnail_1x1 = array(
@@ -737,7 +737,7 @@ if($article['language_id']=='en'){
 														</div>
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video thumbnail 4x3</label>
+																<label class="h6">Meta Video Thumbnail 4x3</label>
 																<?php
 																	$section_meta_video_thumbnail_4x3 = isset($paragraph['section_meta_video_thumbnail_4x3']) ? $paragraph['section_meta_video_thumbnail_4x3'] : '';
 																	$data_section_meta_video_thumbnail_4x3 = array(
@@ -751,7 +751,7 @@ if($article['language_id']=='en'){
 															?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video thumbnail 16x9</label>
+																<label class="h6">Meta Video Thumbnail 16x9</label>
 																<?php
 																	$section_meta_video_thumbnail_16x9 = isset($paragraph['section_meta_video_thumbnail_16x9']) ? $paragraph['section_meta_video_thumbnail_16x9'] : '';
 																	$data_section_meta_video_thumbnail_16x9 = array(
@@ -767,7 +767,7 @@ if($article['language_id']=='en'){
 														</div>
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video uploaddate</label>
+																<label class="h6">Meta Video Upload Date</label>
 																<?php
 																	$section_meta_video_uploaddate = isset($paragraph['section_meta_video_uploaddate']) ? $paragraph['section_meta_video_uploaddate'] : '';
 																	$data_section_meta_video_uploaddate = array(
@@ -781,7 +781,7 @@ if($article['language_id']=='en'){
 															?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video minutes</label>
+																<label class="h6">Meta Video Minutes</label>
 																<?php
 																	$section_meta_video_minutes = isset($paragraph['section_meta_video_minutes']) ? $paragraph['section_meta_video_minutes'] : '';
 																	$data_section_meta_video_minutes = array(
@@ -798,7 +798,7 @@ if($article['language_id']=='en'){
 
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video seconds</label>
+																<label class="h6">Meta Video Seconds</label>
 																<?php
 																	$section_meta_video_seconds = isset($paragraph['section_meta_video_seconds']) ? $paragraph['section_meta_video_seconds'] : '';
 																	$data_section_meta_video_seconds = array(
@@ -812,7 +812,7 @@ if($article['language_id']=='en'){
 																	?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video interaction count</label>
+																<label class="h6">Meta Video Interaction count</label>
 																<?php
 																	$section_meta_video_interaction_count = isset($paragraph['section_meta_video_interaction_count']) ? $paragraph['section_meta_video_interaction_count'] : '';
 																	$data_section_meta_video_interaction_count = array(
@@ -828,7 +828,7 @@ if($article['language_id']=='en'){
 														</div>
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video expires</label>
+																<label class="h6">Meta Video Expires</label>
 																<?php
 																	$section_meta_video_expires = isset($paragraph['section_meta_video_expires']) ? $paragraph['section_meta_video_seconds'] : '';
 																	$data_section_meta_video_expires = array(
@@ -866,11 +866,12 @@ if($article['language_id']=='en'){
 																'maxlength' => 70,
 																'class' => 'form-control article_image_alt calc-length primary-keyword-phrase seo-content-keywords section_image_alt'
 															);
-															if($section_count == 0){
-																$data_section_image_alt['check_keyword'] = $primary_keyword_rule;	
+															$data_section_image_alt['check_keyword_paragraph'] ='true';
+															/*if($section_count == 0){
+																$data_section_image_alt['check_keyword_paragraph'] = $primary_keyword_rule;	
 															}else{
-																$data_section_image_alt['check_keyword'] ='true';
-															}
+																$data_section_image_alt['check_keyword_paragraph'] ='true';
+															}*/
 															if(!$section_image){
 																$data_section_image_alt['disabled'] = 'disabled';
 															}
@@ -896,21 +897,22 @@ if($article['language_id']=='en'){
 																'value' => set_value('section_text', $paragraph['section_text'], $html_escape=FALSE),
 																'class' => 'form-control init-editor primary-keyword-phrase paragraph-sentences'
 															);
-															if($section_count == 0){
+															$data_section_text['check_seo_rules'] =	'true';
+															/*if($section_count == 0){
 																$ruleArray=array(
 																	"rule"=>["keyword"]	
 																);
 																$data_section_text['check_seo_rules'] =	htmlentities(json_encode($ruleArray));
 															}else{
 																$data_section_text['check_seo_rules'] =	'true';
-															}
+															}*/
 															echo form_textarea($data_section_text);
 															echo form_error('section_text');
 															?>
 													<div class="input-group-append align-items-center input-textarea" style="right:30px;">
 														<span class="input-group-text text-success font-weight-bold char-remain"  id=""></span>
 														<?php if( $section_count == 0){?>
-														<span class="input-group-text text-danger font-weight-bold tooltip-hide"><i data-toggle="tooltip" data-html="true" data-placement="top" title="<small>The primary keyword phrase does not appear in the first paragraph of the article.</small>" class="fas fa-exclamation-triangle"></i></span>
+														<span class="input-group-text text-danger font-weight-bold tooltip-hide"><i data-toggle="tooltip" data-html="true" data-placement="top" title="<small>A keyword phrase does not appear in the first paragraph of the article.</small>" class="fas fa-exclamation-triangle"></i></span>
 														<?php } ?>
 														<span class="input-group-text text-warning font-weight-bold tooltip-hide"><i data-toggle="tooltip" data-html="true" data-placement="top" title="" class="fas fa-exclamation-triangle para_sentences" ></i></span>
 													</div>
@@ -962,7 +964,7 @@ if($article['language_id']=='en'){
 
 															<?php } ?>
 															</div>
-																<h3 class="mb-0">Callout</h3>
+																<h4 class="mb-0">Callout</h4>
 																<?php
 
 																	$data_callout_id_hide = array(
@@ -1029,79 +1031,170 @@ if($article['language_id']=='en'){
 															</a>
 														</div>
 													</div>
+													<!---- Social Media Callout Start ---->
+													<div class="social-media-callouts-collapse-<?php echo $section_count?> collapse <?php if($paragraph['social_media_callout_i18_id']) echo 'show';?> ">
+														<?php
+															$social_media_callout_id = set_value('social_media_callout_i18_id', $paragraph['social_media_callout_i18_id']);
+														?>
+														
+															<div class="page-inner-header position-relative mb-2">
+																<div class="delete-social-media-callout-container" >
+																	<?php 
+																	if($social_media_callout_id){?>
+																		<a class="deleteSocialMediaCallout"
+																			href="<?php echo site_url('/secure/articleslist/delete_social_media_callout/'.$lang.'/' . $social_media_callout_id);?>"
+																			data-toggle="confirmation" data-icon-type="error"
+																			data-title="Delete this callout section?"
+																			data-message="This social media callout will be removed from article and this can not be <b>Undone</b>."
+																			data-confirm-text="Delete"
+																			data-confirm-class="btn-danger"
+																			data-confirm-callback="calloutReload"
+																			data-cancel-text="Cancel"
+																			data-cancel-callback="dismissConfirmation"
+																			data-cancel-class="btn-default"
+																			data-target=".social-media-callouts-collapse-<?php echo $section_count?>">
+																			<i class="fas fa-trash-alt text-danger"
+																				data-toggle="tooltip" data-placement="top"
+																				data-original-title="Remove Social Media Callout"></i>
+																		</a>
+																		<?php }else{?>
+																			<a class="deleteSocialMediaCallout delete-social-media-callout"
+																			href="javascript:void(0)" 
+																			data-delete-social-media-callout=".social-media-callouts-collapse-<?php echo $section_count?>">
+																			
+																			<i class="fas fa-trash-alt text-danger"
+																				data-toggle="tooltip" data-placement="top"
+																				data-original-title="Remove Social Media Callout"></i>
+																			</a>
+
+																		<?php } ?>
+																</div>
+																<h4 class="mb-0">Social Media Callout</h4>
+																<?php
+
+																	$data_social_media_callout_id_hide = array(
+																		'type' => 'hidden',
+																		'name' => 'social_media_callout_i18_id',
+																		'value' => $social_media_callout_id,
+																		'class' => 'social_media_callout_i18_id'
+																	);
+																	echo form_input($data_social_media_callout_id_hide);
+
+																	?>
+															</div>
+															<div class="form-group mb-2">
+																<div class="row">
+																	<div class="col-md-8">
+																		<label class="h6"
+																			for="callout_title">Title
+																		</label>
+																	</div>
+																	<div class="col-md-4 text-right">
+																		
+																	</div>
+																</div>
+																<div class="input-group">
+																	<?php
+																		$data_section_social_media_callout_title = array(
+																			'name' => 'social_media_callout_title',
+																			'value' => set_value('social_media_callout_title',$paragraph['social_media_callout_title'],  $html_escape=FALSE),
+																			'maxlength' => 150,
+																			'placeholder' => 'Callout title max 150 characters in length',
+																			'class' => 'form-control calc-length seo-content-keywords callout_title social_media_callout_title'
+																		);
+																		echo form_input($data_section_social_media_callout_title);
+																		echo form_error('social_media_callout_title');
+																		?>
+																	<div class="input-group-append align-items-center input-text">
+																	<span class="input-group-text text-success font-weight-bold char-remain" id="">150</span>
+																	</div>
+																</div>
+															</div>
+														
+															
+													</div>
+													<!---- Social Media Callout End ---->
 													<div class="form-group text-left">
 														<span>
 													<a class="add-more-link-muted small add-callout initial-callout-hide" data-callout=".callouts-collapse-<?php echo $section_count?>" data-toggle="collapse1" href="javascript:void(0);" role="button" aria-expanded="false" aria-controls="callouts-collapse">
-																<i class="fas fa-plus fa-fw " style="margin-right:.25rem;font-size:85%;"></i>
-																Add Callout
-															</a>
-														</span>
-														<span class="ml-1">
-															<a class="add-more-link-muted small add-image-video initial-image-video-hide"  href="javascript:void(0);" >
-																<i class="fas fa-plus fa-fw " style="margin-right:.25rem;font-size:85%;"></i>
-																Add Image or Video
-															</a>
-														</span>
-													</div>
-													<!---- Callout End ---->
-												</div>
+														<i class="fas fa-plus fa-fw " style="margin-right:.25rem;font-size:85%;"></i>
+														Add Callout
+													</a>
+												</span>
+												<span class="ml-1">
+													<a class="add-more-link-muted small add-social-media-callout initial-callout-hide" data-social-media-callout=".social-media-callouts-collapse-<?php echo $section_count?>" data-toggle="collapse" href="javascript:void(0);" role="button" aria-expanded="false" aria-controls="callouts-collapse">
+														<i class="fas fa-plus fa-fw " style="margin-right:.25rem;font-size:85%;"></i>
+														Add Social Media Callout
+													</a>
+												</span>
+												<span class="ml-1">
+													<a class="add-more-link-muted small add-image-video initial-image-video-hide"  href="javascript:void(0);" >
+														<i class="fas fa-plus fa-fw " style="margin-right:.25rem;font-size:85%;"></i>
+														Add Image or Video
+													</a>
+												</span>
 											</div>
-										</div>
-										<?php
-										if($section_count == 1 && $cta_from_brief)
-										{
-											if(array_key_exists(0,$cta_from_brief))
-											{
-												$this->load->view('secure/contentarticlebrief/brief_cta_preview',$cta_from_brief[0]);
-											}
-										}
-										if($section_count == 4 && $cta_from_brief)
-										{
-											if(array_key_exists(1,$cta_from_brief))
-											{
-												$this->load->view('secure/contentarticlebrief/brief_cta_preview',$cta_from_brief[1]);
-											}
-										}
-										$section_count++;
-										}?>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group overflow-hidden ">
-												<a class="add-more-link-muted add-another-paragraph" href="javascript:;" data-repeater-create="" >
-													<i class="fas fa-plus"></i>
-													Add Another Paragraph
-												</a>
-											</div>
-										</div>
-										<div class="col-md-12 mb-3">
-										<?php 
-											if(array_key_exists(2,$cta_from_brief))
-											{
-												$this->load->view('secure/contentarticlebrief/brief_cta_preview',$cta_from_brief[2]);
-											}
-											?>
+											<!---- Callout End ---->
 										</div>
 									</div>
 								</div>
-								<!-------------Paragraphs End---------------->
-								
-								  <!-------------Backlink Start---------------->
-								 
-								  <!-------------Backlink End---------------->
-						</div>
-					</div>
-					<div class="col-md-4">
-						<!-------------Sidebar Start---------------->
-						<div id="optimizecontent-result-container"> 
-							<?php
-								$this->load->view('component/optimizecontent', $optimizecontent);
+								<?php
+								if($section_count == 1 && $cta_from_brief)
+								{
+									if(array_key_exists(0,$cta_from_brief))
+									{
+										$this->load->view('secure/contentarticlebrief/brief_cta_preview',$cta_from_brief[0]);
+									}
+								}
+								if($section_count == 4 && $cta_from_brief)
+								{
+									if(array_key_exists(1,$cta_from_brief))
+									{
+										$this->load->view('secure/contentarticlebrief/brief_cta_preview',$cta_from_brief[1]);
+									}
+								}
+								$section_count++;
+							}
 							?>
+							</div>
+							<div class="row">
+								<div class="col-md-8">
+									<div class="form-group overflow-hidden ">
+										<a class="add-more-link-muted add-another-paragraph" href="javascript:;" data-repeater-create="" >
+											<i class="fas fa-plus"></i>
+											Add Another Paragraph
+										</a>
+										
+									</div>
+								</div>
+								<div class="col-md-12 mb-3">
+									<?php 
+									if(array_key_exists(2,$cta_from_brief))
+									{
+										$this->load->view('secure/contentarticlebrief/brief_cta_preview',$cta_from_brief[2]);
+									}
+									?>
+								</div>
+							</div>
+
 						</div>
-						<!------------- Sidebar End ---------------->
+						<!-------------Paragraphs End---------------->
+						
+						<!-------------Backlink Start---------------->
+						<!-------------Backlink End---------------->
 					</div>
 				</div>
-	     </div>
+				<div class="col-md-4">
+					<!-------------Sidebar Start---------------->
+					<div id="optimizecontent-result-container"> 
+						<?php
+							$this->load->view('component/optimizecontent', $optimizecontent);
+						?>
+					</div>
+					<!------------- Sidebar End ---------------->
+				</div>
+			</div>
+		</div>
 	</div>
 	<!--- Article Tab Section End  --->
 	<!--- Promotion Tab Section Start  --->

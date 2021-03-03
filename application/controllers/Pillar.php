@@ -13,6 +13,7 @@ class Pillar extends Frontend_Controller
         $this->load->model('paragraph_model');
         $this->load->model('paragraph_i18_model');
         $this->load->model('callouts_i18_model');
+        $this->load->model('social_media_callouts_i18_model');
         //$this->load->model('backlink_model');
         //$this->load->model('backlink_i18_model');
         $this->load->model('promotion_model');
@@ -139,6 +140,7 @@ class Pillar extends Frontend_Controller
         if (count($paragraphs) <1 ) {
             $paragraphs[0] = $this->paragraph_model->get_new_t(true);
             $paragraphs[0]['callouts'][0] = $this->callouts_i18_model->get_new();
+            $paragraphs[0] = $this->social_media_callouts_i18_model->get_new();
         
         }
         /*if ($this->input->post("article[$lang][backlinks]")) {
@@ -487,6 +489,9 @@ class Pillar extends Frontend_Controller
                         $data_paragraph['article_id'] = $article_last_insert_id;
                         $data_paragraph['language_id'] = $lang;
 						unset($data_paragraph_i18['callouts']);
+                        unset($data_paragraph_i18['social_media_callout_i18_id']);
+                        unset($data_paragraph_i18['social_media_callout_title']);
+                        unset($data_paragraph_i18['social_media_platforms']);
 						unset($data_paragraph_i18['section_image_base64']);
                         $section_id = $this->paragraph_model->save($data_paragraph, $section_id);
 
@@ -507,6 +512,15 @@ class Pillar extends Frontend_Controller
 						if(array_key_exists('callouts', $paragraph)){
                             $callouts = $paragraph['callouts'];
                             $this->callouts_i18_model->save_article_i18_callouts($callouts, $section_id, $lang);
+                        }
+
+                        $sm_callouts = array();
+						if(array_key_exists('social_media_callout_title', $paragraph)){
+                            $sm_callouts['social_media_callout_title'] = $paragraph['social_media_callout_title'];
+                            $sm_callouts['social_media_platforms'] ='twitter';
+                            //pre($paragraph['social_media_callout_title']);
+                            
+                            $this->social_media_callouts_i18_model->save_article_i18_social_media_callouts($sm_callouts, $section_id, $lang);
                         }
 						
 					}

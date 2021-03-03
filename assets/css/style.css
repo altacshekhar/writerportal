@@ -2090,7 +2090,7 @@ div.dataTables_wrapper div.dataTables_processing {
 	}
 }
 
-.deleteParagraph, .deleteCallout {
+.deleteParagraph, .deleteCallout, .deleteSocialMediaCallout {
 	position: absolute;
 	left: -1.5rem;
 	top: 0;

@@ -22,6 +22,10 @@ class Articleslist extends Admin_Controller
         if ($this->data['is_admin']) {
             $user_id = null;
 		}
+		if ($user_type == 3) {
+			
+            redirect('secure/keyword','refresh');
+		}
 		if($user_type == 5 || $user_type == 6)
 		{
 			redirect('secure/linkbuilding','refresh');
@@ -501,6 +505,33 @@ class Articleslist extends Admin_Controller
 		if($callout_id > 0){
 			$this->load->model('callouts_i18_model');
 			$this->callouts_i18_model->deleteArticleCallout($callout_id, $language_id);
+			if ($this->db->affected_rows()) {
+				$dataArray = ['success' => 1];
+				$flashes = [
+					'type'  	  => 'notice',
+					'message'     => "Callout has been deleted!"
+				];
+			}
+		}
+
+		$dataArray['flashes'] = $flashes;
+		$this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($dataArray));
+	}
+
+	public function delete_social_media_callout($language_id, $sm_callout_id)
+    {
+		//pre_exit($language_id);
+		$dataArray = ['success' => 0];
+		$flashes = [
+			'type'  	  => 'error',
+			'message'     => 'Request is not authorized.'
+		];
+
+		if($sm_callout_id > 0){
+			$this->load->model('social_media_callouts_i18_model');
+			$this->social_media_callouts_i18_model->deleteArticleSocialMediaCallout($sm_callout_id, $language_id);
 			if ($this->db->affected_rows()) {
 				$dataArray = ['success' => 1];
 				$flashes = [

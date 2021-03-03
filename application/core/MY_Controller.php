@@ -606,7 +606,15 @@ class MY_Controller extends CI_Controller
 					}
 					
 				}
-
+				$body .= '    social_media_callouts: ' . PHP_EOL;
+				if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
+					$body .= '      t_title: ' . cleanMdHTML_i18n(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+					$body .= '      t_platforms: ' . cleanMdHTML_i18n(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+					
+				}else{
+					$body .= '      t_title: ' . cleanMdHTML(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+					$body .= '      t_platforms: ' . cleanMdHTML(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+				}
 				if( $article_type == 'recipe'){
 					$body .= 'ingredients: ' . PHP_EOL;
 					foreach ($paragraph['ingredients'] as $ingredient) {
@@ -917,6 +925,16 @@ class MY_Controller extends CI_Controller
 						}
 					
 					}
+
+					$body .= '    social_media_callouts: ' . PHP_EOL;
+					if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
+						$body .= '      t_title: ' . cleanMdHTML_i18n(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML_i18n(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+						
+					}else{
+						$body .= '      t_title: ' . cleanMdHTML(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+					}
 				}
 				if($paragraph['section_heading_type']=='h3'){
 					if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
@@ -976,6 +994,15 @@ class MY_Controller extends CI_Controller
 							$body .= '        t_callout_text: ' . cleanMdHTML(trim($callout['callout_text'])) . PHP_EOL;	
 						}
 						
+					}
+					$body .= '    social_media_callouts: ' . PHP_EOL;
+					if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
+						$body .= '      t_title: ' . cleanMdHTML_i18n(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML_i18n(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+						
+					}else{
+						$body .= '      t_title: ' . cleanMdHTML(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML(trim($paragraph['social_media_platforms'])) . PHP_EOL;
 					}
 				}
 				
@@ -1267,7 +1294,15 @@ class MY_Controller extends CI_Controller
 					}
 					
 				}
-
+				$body .= '    social_media_callouts: ' . PHP_EOL;
+				if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
+					$body .= '      t_title: ' . cleanMdHTML_i18n(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+					$body .= '      t_platforms: ' . cleanMdHTML_i18n(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+					
+				}else{
+					$body .= '      t_title: ' . cleanMdHTML(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+					$body .= '      t_platforms: ' . cleanMdHTML(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+				}
 				if( $article_type == 'recipe'){
 					$body .= 'ingredients: ' . PHP_EOL;
 					foreach ($paragraph['ingredients'] as $ingredient) {
@@ -1578,6 +1613,15 @@ class MY_Controller extends CI_Controller
 						}
 					
 					}
+					$body .= '    social_media_callouts: ' . PHP_EOL;
+					if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
+						$body .= '      t_title: ' . cleanMdHTML_i18n(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML_i18n(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+						
+					}else{
+						$body .= '      t_title: ' . cleanMdHTML(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+					}
 				}
 				if($paragraph['section_heading_type']=='h3'){
 					if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
@@ -1638,6 +1682,15 @@ class MY_Controller extends CI_Controller
 						}
 						
 					}
+					$body .= '    social_media_callouts: ' . PHP_EOL;
+					if($article['language_id'] == 'ja' || $article['language_id'] == 'ar'){
+						$body .= '      t_title: ' . cleanMdHTML_i18n(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML_i18n(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+						
+					}else{
+						$body .= '      t_title: ' . cleanMdHTML(trim($paragraph['social_media_callout_title'])) . PHP_EOL;
+						$body .= '      t_platforms: ' . cleanMdHTML(trim($paragraph['social_media_platforms'])) . PHP_EOL;
+					}
 				}
 				
 				
@@ -1646,7 +1699,6 @@ class MY_Controller extends CI_Controller
 		}
 
 		$body .= "---" . PHP_EOL;
-
 		return $body;
 	}
 
@@ -2757,46 +2809,6 @@ class MY_Controller extends CI_Controller
 		$result_array = $this->metatag_model->get();
 		return json_decode(json_encode($result_array), TRUE);
 	}
-
-	// public function get_page_scrap($serp_url,$keyword)
-	// {
-	// 	//$url = 'https://wplseotools.hubworks.com/keywordphrase';
-	// 	//$url = 'https://whookqa.hubworks.com/keywordphrase';
-	// 	$url = "http://localhost:5000/pagescrap";
-	// 	/* Init cURL resource */
-	// 	$ch = curl_init();
-	// 	curl_setopt($ch,CURLOPT_URL,$url);
-	// 	/* Array Parameter Data */
-	// 	$data_array = array(
-	// 		'keyword'=>$keyword,
-	// 		'url'=>$serp_url
-	// 	);
-	// 	//pre($data_array);
-
-	// 	$data =  json_encode($data_array);
-	// 	/* pass encoded JSON string to the POST fields */
-	// 	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		
-	// 	/* set return type json */
-	// 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			
-	// 	/* set the content type json */
-	// 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-	// 		'Content-Type:application/json'
-	// 	));
-			
-	// 	/* execute request */
-	// 	$output = curl_exec($ch);
-	// 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	// 		//echo $httpCode;
-	// 	if($output === false)
-	// 	{
-	// 		//echo 'Curl error: ' . curl_error($ch);
-	// 		$log_message .= 'Curl error: = ' . curl_error($ch) . PHP_EOL;
-			
-	// 	}
-	// 	return $output;
-	// }
 	public function get_optimizecontent_keyword_list($article_id, $lang_id, $keyword, $content = Null )
     {
 		$log_message = 'Optimize Content Log Start'  .PHP_EOL;
@@ -2816,8 +2828,8 @@ class MY_Controller extends CI_Controller
 			$content = strip_tags($content);
 					/* API URL */
 			//$url = 'https://wplseotools.hubworks.com/keywordphrase';
-			//$url = 'https://whookqa.hubworks.com/keywordphrase';
-			$url = 'http://localhost:5000/keywordphrase';
+			$url = 'https://whookqa.hubworks.com/keywordphrase';
+		
 			/* Init cURL resource */
 			$ch = curl_init();
 			curl_setopt($ch,CURLOPT_URL,$url);
@@ -2905,8 +2917,8 @@ class MY_Controller extends CI_Controller
 			$content = strip_tags($content);
 					/* API URL */
 			//$url = 'https://wplseotools.hubworks.com/keywordphrase';
-			//$url = 'https://whookqa.hubworks.com/keywordphrase';
-			$url = 'http://localhost:5000/keywordphrase';
+			$url = 'https://whookqa.hubworks.com/keywordphrase';
+		
 			/* Init cURL resource */
 			$ch = curl_init();
 			curl_setopt($ch,CURLOPT_URL,$url);

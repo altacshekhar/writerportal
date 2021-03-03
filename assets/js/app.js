@@ -501,8 +501,8 @@ jQuery(document).ready(function () {
 		show: function () {
 			//alert('outer');
 			var $container = jQuery(this);
-			$container.find(".section_title").attr("check_keyword","true");
-			$container.find(".section_image_alt").attr("check_keyword","true");
+			$container.find(".section_title").attr("check_keyword_paragraph","true");
+			$container.find(".section_image_alt").attr("check_keyword_paragraph","true");
 			$container.find("textarea").attr("check_seo_rules","true");
 			$container.find('.select2').remove();
 			$container.find('.holder-style').removeClass('embed-responsive-16by9').addClass('holder-active').css('background-image', '');
@@ -967,11 +967,13 @@ jQuery(document).ready(function () {
 		
 		if(clength >10){
 			jQuery(this).parents('.repeat-paragraph').find('.add-callout').removeClass("initial-callout-hide");
+			jQuery(this).parents('.repeat-paragraph').find('.add-social-media-callout').removeClass("initial-callout-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-image-video').removeClass("initial-image-video-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-ingredient').removeClass("initial-ingredient-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-steps').removeClass("initial-steps-hide");
 		}else{
 			jQuery(this).parents('.repeat-paragraph').find('.add-callout').addClass("initial-callout-hide");
+			jQuery(this).parents('.repeat-paragraph').find('.add-social-media-callout').addClass("initial-callout-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-image-video').addClass("initial-image-video-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-ingredient').addClass("initial-ingredient-hide");
 			jQuery(this).parents('.repeat-paragraph').find('.add-steps').addClass("initial-steps-hide");	
@@ -1222,6 +1224,77 @@ jQuery(document).ready(function () {
 		return isValid;
 	}, "Primary keyword does not appear in this field.");
 
+	jQuery.validator.addMethod("check_keyword_paragraph", function (value, element, param) {
+		var para_paramobj=JSON.parse(param);
+		console.log(para_paramobj);
+		console.log({element});
+		var tooltipTitle;
+		var errorTitle;
+		var keyword = jQuery('input[name="keyword"]').val();
+		var currEleObject = jQuery(element);
+		var inputGroupObj = $(element).parents('.input-group')
+		var heading_type = $(element).parents('.form-group').find('.section_heading_type').val();
+		console.log({heading_type});
+		var isValid = true;
+		var res = value.search(new RegExp(keyword, "i"));
+		inputGroupObj.find(".tooltip-hide").hide();
+		var pkeyword = keyword;
+		
+		var para_ruleObj = para_paramobj.rule;
+		if(heading_type=='h2'){
+			if(typeof para_ruleObj != 'undefined'){
+				console.log('para_ruleObj.indexOf("primary_keyword")='+para_ruleObj.indexOf("primary"));
+				if(para_ruleObj.indexOf("primary") > -1){
+	
+					if (res < 0) {
+						errorTitle = 'Primary keyword does not appear in this field.';
+						tooltipTitle = '<small class="d-block">' + errorTitle + '</small>';
+						inputGroupObj.find(".tooltip-hide.text-danger i").attr('data-original-title', tooltipTitle).tooltip('update');
+						inputGroupObj.find(".tooltip-hide.text-danger").show();
+						isValid = false;
+						
+					}
+					
+	
+				}
+			}else{
+				var keywords = [];
+				jQuery(".content-o-sidebar .border-success .kw-group-item, .content-o-sidebar .border-primary .kw-group-item").each(function () {
+					keyword = $(this).text().toLowerCase().trim();
+					keywords.push(keyword);
+				});
+				keywords.push(pkeyword);
+				console.log({
+					pkeyword
+				});
+				console.log({
+					keywords
+				});
+				var isKeywordsFound = findWords(value, keywords);
+	
+				console.log({
+					isKeywordsFound
+				});
+				if (!isKeywordsFound) {
+					errorTitle = 'A keyword does not appear in this field.';
+					tooltipTitle = '<small class="d-block">' + errorTitle + '</small>';
+					inputGroupObj.find(".tooltip-hide.text-danger i").attr('data-original-title', tooltipTitle).tooltip('update');
+					inputGroupObj.find(".tooltip-hide.text-danger").show();
+					isValid = false;
+				}
+			}
+		}
+		
+		
+		currEleObject.parent('.trumbowyg-box').removeClass("form-control-invalid");
+		if (!isValid) {
+			currEleObject.parent('.trumbowyg-box').addClass("form-control-invalid");
+		}
+		$.validator.messages["check_keyword_paragraph"] = errorTitle;
+		return isValid;
+	}, "Primary keyword does not appear in this field.");
+
+
 	var warningArray = [],
 		fatalArray = [];
 	jQuery.validator.addMethod("check_seo_rules", function (value, element, param) {
@@ -1254,9 +1327,33 @@ jQuery(document).ready(function () {
 		if(typeof ruleObj != 'undefined'){
 			if(ruleObj.indexOf("keywords")){
 				var keyword = jQuery('input[name="keyword"]').val();
-				var res = value.search(new RegExp(keyword, "i"));
+				let pkeyword=keyword;
+				/*var res = value.search(new RegExp(keyword, "i"));
 				if (res < 0) {
 					fatalErrorMsg = 'Primary keyword does not appear in this field.';
+					tooltipStopTitle[i++] = '<small class="d-block text-left">' + fatalErrorMsg + '</small>';
+					fatalArray[trumbowygId].push(fatalErrorMsg);
+					isValid = false;
+				}*/
+				var keywords = [];
+				jQuery(".content-o-sidebar .border-success .kw-group-item, .content-o-sidebar .border-primary .kw-group-item").each(function () {
+					keyword = $(this).text().toLowerCase().trim();
+					keywords.push(keyword);
+				});
+				keywords.push(pkeyword);
+				console.log({
+					pkeyword
+				});
+				console.log({
+					keywords
+				});
+				var isKeywordsFound = findWords(value, keywords);
+	
+				console.log({
+					isKeywordsFound
+				});
+				if (!isKeywordsFound) {
+					fatalErrorMsg = 'A keyword does not appear in this field.';
 					tooltipStopTitle[i++] = '<small class="d-block text-left">' + fatalErrorMsg + '</small>';
 					fatalArray[trumbowygId].push(fatalErrorMsg);
 					isValid = false;
@@ -1378,6 +1475,10 @@ jQuery(document).ready(function () {
 			var globalWarningArray = [];
 
 			var articleContant = '';
+			var paragraphContant = '';
+			paragraphContant += jQuery('#trumbowyg-editor-0').html();
+			paragraphContant += jQuery('#trumbowyg-editor-2').html();
+			paragraphContant += jQuery('#trumbowyg-editor-4').html();
 			
 			jQuery('.article-body:input').each(function (k, v) {
 				articleContant += jQuery(this).val();
@@ -1402,7 +1503,7 @@ jQuery(document).ready(function () {
 				warningErrorMsg = 'Add a callout to the article to make it more engaging.';
 				globalWarningArray.push(warningErrorMsg);
 			}
-			var statisticRegEx = /%|percent/gi;
+			var statisticRegEx = /%|percent|percentage|billion|billions/gi;
 			console.log({articleContant})
 			var statisticRes = articleContant.match(statisticRegEx); 
 			if (statisticRes == null) {
@@ -1410,37 +1511,47 @@ jQuery(document).ready(function () {
 				globalWarningArray.push(warningErrorMsg);
 			}
 			var websiteArray = ['altametrics.com', 'anyconnector.com', 'hubworks.com', 'plumdigitalsignage.com', 'plummail.com', 'plumpos.com', 'rmagazine.com', 'smarterkitchen.com', 'wpstesting"', 'zipchecklist.com', 'zipclock.com', 'zipforecasting.com', 'ziphaccp.com', 'zipinventory.com', 'zipordering.com', 'zipposdashboard.com', 'zipreporting.com', 'zipschedules.com', 'zipshiftbook.com', 'zipsupplychain.com', 'ziptemperature.com', 'ziptraining.com', 'ziptraininglms.com'];
-			var hostWebsite = jQuery("#article_website_id").val()
+			var hostWebsite = jQuery("#article_website_id").val();
+			var articleType = jQuery("#articletype").val();
 			var articleContantHtml = $('<div></div>').html(articleContant);
 
 			var externalLinkArray = [],
 				internalLinkArray = [],
 				crossLinkArray = [],
-				hyperLinkArray = [];
+				hyperLinkArray = [],
+				backlinkLinkArray = [];
 				articleContantHtml.find('a').each(function () {
 					var currHref = $(this).attr('href');
 					var domainName = getDomain(currHref);
-	
-					if (hyperLinkArray.indexOf(domainName === -1)) {
+					if (hyperLinkArray.indexOf(domainName) === -1) {
 						hyperLinkArray.push(domainName);
 					}
-	
-					if (domainName !== hostWebsite && externalLinkArray.indexOf(domainName === -1) && externalLinkArray.indexOf(websiteArray) != -1) {
+					if (domainName != hostWebsite && externalLinkArray.indexOf(domainName) === -1 && websiteArray.indexOf(domainName) == -1) {
 						externalLinkArray.push(domainName);
 					}
-					if (domainName == hostWebsite && internalLinkArray.indexOf(domainName === -1)) {
+					if (domainName == hostWebsite && internalLinkArray.indexOf(domainName) === -1) {
 						internalLinkArray.push(domainName);
 					}
 					if (domainName != hostWebsite && websiteArray.indexOf(domainName) != -1) {
 						crossLinkArray.push(domainName);
 					}
 				});
+				var paragraphContantHtml = $('<div></div>').html(paragraphContant);
+				paragraphContantHtml.find('a').each(function () {
+					var currHref = $(this).attr('href');
+					var domainName = getDomain(currHref);
+					if (domainName != hostWebsite && backlinkLinkArray.indexOf(domainName) === -1 && websiteArray.indexOf(domainName) == -1) {
+						backlinkLinkArray.push(domainName);
+					}
+
+				});
 
 			console.log({
 				hyperLinkArray,
 				externalLinkArray,
 				internalLinkArray,
-				crossLinkArray
+				crossLinkArray,
+				backlinkLinkArray
 			});
 
 			if (externalLinkArray.length > 4) {
@@ -1454,12 +1565,19 @@ jQuery(document).ready(function () {
 			}
 
 			if (crossLinkArray.length < 2) {
-				warningErrorMsg = 'There are less than 2 crosslinks pointing to articles on our other websites.';
-				globalWarningArray.push(warningErrorMsg);
+				if(articleType == 'article' || articleType == 'news'){
+					warningErrorMsg = 'There are less than 2 crosslinks pointing to articles on our other websites.';
+					globalWarningArray.push(warningErrorMsg);
+				}
+				
 			}
 
 			if (hyperLinkArray.length > 10) {
 				fatalErrorMsg = 'A maximum of 10 links are allowed per article. Please review and try again.';
+				globalFatalArray.push(fatalErrorMsg);
+			}
+			if (backlinkLinkArray.length > 0) {
+				fatalErrorMsg = 'The article cannot contain a backlink in the top ½ of the page.';
 				globalFatalArray.push(fatalErrorMsg);
 			}
 
@@ -1544,6 +1662,10 @@ jQuery(document).ready(function () {
 
 	jQuery('#article-publish-modal').on('click', '.publish-article-github', function (event) {
 		jQuery('#article-form')[0].submit();
+	});
+
+	jQuery(".section_heading_type" ).change(function() {
+		jQuery(this).parents('.form-group').find('.section_title').valid(); 
 	});
 
 		var $language_modal = jQuery('#language-modal');
@@ -1647,6 +1769,27 @@ jQuery(document).ready(function () {
 		
 		
 	});	
+
+	jQuery(document).on('click', '.add-social-media-callout', function (event) {
+		
+		var curr_sm_callout_obj 	= jQuery(this);
+		var social_media_callout_id 	= curr_sm_callout_obj.data('social-media-callout');
+		//alert(callout_id);
+		$(social_media_callout_id).collapse('show');
+		
+		
+	});	
+
+	jQuery(document).on('click', '.delete-social-media-callout', function (event) {
+		
+		var curr_sm_callout_obj 	= jQuery(this);
+		var delete_social_media_callout_id 	= curr_sm_callout_obj.data('delete-social-media-callout');
+		//alert(callout_id);
+		$(delete_social_media_callout_id).collapse('hide');
+		$(delete_social_media_callout_id).find(".social_media_callout_title").val(''); 
+		
+		
+	});
 
 	jQuery(document).on('click', '.add-image-video', function (event) {
 
