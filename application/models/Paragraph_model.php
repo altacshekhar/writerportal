@@ -201,6 +201,7 @@ class Paragraph_model extends MY_Model
 		$this->load->model('steps_i18_model');
 		$this->load->model('ingredients_i18_model');
 		$this->load->model('callouts_i18_model');
+		$this->load->model('social_media_callouts_i18_model');
 		$this->load->model('paragraph_i18_model');
 		$where = "language_id='".$language_id."' AND section_id = '".$section_id."'";
 		$data_section_i18 = (array) $this->paragraph_i18_model->get_by($where, TRUE);
@@ -226,7 +227,8 @@ class Paragraph_model extends MY_Model
 		$ingredient_table = $this->ingredients_i18_model->getTableName();
 		$steps_table = $this->steps_i18_model->getTableName();
 		$callouts_table = $this->callouts_i18_model->getTableName();
-		$tables = array($ingredient_table, $steps_table, $callouts_table);
+		$social_media_callouts_table = $this->social_media_callouts_i18_model->getTableName();
+		$tables = array($ingredient_table, $steps_table, $callouts_table, $social_media_callouts_table);
 		$this->db->delete($tables, array('section_id' => $section_id, 'language_id' => $language_id)); 
 		//pre($this->db->last_query());
 		$this->db->flush_cache();

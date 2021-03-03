@@ -511,6 +511,7 @@ jQuery(document).ready(function () {
 			$container.find('.youtubevideo').html('');
 			$container.find('.delete_image').hide();
 			$container.find('.inner-repeater').removeClass('show');
+			$container.find('.social-media-callouts-collapse-0').removeClass('show');
 			$container.find('.image-video-collapse').removeClass('show');
 			var delete_p = '<a href="javascript:void(0);" data-repeater-delete class="deleteParagraph" ><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Paragraph"></i></a>';
 			$container.find('.delete-paragraph-container').html(delete_p);
@@ -518,6 +519,9 @@ jQuery(document).ready(function () {
 			$container.find('.delete-image-container').html(delete_i_v);
 			var delete_c_o = '<a href="javascript:void(0);" data-repeater-delete  class="deleteCallout"><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Callout"></i></a>';
 			$container.find('.delete-callout-container').html(delete_c_o);
+
+			var delete_sm_c_o = '<a href="javascript:void(0);" class="deleteSocialMediaCallout delete-social-media-callout"><i class="fas fa-trash-alt text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove Callout"></i></a>';
+			$container.find('.delete-social-media-callout-container').html(delete_sm_c_o);
 		
 			
 			$container.slideDown(function () {
