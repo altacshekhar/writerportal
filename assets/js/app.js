@@ -1805,6 +1805,7 @@ jQuery(document).ready(function () {
 	jQuery(document).on('click', '.check-score', function (event) {
 		var curr_obj 	= jQuery(this);
 		var article_id 	= curr_obj.data('article');
+		var brief_id 	= curr_obj.data('brief');
 		var lang_id 	= curr_obj.data('lang');
 		var keyword 	= curr_obj.data('keyword');
 		var page_content = '';
@@ -1821,7 +1822,7 @@ jQuery(document).ready(function () {
 		page_content = page_content.replace( /[\s\n\r]+/g, ' ').trim();
 		//console.log(page_content);
 		//jQuery('#optimizecontent-result-container').html('<div class="text-center"><img style="width:60px" src="' + base_url + 'assets/images/loading.svg"></div>');
-	
+	    console.log('brief_id: '+ brief_id);
 		jQuery.ajax({
 			cache: true,
 			url: base_url + "optimizecontent/getOptimizeContent",
@@ -1829,6 +1830,7 @@ jQuery(document).ready(function () {
 			datatype: 'json',
 			data: {
 				"article_id": article_id,
+				"brief_id": brief_id,
 				'lang_id': lang_id,
 				'keyword': keyword,
 				'content': page_content

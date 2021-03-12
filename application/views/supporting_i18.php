@@ -95,7 +95,7 @@ if($article['language_id']=='en'){
 							Export keywords
 						</a>
 
-						<button type="button" data-article="<?php echo $article['article_id'] ?>"
+						<button type="button" data-article="<?php echo $article['article_id'] ?>" data-brief ="<?php echo $article['article_brief_id'] ?>"
 							data-lang="<?php echo $article['language_id'] ?>" data-keyword="<?php echo $keyword ?>" id="check-score" class="btn btn-secondary btn-icon check-score" <?php echo ($article['language_id']=='en') ? '' : 'disabled'?>>
 							<span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
 							<i class="fas fa-tachometer-alt"></i> 
@@ -164,6 +164,14 @@ if($article['language_id']=='en'){
 							'class' => 'article_target_score'
 						);
 						echo form_input($data_article_target_score_hide);
+						$data_article_sitelink_crosslink_used_hide = array(
+							'type' => 'hidden',
+							'name' => 'article_sitelink_crosslink_used',
+							'id' => 'article_sitelink_crosslink_used',
+							'value' => '',
+							'class' => 'article_sitelink_crosslink_used'
+						);
+						echo form_input($data_article_sitelink_crosslink_used_hide);
 						$data_button_click_hide = array(
 							'type' => 'hidden',
 							'name' => 'form_action',

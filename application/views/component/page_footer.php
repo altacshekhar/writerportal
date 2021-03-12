@@ -84,6 +84,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	include_once 'articlebrief_report_modal.php';
 	include_once 'livelinks_report_modal.php';
 	include_once 'cta_preview_modal.php';
+	include_once 'article_sitelink_modal.php';
+	include_once 'article_crosslink_modal.php';
 	?>
 <a href="#site-header-wrapper" class="scroll-top-wrapper text-white show go-to">
 	<span class="scroll-top-inner">

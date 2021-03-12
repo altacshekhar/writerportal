@@ -27,6 +27,7 @@ class Recipe extends Frontend_Controller
         $this->load->model('website_model');
         $this->load->model('metatag_model');
         $this->load->model('contentarticlesbrief_model');
+        $this->load->model('content_brief_link_model');
     }
 
     public function index($id = null, $lang = 'en')
@@ -332,6 +333,21 @@ class Recipe extends Frontend_Controller
                 $article_status = $i18_row['article_status'];
             }else{
                 $article_i18_id=NULL;  
+            }
+
+            if($this->input->post("article_sitelink_crosslink_used")){
+                //pre(json_decode($this->input->post("article_sitelink_crosslink_used"),true));
+                //die;
+                $links = json_decode($this->input->post("article_sitelink_crosslink_used"),true);
+                foreach ($links  as $link) {
+                    $link_id = $link;
+                    $data_used_update = array(
+                        "is_used" => true,
+                    );
+                    $this->content_brief_link_model->save($data_used_update, $link_id);
+                }
+                //die;
+                
             }
            
             $data_i18['article_meta_abstract'] = $this->input->post("article[$lang][article_description]");
@@ -730,6 +746,7 @@ class Recipe extends Frontend_Controller
         $this->data['optimizecontent'] = $this->get_optimizecontent_keyword_list($id, $lang, $keyword);
         $this->data['articlesbrief'] = (array) $this->contentarticlesbrief_model->get($article['article_brief_id']);
         $this->data['writers'] = $this->contentarticlesbrief_model->get_user_list();
+        $this->data['links'] = $this->content_brief_link_model->get_link_list($article['article_brief_id']);
         //$this->data['script_to_load'] = array(site_url('assets/js/seophrase.js'));
 		$this->load->view('_main_layout', $this->data);
     }

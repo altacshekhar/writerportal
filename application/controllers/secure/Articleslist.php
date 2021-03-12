@@ -22,10 +22,6 @@ class Articleslist extends Admin_Controller
         if ($this->data['is_admin']) {
             $user_id = null;
 		}
-		if ($user_type == 3) {
-			
-            redirect('secure/keyword','refresh');
-		}
 		if($user_type == 5 || $user_type == 6)
 		{
 			redirect('secure/linkbuilding','refresh');

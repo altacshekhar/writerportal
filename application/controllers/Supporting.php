@@ -25,6 +25,7 @@ class Supporting extends Frontend_Controller
         $this->load->model('website_model');
         $this->load->model('metatag_model');
         $this->load->model('contentarticlesbrief_model');
+        $this->load->model('content_brief_link_model');
     }
 
     public function index($id = null, $lang = 'en')
@@ -139,7 +140,8 @@ class Supporting extends Frontend_Controller
         if (count($paragraphs) <1 ) {
             $paragraphs[0] = $this->paragraph_model->get_new_t(true);
             $paragraphs[0]['callouts'][0] = $this->callouts_i18_model->get_new();
-            $paragraphs[0] = $this->social_media_callouts_i18_model->get_new();
+            $paragraphs[0]['social_media_callout_i18_id'] =  '';
+			$paragraphs[0]['social_media_callout_title'] =  '';
         
         }
         /*if ($this->input->post("article[$lang][backlinks]")) {
@@ -330,6 +332,21 @@ class Supporting extends Frontend_Controller
                 $article_status = $i18_row['article_status'];
             }else{
                 $article_i18_id=NULL;  
+            }
+
+            if($this->input->post("article_sitelink_crosslink_used")){
+                //pre(json_decode($this->input->post("article_sitelink_crosslink_used"),true));
+                //die;
+                $links = json_decode($this->input->post("article_sitelink_crosslink_used"),true);
+                foreach ($links  as $link) {
+                    $link_id = $link;
+                    $data_used_update = array(
+                        "is_used" => true,
+                    );
+                    $this->content_brief_link_model->save($data_used_update, $link_id);
+                }
+                //die;
+                
             }
            
             $data_i18['article_meta_abstract'] = $this->input->post("article[$lang][article_description]");
@@ -736,6 +753,7 @@ class Supporting extends Frontend_Controller
         $this->data['pillararticle_info'] = $this->article_model->get_pillar_article_by_id($article['article_pillar_id'], $article['article_site_id'], $lang);
  	$this->data['articlesbrief'] = (array) $this->contentarticlesbrief_model->get($article['article_brief_id']);
         $this->data['writers'] = $this->contentarticlesbrief_model->get_user_list();
+        $this->data['links'] = $this->content_brief_link_model->get_link_list($article['article_brief_id']);
         //$this->data['script_to_load'] = array(site_url('assets/js/seophrase.js'));
         //$this->data['script_to_load'] = array(site_url('assets/js/newarticle.js'));
 		$this->load->view('_main_layout', $this->data);

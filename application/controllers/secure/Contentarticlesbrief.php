@@ -5,6 +5,7 @@ if (!defined('BASEPATH')) {
 
 class Contentarticlesbrief extends Admin_Controller
 {
+	private $da_value = 20;
     public function __construct()
     {
 		parent::__construct();
@@ -21,6 +22,7 @@ class Contentarticlesbrief extends Admin_Controller
 		$this->load->model('contentarticlebrief_paragraph_model');
 		$this->load->model('contentarticlebrief_cta_model');
 		$this->load->model('cta_model');
+		$this->load->model('content_brief_link_model');
 		$this->load->library('Pdf');
 		$this->load->helper("file");
 		//$this->data['websites'] = $this->articlebrief_model->get_github_repo();
@@ -56,11 +58,15 @@ class Contentarticlesbrief extends Admin_Controller
 
     public function add($keyword_id, $id = NULL)
     {
+		$sitelinks = array();
+		$crosslinks = array();
 		if (!$this->user_model->loggedin()) {redirect('/', 'refresh');}
         if ($id) {
 			$this->data['articlesbrief'] = (array) $this->contentarticlesbrief_model->get($id);
 			$this->data['articlebrief_paragraph'] = $this->contentarticlebrief_paragraph_model->get_paragraph_by_brief($id);
 			$this->data['articlebrief_cta'] = $this->contentarticlebrief_cta_model->get_article_brief_cta($id);
+			$this->data['sitelinks']= $this->content_brief_link_model->get_brief_link_list($id, $link_type='sitelink');
+			$this->data['crosslinks']= $this->content_brief_link_model->get_brief_link_list($id, $link_type='crosslink');
 			if(!$this->data['articlesbrief']['brief_primary_keyword'])
 				$this->data['articlesbrief']['brief_primary_keyword'] = $this->get_keyword($keyword_id);
         } else {
@@ -68,7 +74,10 @@ class Contentarticlesbrief extends Admin_Controller
 			$this->data['articlesbrief']['brief_primary_keyword'] = $this->get_keyword($keyword_id);
 			$this->data['articlebrief_paragraph'] = [];
 			$this->data['articlebrief_cta'] = [];
+			$this->data['sitelinks']= [];
+			$this->data['crosslinks']= [];
 		}
+		$this->data['keyword_id'] = $keyword_id;
 		$this->data['articlesbrief']['website'] = $this->get_website($keyword_id);
 		
 		$keyword_analysis = [];
@@ -285,6 +294,58 @@ class Contentarticlesbrief extends Admin_Controller
 					}
 				}
 			}
+			
+			
+			if ($this->input->post('sitelink')) {
+				$sitelinks = $this->input->post('sitelink');
+			}
+			if (!empty($sitelinks)) {
+
+				foreach($sitelinks as $sitelink){
+					$data_sitelink = array();
+					$sitelink_id = NULL;
+					if ($sitelink['link_id']) {
+						$sitelink_id = $sitelink['link_id'];
+					}
+					$data_sitelink['brief_id']  = $brief_id;
+					$data_sitelink['content_brief_articles_id'] = $sitelink['id'];
+					$data_sitelink['content_brief_anchor_text'] = $sitelink['text'];
+					$data_sitelink['content_brief_url'] = $sitelink['url'];
+					$data_sitelink['content_brief_link_type'] = $sitelink['type'];
+
+					$this->content_brief_link_model->save($data_sitelink, $sitelink_id);
+
+				}
+
+			}
+
+			if ($this->input->post('crosslink')) {
+				$crosslinks = $this->input->post('crosslink');
+			}
+			//pre($crosslinks);
+			if (!empty($crosslinks)) {
+
+				foreach($crosslinks as $crosslink){
+					$data_crosslink = array();
+					$crosslink_id = NULL;
+					if ($crosslink['link_id']) {
+						$crosslink_id =  $crosslink['link_id'];
+					}
+					$data_crosslink['brief_id']  = $brief_id;
+					$data_crosslink['content_brief_articles_id'] = $crosslink['id'];
+					$data_crosslink['content_brief_anchor_text'] = $crosslink['text'];
+					$data_crosslink['content_brief_url'] = $crosslink['url'];
+					$data_crosslink['content_brief_link_type'] = $crosslink['type'];
+					//pre($crosslink_id);
+					//pre($data_crosslink);
+
+					$this->content_brief_link_model->save($data_crosslink, $crosslink_id);
+					//pre($this->db->last_query());
+
+				}
+
+			}
+			
 			$key_data_save = array();
 			$key_data_save['status'] = 3; //status: 3 => 'Brief submitted. Ready for writer to submit article.'
 			$this->keyword_model->save($key_data_save, $keyword_id);
@@ -342,15 +403,104 @@ class Contentarticlesbrief extends Admin_Controller
 		$this->data['optimizecontent'] = $this->get_brief_keyword_list($keyword_id);
 		//pre_exit($this->data['optimizecontent']);
 		$this->data['pillar_list'] = $this->article_model->get_pillar_article($website);
+		//$this->data['website_list'] = $this->get_crosslink_website($website);
         $this->data['subview'] = 'secure/contentarticlebrief/add';
         $this->load->view('_main_layout', $this->data);
     }
+
+	public function searchEngineScraping()
+	{
+		$domain_blacklisted = ['www.mastersindatascience.org']; // Blacklist Domain List will come from the database
+		$search_operators = ["top 10 internet resources"]; // All Search Operators on the basis of campaign type 
+ 		$url = "http://localhost:5000/seoscrap";
+		//$url = "https://whookqa.hubworks.com/seoscrap";
+		$keyword = "business data processing";
+		$response = $this->pythonapicall($url,$keyword,$search_operators);
+		$result = json_decode($response,true);
+		$list_of_domains = $result['result'];
+		$final_output = [];
+		foreach($list_of_domains as $domain)
+		{
+			$domain = rtrim($domain,'/');
+			if(!in_array($domain,$domain_blacklisted))
+			{
+				$da_rd = $this->getSemrushData($domain);
+				if($da_rd[$domain]['da'] > 20)
+					$final_output[$domain] = $da_rd[$domain];
+			}
+		}
+		pre_exit($final_output);
+	}
+
+	public function getSemrushData($target)
+	{
+		$return = false;
+		$endpoint = 'https://api.semrush.com/analytics/v1/';
+
+		$params = array(
+			'key'=>'320858172aee5f8cb6936ea13dd70980',
+			'type'=>'backlinks_overview',
+			'target'=>$target,
+			'target_type'=>'root_domain',
+			'export_columns'=>'ascore,domains_num',
+		);
+		$url = $endpoint . '?' . http_build_query($params);
+		//echo $url;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_USERAGENT,"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		curl_close($ch);
+		$search = 'ERROR';
+		if(!preg_match("/{$search}/i", $result)) {
+			$result = trim(str_replace("ascore;domains_num", "", $result));
+			$domain_array = array();
+			foreach(preg_split("/((\r?\n)|(\r\n?))/", $result) as $key=>$line){
+				list($ascore,$domains_num) = str_getcsv($line,';');
+				$domain_array[$target] = ['da' => $ascore,'rd' => $domains_num];
+			}
+		}
+		return $domain_array;
+	}
+
+	public function pythonapicall($url,$keyword,$search_operators)
+	{
+		/* Init cURL resource */
+		$ch = curl_init();
+		curl_setopt($ch,CURLOPT_URL,$url);
+		/* Array Parameter Data */
+		$data_array = array(
+			'keyword'=>$keyword,
+			'search_operators'=>$search_operators
+		);
+
+		$data =  json_encode($data_array);
+		/* pass encoded JSON string to the POST fields */
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		
+		/* set return type json */
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			
+		/* set the content type json */
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type:application/json'
+		));
+			
+		/* execute request */
+		$output = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if($output === false)
+		{
+			$log_message .= 'Curl error: = ' . curl_error($ch) . PHP_EOL;
+		}
+		return $output;
+	}
 	
 	public function get_page_scrap($serp_url,$keyword)
 	{
-		//$url = 'https://wplseotools.hubworks.com/keywordphrase';
-		//$url = 'https://whookqa.hubworks.com/keywordphrase';
 		$url = "https://whookqa.hubworks.com/pagescrap";
+		//$url = "http://localhost:5000/pagescrap";
 		/* Init cURL resource */
 		$ch = curl_init();
 		curl_setopt($ch,CURLOPT_URL,$url);
@@ -423,6 +573,19 @@ class Contentarticlesbrief extends Admin_Controller
 		}
         $this->add($id);
 	}
+	public function get_crosslink_website($website)
+    {
+		$this->load->model('github_model');
+		$result_array = $this->github_model->get();
+		foreach ($result_array  as $result) {
+			if($result->site_id!= $website){
+				$website_array[] = $result->site_id;
+			}
+			
+		}
+
+		return $website_array;
+	}
 
 	public function get_keyword($keyword_id)
     {
@@ -465,8 +628,7 @@ class Contentarticlesbrief extends Admin_Controller
 	}
 
 	public function get_brief_keyword_list($keyword_id)
-    {
-		
+    {	
 		$this->db->select("keyword_content_performance");
 		$this->db->where('keyword_id', (int) $keyword_id);
 		$result_array = $this->db->get('article_keyword')->result_array();
@@ -792,6 +954,357 @@ class Contentarticlesbrief extends Admin_Controller
 		$articles = $this->article_i18_model->get_by(['article_status' => 'published','article_site_structure_type' => 'cluster','language_id' => 'en']);
 		$data['articles'] = $articles;
 		$this->load->view('secure/articleslist/list_of_article',$data);
+	}
+
+	public function checkBriefScore()
+	{
+		$keyword_id = $this->input->post('keyword');
+		$this->load->model('keyword_model');
+		$data = $this->keyword_model->get($keyword_id);
+		$content = $this->input->post('content');
+		if($data)
+		{
+			$keyword_data = json_decode($data->keyword_content_performance,true);
+			$keyword = $keyword_data['content_performance']['optimizing_content_keyword'];
+			$lang_id = 'en';
+			$article_id = 'kw_'.$keyword_id;
+			$remove_array = array("<br><br><br>","<br><br>","<br>","<br/>","<br />","<br></br>", "&nbsp;");
+			$content = str_replace($remove_array, " ", $content);
+			$json_data = $this->get_content_optimize_brief($article_id, $lang_id, $keyword, $content);
+			$result['optimizecontent'] = $json_data['result'];
+			$this->load->library('parser');
+			$dataArray = ['success' => true];
+			$dataArray['newContent'] = $this->parser->parse('secure/contentarticlebrief/topic-score-section', $result, TRUE);
+		}
+		else
+		{
+			$dataArray = ['success' => false];
+		}
+		$this->output
+		->set_content_type('application/json')
+		->set_output(json_encode($dataArray));
+	}
+
+	public function get_content_optimize_brief($article_id, $lang_id, $keyword, $content = Null )
+    {
+		$log_message = 'Optimize Content Log Start'  .PHP_EOL;
+		if($content){
+			$no_of_search_count = 20;
+			$content = strip_tags($content);
+			/* API URL */
+			//$url = 'https://wplseotools.hubworks.com/keywordphrase';
+			$url = 'https://whookqa.hubworks.com/keywordphrase';
+			//$url = 'http://localhost:5000/keywordphrase';
+			/* Init cURL resource */
+			$ch = curl_init();
+			curl_setopt($ch,CURLOPT_URL,$url);
+			/* Array Parameter Data */
+			$data_array = array(
+				'keyword'=>$keyword,
+				'page_content'=>$content,
+				'page_id'=>$article_id,
+				'lang'=>$lang_id,
+				'no_of_search_count'=>$no_of_search_count
+			);
+			$log_message .= 'Api url = ' . $url . PHP_EOL;
+		    $log_message .= 'keyword = ' . $keyword . PHP_EOL;
+			$log_message .= 'page_content = ' . $content . PHP_EOL;
+			$log_message .= 'page_id = ' . $article_id . PHP_EOL;
+			$log_message .= 'lang = ' . $lang_id . PHP_EOL;
+			$log_message .= 'no_of_search_count = ' . $no_of_search_count . PHP_EOL;
+			$data =  json_encode($data_array);
+			/* pass encoded JSON string to the POST fields */
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			/* set return type json */
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			/* set the content type json */
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+						'Content-Type:application/json'
+					));
+				
+			/* execute request */
+			$output = curl_exec($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$log_message .= 'Curl httpCode : = ' . $httpCode . PHP_EOL;
+			if($output === false)
+			{
+				//echo 'Curl error: ' . curl_error($ch);
+				$log_message .= 'Curl error: = ' . curl_error($ch) . PHP_EOL;
+			}
+			else
+			{
+				$log_message .= 'Curl Response = ' . $output . PHP_EOL;
+				$log_message .= 'Optimize Content Log End'  .PHP_EOL;
+				$this->writeLog($log_message);
+				return json_decode($output, true);
+			}
+			/* close cURL resource */
+			curl_close($ch);
+		}
+	}
+	
+	public function articles_sitelink_list()
+	{
+		$website = $this->input->post("website");
+		$selected_sitelink = $this->input->post("selected_sitelink") ? : array() ;
+		$this->db->select("*");
+		$this->db->from('articles');
+		$this->db->join('articles_translate_i18','articles_translate_i18.article_id = articles.article_id','left');
+		$this->db->where('articles_translate_i18.article_status', 'published');
+		$this->db->where('articles_translate_i18.article_site_id', $website);
+		$this->db->where('articles_translate_i18.language_id', 'en');
+		$this->db->order_by('articles_translate_i18.publish_date', 'DESC'); 
+		$result_array = $this->db->get()->result_array();
+		$temp_array=array();
+		$website_array=array();
+		foreach ($result_array  as $result) {
+			$article_type = $result['article_type'];
+
+			$article_url='https://' . $result['article_site_id'] . '/blog/'.slugify($result['article_title']).'.html';
+            if( $result['article_site_id'] == 'rmagazine.com'){
+                switch ($article_type) {
+                    case "news":
+					$article_url='https://' . $result['article_site_id'] . '/news/'.slugify($result['article_title']).'.html';
+                        break;
+                    case "recipe":
+                    $article_url='https://' . $result['article_site_id'] . '/recipes/'.slugify($result['article_title']).'.html';
+                        break;
+                    default:
+                    $article_url='https://' . $result['article_site_id'] . '/articles/'.slugify($result['article_title']).'.html';
+				}
+			}else{
+				switch ($article_type) {
+					case "pillar":
+						$article_url =  'https://' . $result['article_site_id'] . '/' . $result['article_permalink'] . '.html';
+						break;
+					case "supporting":
+						$article_url =  'https://' . $result['article_site_id'] . '/' . $result['article_permalink'] . '.html';
+						break;
+					default:
+					    $article_url='https://' . $result['article_site_id'] . '/blog/'.slugify($result['article_title']).'.html';
+				}
+			}
+			
+			$content_performance = json_decode($result['article_content_performance'],true);
+			
+			//pre($already_use);
+			$anchor_text ='';
+			if(!empty($content_performance)){
+				$already_use = $content_performance['result']['already_use'];
+				if(sizeof($already_use) > 0){
+					//$random_keys=array_rand($already_use, 1);
+					//pre($random_keys);
+					$anchor_text = $content_performance['result']['already_use'][0]['keyword'];
+					$temp_array[$result['article_id']]['article_id'] = $result['article_id'];
+					$temp_array[$result['article_id']]['article_title'] = $result['article_title'];
+					$temp_array[$result['article_id']]['anchor_text'] = ucwords($anchor_text);
+					$temp_array[$result['article_id']]['article_url'] = $article_url;
+					$temp_array[$result['article_id']]['sitelinks_rcd'] ='';
+					$temp_array[$result['article_id']]['seo_value'] ='';
+				}
+			}
+			
+				
+		}
+		$data['article_list'] = $temp_array;
+		$data['selected_sitelink'] = $selected_sitelink;
+		echo $message = $this->load->view('secure/brieflink/article_sitelink_list', $data, TRUE);	
+	}
+	public function articles_crosslink_list()
+	{
+		$website = $this->input->post("website");
+		$selected_crosslink = $this->input->post("selected_crosslink") ? : array() ;
+		$this->db->select("*");
+		$this->db->from('articles');
+		$this->db->join('articles_translate_i18','articles_translate_i18.article_id = articles.article_id','left');
+		$this->db->where('articles_translate_i18.article_status', 'published');
+		$this->db->where('articles_translate_i18.article_site_id!=', $website);
+		$this->db->where('articles_translate_i18.language_id', 'en');
+		$this->db->order_by('articles_translate_i18.publish_date', 'DESC'); 
+		$result_array = $this->db->get()->result_array();
+		$temp_array=array();
+		$website_array=array();
+		foreach ($result_array  as $result) {
+			$article_type = $result['article_type'];
+
+			$article_url='https://' . $result['article_site_id'] . '/blog/'.slugify($result['article_title']).'.html';
+            if( $result['article_site_id'] == 'rmagazine.com'){
+                switch ($article_type) {
+                    case "news":
+					$article_url='https://' . $result['article_site_id'] . '/news/'.slugify($result['article_title']).'.html';
+                        break;
+                    case "recipe":
+                    $article_url='https://' . $result['article_site_id'] . '/recipes/'.slugify($result['article_title']).'.html';
+                        break;
+                    default:
+                    $article_url='https://' . $result['article_site_id'] . '/articles/'.slugify($result['article_title']).'.html';
+				}
+			}else{
+				switch ($article_type) {
+					case "pillar":
+						$article_url =  'https://' . $result['article_site_id'] . '/' . $result['article_permalink'] . '.html';
+						break;
+					case "supporting":
+						$article_url =  'https://' . $result['article_site_id'] . '/' . $result['article_permalink'] . '.html';
+						break;
+					default:
+					    $article_url='https://' . $result['article_site_id'] . '/blog/'.slugify($result['article_title']).'.html';
+				}
+			}
+			
+			$content_performance = json_decode($result['article_content_performance'],true);
+			
+			//pre($already_use);
+			$anchor_text ='';
+			if(!empty($content_performance)){
+				$already_use = $content_performance['result']['already_use'];
+				if(sizeof($already_use) > 0){
+					//$random_keys=array_rand($already_use, 1);
+					//pre($random_keys);
+					$anchor_text = $content_performance['result']['already_use'][0]['keyword'];
+					$temp_array[$result['article_id']]['article_id'] = $result['article_id'];
+					$temp_array[$result['article_id']]['article_website'] = $result['article_site_id'];
+					$temp_array[$result['article_id']]['article_title'] = $result['article_title'];
+					$temp_array[$result['article_id']]['anchor_text'] = ucwords($anchor_text);
+					$temp_array[$result['article_id']]['article_url'] = $article_url;
+					$temp_array[$result['article_id']]['crosslinks_rcd'] ='';
+					$temp_array[$result['article_id']]['seo_value'] ='';
+					$website_array[] = $result['article_site_id'];
+				}
+			}
+			
+				
+		}
+		$data['article_list'] = $temp_array;
+		$data['website_list'] = array_unique($website_array);
+		$data['selected_crosslink'] = $selected_crosslink;
+		$data['search_website'] = '';
+		$data['search_string'] = '';
+		echo $message = $this->load->view('secure/brieflink/article_crosslink_list', $data, TRUE);	
+	}
+	public function articles_crosslink_search()
+	{
+		$website = $this->input->post("website");
+		$search_website = $this->input->post("search_website");
+		$search_string  = $this->input->post("search_string");
+		$selected_crosslink = $this->input->post("selected_crosslink") ? : array() ;
+		$this->db->select("*");
+		$this->db->from('articles');
+		$this->db->join('articles_translate_i18','articles_translate_i18.article_id = articles.article_id','left');
+		$this->db->where('articles_translate_i18.article_status', 'published');
+		$this->db->where('articles_translate_i18.article_site_id', $search_website);
+		$this->db->where('articles_translate_i18.language_id', 'en');
+		$this->db->order_by('articles_translate_i18.publish_date', 'DESC'); 
+		$result_array = $this->db->get()->result_array();
+		$temp_array=array();
+		$website_array=array();
+		foreach ($result_array  as $result) {
+			$article_type = $result['article_type'];
+
+			$article_url='https://' . $result['article_site_id'] . '/blog/'.slugify($result['article_title']).'.html';
+            if( $result['article_site_id'] == 'rmagazine.com'){
+                switch ($article_type) {
+                    case "news":
+					$article_url='https://' . $result['article_site_id'] . '/news/'.slugify($result['article_title']).'.html';
+                        break;
+                    case "recipe":
+                    $article_url='https://' . $result['article_site_id'] . '/recipes/'.slugify($result['article_title']).'.html';
+                        break;
+                    default:
+                    $article_url='https://' . $result['article_site_id'] . '/articles/'.slugify($result['article_title']).'.html';
+				}
+			}else{
+				switch ($article_type) {
+					case "pillar":
+						$article_url =  'https://' . $result['article_site_id'] . '/' . $result['article_permalink'] . '.html';
+						break;
+					case "supporting":
+						$article_url =  'https://' . $result['article_site_id'] . '/' . $result['article_permalink'] . '.html';
+						break;
+					default:
+					    $article_url='https://' . $result['article_site_id'] . '/blog/'.slugify($result['article_title']).'.html';
+				}
+			}
+			
+			$content_performance = json_decode($result['article_content_performance'],true);
+			
+			//pre($already_use);
+			$anchor_text ='';
+			if(!empty($content_performance)){
+			        $already_use = $content_performance['result']['already_use'];
+				if(sizeof($already_use) > 0){
+					//$random_keys=array_rand($already_use, 1);
+					//pre($random_keys);
+					$anchor_text = $content_performance['result']['already_use'][0]['keyword'];
+					$temp_array[$result['article_id']]['article_id'] = $result['article_id'];
+					$temp_array[$result['article_id']]['article_website'] = $result['article_site_id'];
+					$temp_array[$result['article_id']]['article_title'] = $result['article_title'];
+					$temp_array[$result['article_id']]['anchor_text'] = ucwords($anchor_text);
+					$temp_array[$result['article_id']]['article_url'] = $article_url;
+					$temp_array[$result['article_id']]['crosslinks_rcd'] ='';
+					$temp_array[$result['article_id']]['seo_value'] ='';
+				}
+			}
+			
+				
+		}
+		$data['article_list'] = $temp_array;
+		$data['website_list'] = $this->get_crosslink_website($website);
+		$data['selected_crosslink'] = $selected_crosslink;
+		$data['search_website'] = $search_website;
+		$data['search_string'] = $search_string;
+		echo $message = $this->load->view('secure/brieflink/article_crosslink_list', $data, TRUE);	
+	}
+	public function delete_sitelink()
+    {
+		$sitelink_id = (int) $this->input->post("sitelink_id");
+		$dataArray = ['success' => 0];
+		$flashes = [
+			'type'  	  => 'error',
+			'message'     => 'Request is not authorized.'
+		];
+
+		if($sitelink_id > 0){
+			$this->content_brief_link_model->deleteSitelink($sitelink_id);
+			if ($this->db->affected_rows()) {
+				$dataArray = ['success' => 1];
+				$flashes = [
+					'type'  	  => 'notice',
+					'message'     => "Sitelink has been deleted!"
+				];
+			}
+		}
+
+		$dataArray['flashes'] = $flashes;
+		$this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($dataArray));
+	}
+
+	public function delete_crosslink()
+    {
+		$crosslink_id = (int) $this->input->post("crosslink_id");
+		$dataArray = ['success' => 0];
+		$flashes = [
+			'type'  	  => 'error',
+			'message'     => 'Request is not authorized.'
+		];
+
+		if($crosslink_id > 0){
+			$this->content_brief_link_model->deleteCrosslink($crosslink_id);
+			if ($this->db->affected_rows()) {
+				$dataArray = ['success' => 1];
+				$flashes = [
+					'type'  	  => 'notice',
+					'message'     => "Crosslink has been deleted!"
+				];
+			}
+		}
+
+		$dataArray['flashes'] = $flashes;
+		$this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($dataArray));
 	}
 
 }

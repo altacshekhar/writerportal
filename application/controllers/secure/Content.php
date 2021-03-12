@@ -18,9 +18,10 @@ class Content extends Admin_Controller
         if($user_type == 5 || $user_type == 6)
 		{
 			redirect('secure/linkbuilding','refresh');
-		}
-        else
-        {
+		}elseif ($user_type == 3) {
+			
+            redirect('secure/keyword','refresh');
+		}else{
             redirect('secure/articleslist', 'refresh');
         }
     }

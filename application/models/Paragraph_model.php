@@ -100,7 +100,8 @@ class Paragraph_model extends MY_Model
 			$this->load->model('steps_i18_model');
 			$list_paragraph[0] =  $this->get_new_t(true);
 			$list_paragraph[0]['callouts'][0] =  $this->callouts_i18_model->get_new();
-			$list_paragraph[0]['social_media_callouts'][0] =  $this->social_media_callouts_i18_model->get_new();
+			$list_paragraph[0]['social_media_callout_i18_id'] =  '';
+			$list_paragraph[0]['social_media_callout_title'] =  '';
 			$list_paragraph[0]['ingredients'][0] =  $this->ingredients_i18_model->get_new();
 			$list_paragraph[0]['steps'][0] =  $this->steps_i18_model->get_new();
 		}

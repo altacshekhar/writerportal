@@ -717,8 +717,7 @@ class Publishers extends Admin_Controller
 				$return = false;
 				$endpoint = 'https://api.semrush.com/analytics/v1/';
 				$target = $publisher->publisher_url;
-				$target = preg_replace( "#^[^:/.]*[:/]+#i", "", $target );
-				//echo $target;
+				$target = preg_replace( "#^[^:/.]*[:/]+#i", "", $target);
 				$params = array(
 					'key'=>'320858172aee5f8cb6936ea13dd70980',
 					'type'=>'backlinks_overview',
@@ -732,7 +731,6 @@ class Publishers extends Admin_Controller
 				curl_setopt($ch,CURLOPT_USERAGENT,"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13");
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				$result = curl_exec($ch);
-				//pre_exit($result);
 				curl_close($ch);
 				$search = 'ERROR';
 				if(!preg_match("/{$search}/i", $result)) {
@@ -750,7 +748,6 @@ class Publishers extends Admin_Controller
 						$this->publisher_model->save($domain_array,$publisher_id);
 					echo json_encode($domain_array);
 				}
-				
 			}
 		}
 	}

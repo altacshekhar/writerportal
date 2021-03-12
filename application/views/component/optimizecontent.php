@@ -266,6 +266,100 @@ if($optimizecontent['content_performance']['total_word_on_page'] > 0){
 					</div>
 					<?php } ?>
 				</div>
+				<?php if(!empty($links)){ ?>
+
+				<div class="card border-dark">
+					<div class="alert alert-dark d-flex justify-content-between align-items-center m-0 collapsed" id="heading-1-6" data-toggle="collapse" role="button" data-target="#collapse-1-6" aria-expanded="false" aria-controls="collapse-1-6" style="">
+						<h6 class="text-dark text-uppercase mb-0">Sitelinks and Crosslinks Already Used</h6>
+						<span class="h4 ml-auto text-dark mb-0">
+							<?php 
+							$used_count=0;
+							foreach ($links as $link) {
+
+								if($link['used']==true){
+									$used_count++;	
+								}
+
+							}
+								echo $used_count;
+							?>
+						</span>
+					</div>
+					
+					<div id="collapse-1-6" class="collapse" aria-labelledby="heading-1-6" data-parent="#accordion-1" style="">
+						<div class="card-body pb-0 pr-0">
+							<div class="kw-group-items">
+								<?php foreach ($links as $link) { ?>
+									<?php if($link['used']==true){ 
+									$link_url =	"<a href='".$link['url']."'>".$link['text']."</a>";	
+									?>
+								<div class="kw-group-item d-flex align-items-center">
+									<?php if($link['type']=='crosslink'){ ?>
+									<div class="small">
+										<i class="fas fa-copyright align-middle text-dark"></i>
+									</div>
+									<?php } ?>
+									<h6 class="m-0"><?php echo $link['text'] ; ?></h6>
+									<div class="links ml-auto">
+									<button type="button" class="btn btn-link pb-0 pt-0" data-link="<?php echo $link_url ; ?>" data-link-type="<?php echo $link['type'] ; ?>" data-href="<?php echo $link['url'] ; ?>" data-anchor="<?php echo $link['text'] ; ?>"></button>
+									</div>
+									
+								</div>
+								<?php } ?>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<div class="card border-secondary">
+					<div class="alert alert-secondary d-flex justify-content-between align-items-center m-0 collapsed" id="heading-1-7" data-toggle="collapse" role="button" data-target="#collapse-1-7" aria-expanded="false" aria-controls="collapse-1-7" style="">
+						<h6 class="text-secondary text-uppercase mb-0">Sitelinks and Crosslinks</h6>
+						<span class="h4 ml-auto text-secondary mb-0">
+						<?php 
+							$count=0;
+							foreach ($links as $link) {
+
+								if($link['used']==null){
+									$count++;	
+								}
+
+							}
+								echo $count;
+							?>
+						</span>
+					</div>
+					
+					<div id="collapse-1-7" class="collapse" aria-labelledby="heading-1-7" data-parent="#accordion-1" style="">
+						<div class="card-body pb-0 pr-0">
+							<div class="kw-group-items">
+								<?php foreach ($links as $link) { ?>
+									<?php if($link['used']==null){ 
+									$link_url =	"<a href='".$link['url']."'>".$link['text']."</a>";
+										
+									?>
+								<div class="kw-group-item d-flex align-items-center">
+									<?php if($link['type']=='crosslink'){ ?>
+									<div class="small">
+										<i class="fas fa-copyright align-middle text-secondary"></i>
+									</div>
+									<?php } ?>
+									<h6 class="m-0"><?php echo $link['text'] ; ?></h6>
+									<div class="links ml-auto">
+									<button type="button" class="btn btn-link sitelinks-crosslinks-copy pb-0 pt-0" data-link="<?php echo $link_url ; ?>" data-link-type="<?php echo $link['type'] ; ?>" data-href="<?php echo $link['url'] ; ?>" data-anchor="<?php echo $link['text'] ; ?>" data-link-id="<?php echo $link['link_id'] ; ?>"><i class="fas fa-copy"></i></button>
+									</div>
+									
+								</div>
+								<?php } ?>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+
+				<?php } ?>
 			</div>
 		</div>
 	</div>
@@ -295,7 +389,7 @@ if($optimizecontent['content_performance']['total_word_on_page'] > 0){
 		<div class="card-body pt-0 content-o-body">
 			<div id="accordion-1" class="accordion">
 				<div class="card border-primary">
-					<div class="alert alert-primary d-flex justify-content-between align-items-center m-0 collapsed" id="heading-1-2" data-toggle="collapse" role="button" data-target="#collapse-1-2" aria-expanded="false" aria-controls="collapse-1-2" style="">
+					<div class="alert alert-primary d-flex justify-content-between align-items-center m-0 collapsed" id="heading-1-1" data-toggle="collapse" role="button" data-target="#collapse-1-1" aria-expanded="false" aria-controls="collapse-1-1" style="">
 						<h6 class="text-primary text-uppercase mb-0">Keywords You Should Use</h6>
 						<span class="h4 ml-auto text-primary mb-0">
 							<?php 
@@ -304,7 +398,7 @@ if($optimizecontent['content_performance']['total_word_on_page'] > 0){
 						</span>
 					</div>
 					
-					<div id="collapse-1-2" class="collapse" aria-labelledby="heading-1-2" data-parent="#accordion-1" style="">
+					<div id="collapse-1-1" class="collapse" aria-labelledby="heading-1-1" data-parent="#accordion-1" style="">
 						<div class="card-body pb-0 pr-0">
 							<div class="kw-group-items">
 								<?php foreach ($optimizecontent['should_use'] as $should_use) { ?>
@@ -322,6 +416,99 @@ if($optimizecontent['content_performance']['total_word_on_page'] > 0){
 					</div>
 					
 				</div>
+				<?php if(!empty($links)){ ?>
+
+				<div class="card border-dark">
+					<div class="alert alert-dark d-flex justify-content-between align-items-center m-0 collapsed" id="heading-1-6" data-toggle="collapse" role="button" data-target="#collapse-1-6" aria-expanded="false" aria-controls="collapse-1-6" style="">
+						<h6 class="text-dark text-uppercase mb-0">Sitelinks and Crosslinks Already Used</h6>
+						<span class="h4 ml-auto text-dark mb-0">
+							<?php 
+							$used_count=0;
+							foreach ($links as $link) {
+
+								if($link['used']==true){
+									$used_count++;	
+								}
+
+							}
+							echo $used_count;
+						    ?>
+						</span>
+					</div>
+					
+					<div id="collapse-1-6" class="collapse" aria-labelledby="heading-1-6" data-parent="#accordion-1" style="">
+						<div class="card-body pb-0 pr-0">
+							<div class="kw-group-items">
+								<?php foreach ($links as $link) { 
+									$link_url =	"<a href='".$link['url']."'>".$link['text']."</a>";
+								?>
+								<?php if($link['used']==true){ ?>
+								<div class="kw-group-item d-flex align-items-center">
+									<?php if($link['type']=='crosslink'){ ?>
+									<div class="small">
+										<i class="fas fa-copyright align-middle text-dark"></i>
+									</div>
+									<?php } ?>
+									<h6 class="m-0"><?php echo $link['text'] ; ?></h6>
+									<div class="links ml-auto">
+									<button type="button" class="btn btn-link sitelinks-crosslinks-copy pb-0 pt-0" data-link="<?php echo $link_url ; ?>" data-link-type="<?php echo $link['type'] ; ?>" data-href="<?php echo $link['url'] ; ?>" data-anchor="<?php echo $link['text'] ; ?>"></button>									</div>
+									
+								</div>
+								<?php } ?>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<div class="card border-secondary">
+					<div class="alert alert-secondary d-flex justify-content-between align-items-center m-0 collapsed" id="heading-1-7" data-toggle="collapse" role="button" data-target="#collapse-1-7" aria-expanded="false" aria-controls="collapse-1-7" style="">
+						<h6 class="text-secondary text-uppercase mb-0">Sitelinks and Crosslinks</h6>
+						<span class="h4 ml-auto text-secondary mb-0">
+						<?php 
+							$count=0;
+							foreach ($links as $link) {
+
+								if($link['used']==null){
+									$count++;	
+								}
+
+							}
+								echo $count;
+							?>
+						</span>
+					</div>
+					
+					<div id="collapse-1-7" class="collapse" aria-labelledby="heading-1-7" data-parent="#accordion-1" style="">
+						<div class="card-body pb-0 pr-0">
+							<div class="kw-group-items">
+								<?php foreach ($links as $link) { ?>
+									<?php if($link['used']==null){ 
+										$link_url =	'<a href='.$link['url'].'>'.$link['text'].'</a>';
+									?>
+								<div class="kw-group-item d-flex align-items-center">
+									<?php if($link['type']=='crosslink'){ ?>
+									<div class="small">
+										<i class="fas fa-copyright align-middle text-secondary"></i>
+									</div>
+									<?php } ?>
+									<h6 class="m-0"><?php echo $link['text'] ; ?></h6>
+									<div class="links ml-auto">
+									<button type="button" class="btn btn-link sitelinks-crosslinks-copy pb-0 pt-0" data-link="<?php echo $link_url ; ?>" data-link-type="<?php echo $link['type'] ; ?>" data-href="<?php echo $link['url'] ; ?>" data-anchor="<?php echo $link['text'] ; ?>" data-link-id="<?php echo $link['link_id'] ; ?>" ><i class="fas fa-copy"></i></button>
+									</div>
+									
+								</div>
+								<?php } ?>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+
+				<?php } ?>
+				
 			</div>
 		</div>
 		<?php //} ?>

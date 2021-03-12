@@ -9,7 +9,6 @@ class MY_Controller extends CI_Controller
 		parent::__construct();
 		$this->load->model('article_model');
 		$this->load->model('contentarticlesbrief_model');
-		$this->load->model('content_brief_link_model');
 		$this->load->model('category_model');
 		$this->load->library('session');
         $this->data['error'] = array();
@@ -2286,8 +2285,7 @@ class MY_Controller extends CI_Controller
 		$password	  = $github_row->github_api_key;
 
 		//$tokenOrLogin ='f53d7554f9241367c5ae432016af7864158c14ea'; // Personal access tokens old
-		//$tokenOrLogin ='797c4ab4630a3a320b731012df1d61da9bcddb0f'; // Personal access tokens (12-02-2021)
-		$tokenOrLogin ='8640637d67d243a0d5ad23874f159440e5d6619d'; // Personal access tokens (05-03-2021)
+		$tokenOrLogin ='797c4ab4630a3a320b731012df1d61da9bcddb0f'; // Personal access tokens
 
 		//$client->authenticate($tokenOrLogin, $password, \Github\Client::AUTH_HTTP_PASSWORD); //old code
 
@@ -3006,16 +3004,13 @@ class MY_Controller extends CI_Controller
         if ($this->input->is_ajax_request()){ 
             $this->load->library('parser');
             $article_id = $this->input->post('article_id');
-			$brief_id = $this->input->post('brief_id');
             $lang_id = $this->input->post('lang_id');
 			$keyword = $this->input->post('keyword');
 			$content = $this->input->post('content');
 			$remove_array = array("<br><br><br>","<br><br>","<br>","<br/>","<br />","<br></br>", "&nbsp;");
 			$content = str_replace($remove_array, " ", $content);
 			$json_data = $this->get_optimizecontent_keyword_list($article_id, $lang_id, $keyword, $content);
-			$links_json_data = $this->content_brief_link_model->get_link_list($brief_id);
 			$data['optimizecontent'] = $json_data;
-			$data['links'] = $links_json_data;
 			/*if($data['optimizecontent']){
 				$update_data = array(
 					'article_content_performance' => json_encode($data['optimizecontent'])
@@ -3025,7 +3020,6 @@ class MY_Controller extends CI_Controller
             $dataArray = ['success' => true];
 			$dataArray['newContent'] = $this->parser->parse('component/optimizecontent', $data, TRUE);
 			$dataArray['json_data'] = $json_data;
-			$dataArray['links_json_data'] = $links_json_data;
             $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($dataArray));
@@ -3138,8 +3132,8 @@ class MY_Controller extends CI_Controller
 			$no_of_search_count = 20;
 				/* API URL */
 			//$url = 'https://wplseotools.hubworks.com/keywordphrase';
-			$url = 'https://whookqa.hubworks.com/keywordanalysisdata';
-		
+			//$url = 'https://whookqa.hubworks.com/keywordanalysisdata';
+			$url = 'http://localhost:5000/keywordanalysisdata';
 			/* Init cURL resource */
 			$ch = curl_init();
 			curl_setopt($ch,CURLOPT_URL,$url);

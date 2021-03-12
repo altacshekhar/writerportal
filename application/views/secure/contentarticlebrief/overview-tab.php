@@ -23,7 +23,7 @@ $random = rand(10000,99999);
         {
             $cls = "";
             $h_title = $htag['heading_text'];
-            $h_description = $htag['description'] ? $htag['description'] : $h_title;
+            $h_description = $htag['heading_description'];
             if($htag['heading'] == 'h2' || $htag['heading'] == 'h1' || $htag['heading'] == 'h3')
             {   
                 if($cc > 6)
@@ -37,9 +37,13 @@ $random = rand(10000,99999);
             }
             ?>
             <div class="show-overview<?php echo '-'.$random.' '.$cls; ?>">
+            <?php
+            if($h_title)
+            { 
+            ?>
             <div class="alert alert-secondary alert-default d-flex mb-1 m-0 collapsed overview-collapse" id="heading-1-1">
                 <div data-toggle="collapse" role="button" data-target="#collapse-<?php echo $random.'-'.$c; ?>" aria-expanded="false" aria-controls="collapse-<?php echo $random.'-'.$c?>" style="">
-                <h6 class="text-default mb-0"><i class="icon-action fa fa-chevron-down" style="font-size: 12px"></i> <?php echo $h_title?></h6>
+                <h6 class="text-default mb-0"><i class="icon-action fa fa-chevron-down" style="font-size: 12px"></i> <?php echo $htag['heading']."<br>".$h_title?></h6>
                 </div>
                 <button type="button" class="btn-circle btn-corner paste-heading" data-title="<?php echo $h_title; ?>"><i class="fas fa-copy"></i></button>    
             </div>
@@ -47,6 +51,9 @@ $random = rand(10000,99999);
                 <p class="text-jutify mx-1"><?php echo $h_description ?></p>
                 <button type="button" class="paste-full-overview btn btn-default btn-sm ml-1 mb-2" data-title="<?php echo $h_title; ?>" data-description="<?php echo $h_description; ?>"><i class="fas fa-copy"></i> Paste Full</button>
             </div>
+            <?php 
+            }
+            ?>
             </div>
             <?php
             $c++;

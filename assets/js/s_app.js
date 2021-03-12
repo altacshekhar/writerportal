@@ -1614,6 +1614,231 @@ jQuery(document).ready(function () {
 			});
 		}
 	});
+
+	var $Sitelinks_modal = jQuery('#articleSitelinksModal');
+	/*jQuery(document).on('click', '.add-another-sitelink', function (event) {
+
+		$Sitelinks_modal.modal('show');
+	});*/
+	jQuery(document).on('click', '.add-another-sitelink', function (event) {
+		event.preventDefault();
+		var sitelink_website = jQuery(this).data("sitelink-website");
+		var selected_sitelink=[];
+		$(".sitelink-articles-id").each(function() {
+			selected_sitelink.push($(this).val());
+		});
+		if(sitelink_website){
+			$('.add-sitelink-loading-image').show();
+			jQuery.ajax({
+				url: base_url + "secure/contentarticlesbrief/articles_sitelink_list",
+				type: "POST",
+				data: {
+					"website": sitelink_website,
+					"selected_sitelink": selected_sitelink,
+				},
+				success: function (response) {
+					$Sitelinks_modal.find('.modal-body').html(response); 
+					$Sitelinks_modal.modal('show');
+					$('.add-sitelink-loading-image').hide();
+					
+				}
+			});
+		}else{	
+
+		}
+		return true;
+	});
+	jQuery(document).on('click', '.add-sitelink', function (event) {
+		var $json = jQuery(this).data( 'json');
+		console.log($json);
+		var article_list = [];
+
+		$("input:checkbox[class=check_article_sitelink]:checked").each(function () {
+			article_list.push($(this).val());
+
+		});
+        var $inputFieldHtml=`<div class="row form-row form-group sitelink-row">
+			<div class="col-md-4 col-sm-4">
+			</div>
+			<div class="col-md-3 col-sm-3">
+				<input type="hidden" name="sitelink[${$json.article_id}][link_id]" value="" class="form-control content-brief-link-id">
+				<input type="hidden" name="sitelink[${$json.article_id}][type]" value="sitelink" class="form-control">
+				<input type="hidden" name="sitelink[${$json.article_id}][id]" value="${$json.article_id}" class="form-control sitelink-articles-id">
+				<input type="text" name="sitelink[${$json.article_id}][text]" value="${$json.article_anchor_text}" placeholder="Anchor Text" class="form-control" readonly="readonly">
+			</div>
+			<div class="col-md-4 col-sm-4">
+				<input type="text" name="sitelink[${$json.article_id}][url]" value="${$json.article_url}" placeholder="Anchor Url" class="form-control" readonly="readonly">
+			</div>
+			<div class="col-md-1 col-sm-1">
+				<button type="button" class="btn btn-link text-danger delete-sitelink-row" data-delete-sitelink-id=""><i class="fas fa-times"></i></button>
+			</div>
+		</div>`;
+		$('.sitelinks-container').append($inputFieldHtml);
+		$('<span class="text-success font-weight-bold">Selected</span>').insertAfter(this);
+		$(this).remove();
+	});
+	jQuery(document).on('click', '.delete-sitelink-row', function (event) {
+		var $currentObj=jQuery(this);
+		var delete_sitelink_id = $currentObj.data( 'delete-sitelink-id');
+		if(delete_sitelink_id){
+			jQuery.ajax({
+				url: base_url + "secure/contentarticlesbrief/delete_sitelink",
+				type: "POST",
+				data: {
+					"sitelink_id": delete_sitelink_id
+				},
+				success: function (response) {
+					console.log({response});
+					if(response.success){
+						$currentObj.parents(".sitelink-row").remove();
+					}
+					
+				}
+			});
+		}else{
+			$currentObj.parents(".sitelink-row").remove();
+		}
+		
+		
+	});
+	var $Crosslinks_modal = jQuery('#articleCrosslinksModal');
+	jQuery(document).on('click', '.add-another-crosslink', function (event) {
+		event.preventDefault();
+		var crosslink_website = jQuery(this).data("crosslink-website");
+		var selected_crosslink=[];
+		$(".crosslink-articles-id").each(function() {
+			selected_crosslink.push($(this).val());
+		});
+		if(crosslink_website){
+			$('.add-crosslink-loading-image').show();
+			jQuery.ajax({
+				url: base_url + "secure/contentarticlesbrief/articles_crosslink_list",
+				type: "POST",
+				data: {
+					"website": crosslink_website,
+					"selected_crosslink": selected_crosslink,
+				},
+				success: function (response) {
+					$Crosslinks_modal.find('.modal-body').html(response); 
+					$Crosslinks_modal.modal('show');
+					$('.add-crosslink-loading-image').hide();
+					
+				}
+			});
+		}else{	
+
+		}
+		return true;
+	});
+	jQuery(document).on('click', '.add-crosslink', function (event) {
+		var $json = jQuery(this).data( 'json');
+		console.log($json);
+		var article_list = [];
+
+		$("input:checkbox[class=check_article_crosslink]:checked").each(function () {
+			article_list.push($(this).val());
+
+		});
+        var $inputFieldHtml=`<div class="row form-row form-group crosslink-row">
+			<div class="col-md-4 col-sm-4">
+			</div>
+			<div class="col-md-3 col-sm-3">
+				<input type="hidden" name="crosslink[${$json.article_id}][link_id]" value="" class="form-control content-brief-link-id">
+				<input type="hidden" name="crosslink[${$json.article_id}][type]" value="crosslink" class="form-control">
+				<input type="hidden" name="crosslink[${$json.article_id}][id]" value="${$json.article_id}" class="form-control crosslink-articles-id">
+				<input type="text" name="crosslink[${$json.article_id}][text]" value="${$json.article_anchor_text}" placeholder="Anchor Text" class="form-control" readonly="readonly">
+			</div>
+			<div class="col-md-4 col-sm-4">
+				<input type="text" name="crosslink[${$json.article_id}][url]" value="${$json.article_url}" placeholder="Anchor Url" class="form-control" readonly="readonly">
+			</div>
+			<div class="col-md-1 col-sm-1">
+				<button type="button" class="btn btn-link text-danger delete-crosslink-row" data-delete-crosslink-id=""><i class="fas fa-times"></i></button>
+			</div>
+		</div>`;
+		$('.crosslinks-container').append($inputFieldHtml);
+		$('<span class="text-success font-weight-bold">Selected</span>').insertAfter(this);
+		$(this).remove();
+	});
+	jQuery(document).on('click', '.delete-crosslink-row', function (event) {
+		var $currentObj=jQuery(this);
+		var delete_crosslink_id = $currentObj.data( 'delete-crosslink-id');
+		if(delete_crosslink_id){
+			jQuery.ajax({
+				url: base_url + "secure/contentarticlesbrief/delete_crosslink",
+				type: "POST",
+				data: {
+					"crosslink_id": delete_crosslink_id
+				},
+				success: function (response) {
+					console.log({response});
+					if(response.success){
+						$currentObj.parents(".crosslink-row").remove();
+					}
+					
+				}
+			});
+		}else{
+			$currentObj.parents(".crosslink-row").remove();
+		}
+		
+		
+	});
+	jQuery("#crosslink-search-box").keyup(function(event){ 
+       // var currentelement 	= jQuery(this);
+        //var str = currentelement.val();
+		alert("str");
+    });
+	jQuery(document).on('change','.crosslink-filter-websites',function(event)
+	{
+		event.preventDefault();
+		var opt_filter_site = $(this).val();
+		var search_str = $('.crosslink-search-box').val();
+		var crosslink_website = jQuery(this).data("crosslink-website");
+		var selected_crosslink=[];
+		$(".crosslink-articles-id").each(function() {
+			selected_crosslink.push($(this).val());
+		});
+		jQuery.ajax({
+			url: base_url + "secure/contentarticlesbrief/articles_crosslink_search",
+			type: "POST",
+			data: {
+				"website": crosslink_website,
+				"search_website": opt_filter_site,
+				"search_string": search_str,
+				"selected_crosslink": selected_crosslink,
+			},
+			success: function (response) {
+				$Crosslinks_modal.find('.modal-body').html(response); 
+				$Crosslinks_modal.modal('show');
+				$('.add-crosslink-loading-image').hide();
+				
+			}
+		});
+		//alert(search_str);
+	});
+	var focusTgtElem;
+	jQuery(document).on('focus','.trumbowyg-editor',function (event)
+	{
+		focusTgtElem = this;
+	});
+	var sitelinks_crosslinks_used=[];
+	jQuery(document).on('click', '.sitelinks-crosslinks-copy', function(event){
+		var anchor = $(this).data('anchor');
+		var href = $(this).data('href');
+		var link_id = $(this).data('link-id');
+		
+		if(focusTgtElem)
+		{
+			$(focusTgtElem).append('<a href="'+href+'">'+anchor+'</a>');
+			$(focusTgtElem).keyup();
+			//$(focusTgtElem).val($(focusTgtElem).val() + '<a href="'+href+'">'+anchor+'</a>');
+			sitelinks_crosslinks_used.push(link_id);
+			jQuery("#article_sitelink_crosslink_used").val(JSON.stringify(sitelinks_crosslinks_used));
+		}
+	});
+	/*jQuery(document).on('click', '.add-another-crosslink', function (event) {
+		$Crosslinks_modal.modal('show');
+	});*/
 	jQuery('#cta_background_type').change(function(){
 		var background_type = jQuery(this).val();
 		if(background_type =='image'){
@@ -1748,7 +1973,6 @@ var repeaterReload = function (object, response) {
 };
 
 var calloutReload = function (object, response) {
-	alert('callout');
 	if(response.success ==1){
 		var target = jQuery(object).data('target');
 		$(target).collapse('hide');

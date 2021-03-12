@@ -94,7 +94,7 @@ if($article['language_id']=='en'){
 							Export keywords
 						</a>
 
-						<button type="button" data-article="<?php echo $article['article_id'] ?>"
+						<button type="button" data-article="<?php echo $article['article_id'] ?>" data-brief ="<?php echo $article['article_brief_id'] ?>"
 							data-lang="<?php echo $article['language_id'] ?>" data-keyword="<?php echo $keyword ?>" id="check-score" class="btn btn-secondary btn-icon check-score" <?php echo ($article['language_id']=='en') ? '' : 'disabled'?>>
 							<span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
 							<i class="fas fa-tachometer-alt"></i> 
@@ -162,6 +162,14 @@ if($article['language_id']=='en'){
 							'class' => 'article_target_score'
 						);
 						echo form_input($data_article_target_score_hide);
+						$data_article_sitelink_crosslink_used_hide = array(
+							'type' => 'hidden',
+							'name' => 'article_sitelink_crosslink_used',
+							'id' => 'article_sitelink_crosslink_used',
+							'value' => '',
+							'class' => 'article_sitelink_crosslink_used'
+						);
+						echo form_input($data_article_sitelink_crosslink_used_hide);
 						$data_button_click_hide = array(
 							'type' => 'hidden',
 							'name' => 'form_action',
@@ -410,7 +418,6 @@ if($article['language_id']=='en'){
 													'maxlength' => 70,
 													'rangelength' => '[10, 70]',
 													'required' => 'required',
-													'check_keyword' => $primary_keyword_rule,
 													'data-msg-required'=>"Please enter a short description of the image",
 													'class' => 'form-control article_image_alt calc-length primary-keyword-phrase seo-content-keywords'
 												);
@@ -563,13 +570,14 @@ if($article['language_id']=='en'){
 																'required' => 'required',
 																'data-msg-required'=>"Please enter paragraph title"
 															);
-															if($section_count == 0){
+															$data_section_title['check_keyword_paragraph'] =	'true';
+															/*if($section_count == 0){
 																			
 																$data_section_title['check_keyword'] = $primary_keyword_rule;	
 															}else{
 																			
 																$data_section_title['check_keyword'] =	'true';
-															}
+															}*/
 															echo form_input($data_section_title);
 															echo form_error('section_title');
 															?>
@@ -592,7 +600,7 @@ if($article['language_id']=='en'){
 																					}else{
 																						$selected_heading_type = 'h2';
 																					}
-																					echo form_dropdown("section_heading_type", $heading_type, $selected_heading_type, 'class="form-control-sm select-2"' );
+																					echo form_dropdown("section_heading_type", $heading_type, $selected_heading_type, 'class="form-control-sm select-2 section_heading_type"' );
 																					echo form_error("section_heading_type");
 
 																					?>
@@ -690,7 +698,7 @@ if($article['language_id']=='en'){
 													<div class="form-group mb-2 section-video-found hide">
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video name</label>
+																<label class="h6">Meta Video Name</label>
 																<?php
 																$section_meta_video_name = isset($paragraph['section_meta_video_name']) ? $paragraph['section_meta_video_name'] : '';
 																$data_section_meta_video_name = array(
@@ -751,7 +759,7 @@ if($article['language_id']=='en'){
 														</div>
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video thumbnail 4x3</label>
+																<label class="h6">Meta Video Thumbnail 4x3</label>
 																<?php
 																	$section_meta_video_thumbnail_4x3 = isset($paragraph['section_meta_video_thumbnail_4x3']) ? $paragraph['section_meta_video_thumbnail_4x3'] : '';
 																	$data_section_meta_video_thumbnail_4x3 = array(
@@ -765,7 +773,7 @@ if($article['language_id']=='en'){
 															?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video thumbnail 16x9</label>
+																<label class="h6">Meta Video Thumbnail 16x9</label>
 																<?php
 																	$section_meta_video_thumbnail_16x9 = isset($paragraph['section_meta_video_thumbnail_16x9']) ? $paragraph['section_meta_video_thumbnail_16x9'] : '';
 																	$data_section_meta_video_thumbnail_16x9 = array(
@@ -781,7 +789,7 @@ if($article['language_id']=='en'){
 														</div>
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video uploaddate</label>
+																<label class="h6">Meta Video Upload Date</label>
 																<?php
 																	$section_meta_video_uploaddate = isset($paragraph['section_meta_video_uploaddate']) ? $paragraph['section_meta_video_uploaddate'] : '';
 																	$data_section_meta_video_uploaddate = array(
@@ -795,7 +803,7 @@ if($article['language_id']=='en'){
 															?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video minutes</label>
+																<label class="h6">Meta Video Minutes</label>
 																<?php
 																	$section_meta_video_minutes = isset($paragraph['section_meta_video_minutes']) ? $paragraph['section_meta_video_minutes'] : '';
 																	$data_section_meta_video_minutes = array(
@@ -812,7 +820,7 @@ if($article['language_id']=='en'){
 
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video seconds</label>
+																<label class="h6">Meta Video Seconds</label>
 																<?php
 																	$section_meta_video_seconds = isset($paragraph['section_meta_video_seconds']) ? $paragraph['section_meta_video_seconds'] : '';
 																	$data_section_meta_video_seconds = array(
@@ -826,7 +834,7 @@ if($article['language_id']=='en'){
 																	?>
 															</div>
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video interaction count</label>
+																<label class="h6">Meta Video Interaction count</label>
 																<?php
 																	$section_meta_video_interaction_count = isset($paragraph['section_meta_video_interaction_count']) ? $paragraph['section_meta_video_interaction_count'] : '';
 																	$data_section_meta_video_interaction_count = array(
@@ -842,7 +850,7 @@ if($article['language_id']=='en'){
 														</div>
 														<div class="row">
 															<div class="form-group col-md-6 mb-2">
-																<label class="h6">Meta video expires</label>
+																<label class="h6">Meta Video Expires</label>
 																<?php
 																	$section_meta_video_expires = isset($paragraph['section_meta_video_expires']) ? $paragraph['section_meta_video_seconds'] : '';
 																	$data_section_meta_video_expires = array(
@@ -880,12 +888,12 @@ if($article['language_id']=='en'){
 																'maxlength' => 70,
 																'class' => 'form-control article_image_alt calc-length primary-keyword-phrase seo-content-keywords section_image_alt'
 															);
-																	
-															if($section_count == 0){
-																$data_section_image_alt['check_keyword'] = $primary_keyword_rule;	
+															$data_section_image_alt['check_keyword_paragraph'] ='true';
+															/*if($section_count == 0){
+																$data_section_image_alt['check_keyword_paragraph'] = $primary_keyword_rule;	
 															}else{
-																$data_section_image_alt['check_keyword'] ='true';
-															}
+																$data_section_image_alt['check_keyword_paragraph'] ='true';
+															}*/
 															if(!$section_image){
 																$data_section_image_alt['disabled'] = 'disabled';
 															}
@@ -919,14 +927,15 @@ if($article['language_id']=='en'){
 																	'required' => 'required',
 																	'data-msg-required'=>"Please enter article text"
 																);
-																if($section_count == 0){
+																$data_section_text['check_seo_rules'] =	'true';
+																/*if($section_count == 0){
 																	$ruleArray=array(
 																		"rule"=>["keyword"]	
 																	);
 																	$data_section_text['check_seo_rules'] =	htmlentities(json_encode($ruleArray));
 																}else{
 																	$data_section_text['check_seo_rules'] =	'true';
-																}
+																}*/
 																echo form_textarea($data_section_text);
 																echo form_error('section_text');
 																?>

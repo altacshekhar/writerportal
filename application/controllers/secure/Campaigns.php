@@ -85,6 +85,54 @@ class Campaigns extends Admin_Controller
         ->set_content_type('application/json')
 		->set_output(json_encode($output));
 	}
+
+	public function test()
+	{
+		$data = [];
+		$data['search_operators'] = ["top 10 internet resources",
+		"top 10 online resources",
+		"top 10 sites",
+		"top resources",
+		"top sites",
+		"favorite articles",
+		"favorite links",
+		"favorite resources",
+		"favorite sites",
+		"favorite tools",
+		"favorite websites",
+		"guide",
+		"intitle:resources",
+		"recommended articles",
+		"recommended links",
+		"recommended resources",
+		"recommended sites",
+		"recommended tools",
+		"recommended websites",
+		"round up",
+		"round up + intitle:weekly/daily/monthly",
+		"top 10 articles",
+		"top 10 resources",
+		"top 10 tools",
+		"top 10 web resources",
+		"top 10 websites",
+		"top articles",
+		"useful articles",
+		"useful links",
+		"useful resources",
+		"useful sites",
+		"useful tools",
+		"useful websites",
+		"interesting articles",
+		"interesting links",
+		"interesting resources",
+		"interesting sites",
+		"interesting tools",
+		"interesting websites",
+		"suggested articles",
+		];
+		$data['keyword'] = "employee management";
+		echo json_encode($data);
+	}
 	
 	public function query()
 	{

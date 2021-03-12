@@ -1,7 +1,4 @@
 <?php 
-//pre($optimizecontent);
-//$optimizecontent = $optimizecontent['result']; 
-//pre($optimizecontent);
 $data_highlight_keywords = array(
 	'type' => 'hidden',
 	'name' => "highlight_keywords",
@@ -10,18 +7,9 @@ $data_highlight_keywords = array(
 	'class' => 'highlight_keywords'
 );
 echo form_input($data_highlight_keywords);
-// pre($optimizecontent);
 if($optimizecontent['content_performance']['total_word_on_page'] > 0){
-	//pre($optimizecontent);
 	$keyword = ucwords($optimizecontent['content_performance']['optimizing_content_keyword']);
-	/*if(strlen($optimizecontent['content_performance']['optimizing_content_keyword']) <=25){
-		$keyword = ucwords($optimizecontent['content_performance']['optimizing_content_keyword']);
-	}else{
-		$keyword = ucwords(substr($optimizecontent['content_performance']['optimizing_content_keyword'],0,25)."..."); 
-	}*/
-	
 ?>
-
 	<!-- content-o-sidebar start -->
 	<div class="card content-o-sidebar">
 		<div class="card-body pb-0 content-o-header">

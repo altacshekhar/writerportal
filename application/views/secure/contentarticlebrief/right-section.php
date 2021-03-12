@@ -31,9 +31,9 @@
 								<!-- Start of Overview Tab -->
 								<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
 									<div class="container document-search-results" data-keyword="<?php echo $keyword; ?>" data-json-serp-url='<?php echo json_encode($serp_url);?>'>
-										
+											
 									</div>
-									<span class="btn show-loading "><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span></button>
+									<span class="btn show-loading "><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span></span>
 								</div>
 								<!-- End of Overview Tab -->
 								<!-- Start of links Tab -->
@@ -55,9 +55,11 @@
 						<!-- End of Top Results -->
 						<!-- Topic Tab -->
 						<div class="tab-pane fade" id="topics" role="tabpanel" aria-labelledby="topics-tab">
-							<div class="container">
+							<span class="btn show-loading "><span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span></span>
+							<div class="container topic-score" data-keyword_id="<?php echo $keyword_id; ?>">
 								<?php $this->load->view('secure/contentarticlebrief/topic-score-section')?>
 							</div>
+							
 						</div>
 						<!-- End of Topic-->
 						<!-- Questions Tab -->

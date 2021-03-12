@@ -12,12 +12,14 @@ jQuery(document).ready(function () {
 	});
 
 	var serp_url = $('.document-search-results').data('json-serp-url');
+	var paa_ques_display = 1; //Variable to check the people also ask question section to be shown in first request only
 	if(serp_url)
 	{
-		getpagescrap(serp_url);
+		getpagescrap(serp_url,paa_ques_display);
 	}
-	function getpagescrap(serp_url)
+	function getpagescrap(serp_url,p_q_d)
 	{
+		paa_ques_display = p_q_d + 1;
 		var keyword = $('.document-search-results').data('keyword');
 		jQuery.ajax({
 			type: "POST",
@@ -38,7 +40,8 @@ jQuery(document).ready(function () {
 					$('.links-search-result').append(result['links_data']);
 					$('.stats-search-result').append(result['stats_data']);
 					$('.serp-results').append(result['serp_data']);
-					$('.people-also-ask-results').append(result['paa_data']);
+					if(p_q_d == 1)
+						$('.people-also-ask-results').append(result['paa_data']);
 					// $('.quora-results').append(result['quora_data']);
 					// $('.reddit-results').append(result['reddit_data']);
 				}	
@@ -48,7 +51,7 @@ jQuery(document).ready(function () {
 		});
 	}
 	var targetElem;
-	jQuery(document).on('focus','.form-control',function (event)
+	jQuery(document).on('focus','.form-control ',function (event)
 	{
 		targetElem = this;
 	});
@@ -75,25 +78,32 @@ jQuery(document).ready(function () {
 		var href = $(this).data('href');
 		if(targetElem)
 		{
-			$(targetElem).val('<a href="'+href+'">'+anchor+'</a>');
+			//$(targetElem).val('<a href="'+href+'">'+anchor+'</a>');
+			$(targetElem).val(anchor);
 		}
 	});
 
 	jQuery(document).on('click', '.stats-copy', function(event){
-		var anchor = $(this).data('anchor');
-		var href = $(this).data('href');
+		var anchor = $(this).data('title');
 		if(targetElem)
 		{
-			$(targetElem).val('<a href="'+href+'">'+anchor+'</a>');
+			$(targetElem).val(anchor);
 		}
 	});
 
 	jQuery(document).on('click', '.serp-questions-copy', function(event){
 		var title = $(this).data('title');
-		console.log(targetElem);
 		if(targetElem)
 		{
 			$(targetElem).val(title);
+		}
+	});
+	jQuery(document).on('click','.paste-serp-questions', function(event){
+		var title = $(this).data('title');
+		var descrip = $(this).data('description');
+		if(targetElem)
+		{
+			$(targetElem).val(title+" "+descrip);
 		}
 	});
 	jQuery(document).on('click','.show-all-overviews',function(event)
@@ -483,6 +493,44 @@ jQuery(document).ready(function () {
 				//jQuery(".add-article-brief").removeClass('data-loading').removeAttr('disabled');
 			});
 
+		}
+	});
+
+	jQuery(document).on('click', '.check-brief-score', function (event) {
+		var curr_obj 	= jQuery(".topic-score");
+		var keyword_id 	= curr_obj.data('keyword_id');
+		var page_content = '';
+		jQuery('.brief-score').each(function (k, v) {
+			page_content += jQuery(this).val()+ ' ';
+		});
+		page_content = page_content.replace(/<br>/gi, ' ');
+		page_content = page_content.replace(/&nbsp;/g, ' ');
+		page_content = page_content.replace(/(<p[^>]+?>|<p>|<\/p>)/img, ' ');
+		page_content = page_content.replace( /(<([^>]+)>)/ig, ' ');
+		page_content = page_content.replace( /[\s\n\r]+/g, ' ').trim();
+		console.log(page_content);
+		if(page_content)
+		{
+			jQuery.ajax({
+				cache: true,
+				url: base_url + "secure/contentarticlesbrief/checkBriefScore",
+				type: "POST",
+				datatype: 'json',
+				data: {
+					"keyword": keyword_id,
+					'content': page_content
+				},
+				beforeSend: function( xhr ) {
+					jQuery('.show-loading').addClass('data-loading').prop('disabled', true);
+				},			
+				success: function (data) {
+					if(data.success){
+						jQuery('.topic-score').html(data.newContent);
+					}
+				}
+			}).done(function(){
+				jQuery('.show-loading').removeClass('data-loading').removeAttr('disabled');
+			});
 		}
 	});
 
