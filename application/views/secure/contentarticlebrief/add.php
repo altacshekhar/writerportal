@@ -51,10 +51,10 @@ if(isset($articlesbrief['brief_status'])){
 					<i class="fas fa-user"></i>
 					Assign to Writer
 				</button>
-				<button type="button" class="btn btn-secondary btn-icon check-brief-score">
+				<!-- <button type="button" class="btn btn-secondary btn-icon check-brief-score">
 					<i class="fas fa-tachometer-alt"></i>
 					Check Score
-				</button>
+				</button> -->
 			</div>
 			<hr>
 			<div class="row">
@@ -866,18 +866,27 @@ if(isset($articlesbrief['brief_status'])){
 						</div>
 					</div>
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-5 tab-main-right-sidebar">
+				<div class="content-o-sidebar">
+					<div class="content-o-header">
+						<h4 class="font-weight-normal text-primary mb-1">
+						<?php
+							echo $articlesbrief['brief_primary_keyword'];
+						?>
+						</h4>
+					</div>
+				</div>
 					<?php
-					$show_keyword = array(
-						'name' => "primary_keyword",
-						'class' => 'form-control',
+					$hide_keyword_id = array(
+						'type' => 'hidden',
+						'name' => 'primary_keyword_id',
+						'class' => 'form-control primary-keyword-id',
 						'disabled' => 'disabled',
-						'value' => set_value('primary_keyword',$optimizecontent['content_performance']['optimizing_content_keyword'])
+						'value' => set_value('primary_keyword_id',$keyword_id)
 					);
-					echo form_input($show_keyword);
-					
-						$widget = ['keyword' => $optimizecontent['content_performance']['optimizing_content_keyword'],'serp_url' => $optimizecontent['serp']];
-						$this->load->view('secure/contentarticlebrief/right-section',$widget);
+					echo form_input($hide_keyword_id);
+					$widget = ['keyword' => $optimizecontent['content_performance']['optimizing_content_keyword'],'serp_url' => $optimizecontent['serp']];
+					$this->load->view('secure/contentarticlebrief/right-section',$widget);
 					?>
 				</div>
 			</div>
@@ -1057,7 +1066,7 @@ if(isset($articlesbrief['brief_status'])){
 	<div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
 		<div class="container">
 			<div class="row mt-5">
-				<div id="optimizecontent-result-container">
+				<div id="keyword-result-container">
 					<?php
 						$this->load->view('secure/keywordanalysis/details');
 					?>

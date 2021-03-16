@@ -17,6 +17,41 @@ jQuery(document).ready(function () {
 	{
 		getpagescrap(serp_url,paa_ques_display);
 	}
+	else
+	{
+		/*Ajax Request for Keyword Analysis */
+		var keyword = $('#keyword').val();
+		var keyword_id = $('.primary-keyword-id').val();
+		if(keyword_id)
+		{
+			jQuery.ajax({
+				type: "POST",
+				cache: false,
+				data: {'keyword': keyword,'keyword_id': keyword_id},
+				url: base_url + "secure/keyword/keywordanalysisdata",
+				datatype: 'json',
+				beforeSend: function (xhr) {
+					jQuery(".show-loading").addClass('data-loading');
+				},
+				success: function (result) {
+					if(result['status'] == 1)
+					{	
+						$('#keyword-result-container').html(result['html']);
+						$('.document-search-results').attr('data-json-serp-url',result['serp_url']);
+						$('.document-search-results').attr('data-keyword',result['keyword']);
+						$('.topic-score').html(result['topic_section']);
+						getpagescrap(result['serp_url'],1);
+					}	
+					else
+					{
+						setFlashes(result['flashes']['type'], result['flashes']['message']);
+					}
+				}
+			}).done(function () {
+				jQuery(".show-loading").removeClass('data-loading');
+			});
+		}
+	}
 	function getpagescrap(serp_url,p_q_d)
 	{
 		paa_ques_display = p_q_d + 1;
@@ -41,7 +76,7 @@ jQuery(document).ready(function () {
 					$('.stats-search-result').append(result['stats_data']);
 					$('.serp-results').append(result['serp_data']);
 					if(p_q_d == 1)
-						$('.people-also-ask-results').append(result['paa_data']);
+					$('.people-also-ask-results').append(result['paa_data']);
 					// $('.quora-results').append(result['quora_data']);
 					// $('.reddit-results').append(result['reddit_data']);
 				}	
@@ -110,6 +145,7 @@ jQuery(document).ready(function () {
 	{
 		var rand = $(this).data('random');
 		$('.show-overview-'+rand).removeClass('hide');
+		$(this).hide();
 	});
 
 	jQuery(document).on('click', '.paa-questions-copy', function(event){
@@ -496,10 +532,9 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	jQuery(document).on('click', '.check-brief-score', function (event) {
-		var curr_obj 	= jQuery(".topic-score");
-		var keyword_id 	= curr_obj.data('keyword_id');
+	jQuery(document).on('blur', '.brief-score', function (event) {
 		var page_content = '';
+		var optimize_string = $('#highlight_keywords').val();
 		jQuery('.brief-score').each(function (k, v) {
 			page_content += jQuery(this).val()+ ' ';
 		});
@@ -508,28 +543,28 @@ jQuery(document).ready(function () {
 		page_content = page_content.replace(/(<p[^>]+?>|<p>|<\/p>)/img, ' ');
 		page_content = page_content.replace( /(<([^>]+)>)/ig, ' ');
 		page_content = page_content.replace( /[\s\n\r]+/g, ' ').trim();
-		console.log(page_content);
 		if(page_content)
 		{
-			jQuery.ajax({
+			var curr_request = jQuery.ajax({
 				cache: true,
-				url: base_url + "secure/contentarticlesbrief/checkBriefScore",
+				url: base_url + "secure/keyword/checktopicsection",
 				type: "POST",
 				datatype: 'json',
 				data: {
-					"keyword": keyword_id,
-					'content': page_content
+					"page_content": page_content,
+					'optimize_string': optimize_string
 				},
 				beforeSend: function( xhr ) {
-					jQuery('.show-loading').addClass('data-loading').prop('disabled', true);
+					//jQuery('.show-loading').addClass('data-loading').prop('disabled', true);
+					if(curr_request != null) {
+						curr_request.abort();
+					}
 				},			
 				success: function (data) {
-					if(data.success){
-						jQuery('.topic-score').html(data.newContent);
-					}
+					jQuery('.topic-score').html(data.topic_section);
 				}
 			}).done(function(){
-				jQuery('.show-loading').removeClass('data-loading').removeAttr('disabled');
+				//jQuery('.show-loading').removeClass('data-loading').removeAttr('disabled');
 			});
 		}
 	});

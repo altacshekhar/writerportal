@@ -14,6 +14,7 @@ class Translate extends Frontend_Controller
         $this->load->model('paragraph_model');
         $this->load->model('paragraph_i18_model');
         $this->load->model('callouts_i18_model');
+		$this->load->model('social_media_callouts_i18_model');
         $this->load->model('ingredients_i18_model');
         $this->load->model('steps_i18_model');
         $this->load->model('backlink_i18_model');
@@ -41,7 +42,7 @@ class Translate extends Frontend_Controller
         //$this->db->where('article_status', 'submitted');
 		$this->db->where('language_id', 'en');
 		$this->db->order_by('date_added', 'DESC'); //ASC, DESC
-		$this->db->limit(7);
+		$this->db->limit(5);
 		$result_array = $this->db->get()->result_array();
 		pre($this->db->last_query());
 		pre($result_array);
@@ -453,7 +454,8 @@ class Translate extends Frontend_Controller
 		$tokenOrLogin = $github_row->github_client_id;
 		$password	  = $github_row->github_api_key;
 		//$tokenOrLogin ='f53d7554f9241367c5ae432016af7864158c14ea'; // Personal access tokens old
-		$tokenOrLogin ='797c4ab4630a3a320b731012df1d61da9bcddb0f'; // Personal access tokens New
+		//$tokenOrLogin ='797c4ab4630a3a320b731012df1d61da9bcddb0f'; // Personal access tokens (12-02-2021)
+		$tokenOrLogin ='8640637d67d243a0d5ad23874f159440e5d6619d'; // Personal access tokens (05-03-2021)
 
 		//$client->authenticate($tokenOrLogin, $password, \Github\Client::AUTH_HTTP_PASSWORD);
 		try {
@@ -1229,6 +1231,7 @@ class Translate extends Frontend_Controller
                                 'language_id' =>  $targetLanguage
                                 );
                                 $this->db->delete('article_section_callouts_translate_i18', $where_c_d);
+								$this->db->delete('article_section_social_media_callouts_translate_i18', $where_c_d);
                             $tables = array('article_section_steps_translate_i18', 'article_section_ingredients_translate_i18' , 'article_section_translate_i18');
                             $where_d = array(
                                 'section_id' => (int)  $mvaluetext['section_id'],
@@ -1255,8 +1258,13 @@ class Translate extends Frontend_Controller
 
                             $where_article_callouts_current_language_i18   = "section_id = '" . (int)  $m_p_value['section_id'] . "' AND language_id = '" . $m_p_value['language_id'] . "'";
                             $article_callouts_current_language_i18_row =  (array) $this->callouts_i18_model->get_by_array($where_article_callouts_current_language_i18);
+
+							$where_article_social_media_callouts_current_language_i18   = "section_id = '" . (int)  $m_p_value['section_id'] . "' AND language_id = '" . $m_p_value['language_id'] . "'";
+                            $article_social_media_callouts_current_language_i18_row =  (array) $this->social_media_callouts_i18_model->get_by_array($where_article_social_media_callouts_current_language_i18);
                             //echo "<br>callout in en<br>";
 							//pre($article_callouts_current_language_i18_row);
+							 //echo "<br>social media callout in en<br>";
+							//pre($article_social_media_callouts_current_language_i18_row);
 							
 							$where_article_ingredients_current_language_i18   = "section_id = '" . (int)  $m_p_value['section_id'] . "' AND language_id = '" . $m_p_value['language_id'] . "'";
 							$article_ingredients_current_language_i18_row =  (array) $this->ingredients_i18_model->get_by_array($where_article_ingredients_current_language_i18);
@@ -1308,6 +1316,45 @@ class Translate extends Frontend_Controller
                                         }
                                         //echo "Callouts Section data return array";
                                         //pre($return_article_callouts_array);
+                                    
+                                
+                                    } catch(AwsException $e) {
+                                        // output error message if fails
+                                        //pre("Failed: ".$e->getMessage());
+                                    }
+								}
+
+								if(!empty($article_social_media_callouts_current_language_i18_row) && count($article_social_media_callouts_current_language_i18_row) > 0){
+                                    $data_article_sm_callouts_translate_array=[];
+                                    foreach($article_social_media_callouts_current_language_i18_row  as $smc_key => $smcallouts) {
+                                         /**
+                                         *  create array for Callouts translate field
+                                        */
+                                        $data_article_sm_callouts_translate_array[$smc_key] = array(
+        
+                                            'social_media_callout_title' => $smcallouts['social_media_callout_title'],
+                                            
+                                        );
+                                    }
+                                   // pre($data_article_sm_callouts_translate_array);
+                                    try {
+                                        $return_article_sm_callouts_array=[];
+                                        foreach ($data_article_sm_callouts_translate_array  as $smc_key => $smc_value) {
+                                            //echo "smc_value";
+											//pre($smc_value);
+											$c_result = $client->translateText([
+												'SourceLanguageCode' => $currentLanguage,
+												'TargetLanguageCode' => $targetLanguage,
+												'Text' => implode(' <command /> ', $smc_value),
+											]);
+											//pre(implode(' <command /> ', $c_value));
+											$return_article_sm_callouts_str = $c_result['TranslatedText'];
+											//pre($return_article_callouts_str);
+											$return_article_sm_callouts_array[$c_key] = explode('<command />',$return_article_sm_callouts_str);
+											//pre($return_article_sm_callouts_array,'return_article_sm_callouts_array');
+                                        }
+                                        //echo "Social Media Callouts Section data return array";
+                                        //pre($return_article_sm_callouts_array);
                                     
                                 
                                     } catch(AwsException $e) {
@@ -1462,7 +1509,37 @@ class Translate extends Frontend_Controller
                                                 }
                                             }
 
-					 }
+					 					}
+
+
+										 if(!empty($article_social_media_callouts_current_language_i18_row) && count($article_social_media_callouts_current_language_i18_row) > 0){
+
+                                            $data_article_sm_callout_insert_array = $article_social_media_callouts_current_language_i18_row;                                       
+                                            //pre($data_article_callout_insert_array);
+                                            if(!empty($return_article_sm_callouts_array)){
+                                                foreach ($return_article_sm_callouts_array  as $t_smc_i_keytext => $t_smc_i_valuetext) {
+                                                    echo "insert social media callout";
+													pre($t_smc_i_valuetext);
+													unset($data_article_sm_callout_insert_array[$t_smc_i_keytext]['social_media_callout_i18_id']);
+													unset($data_article_sm_callout_insert_array[$t_smc_i_keytext]['section_id']);
+													$data_article_sm_callout_insert_array[$t_smc_i_keytext]['section_id'] = $section_id;
+													$data_article_sm_callout_insert_array[$t_smc_i_keytext]['language_id']= $targetLanguage;
+													$data_article_sm_callout_insert_array[$t_smc_i_keytext]['social_media_callout_title'] = $t_smc_i_valuetext[0];
+													
+                                                } 
+                                                //echo "insert callout array last";
+                                                //pre( $data_article_callout_insert_array);
+                                                foreach ($data_article_sm_callout_insert_array  as $smcalloutkeytext =>  $smcallout) {
+                                                    echo "final insert social media callout array last";
+                                                    pre($smcalloutkeytext);
+                                                    pre($smcallout ,'Final insert social media callout array');
+                                                    $this->social_media_callouts_i18_model->save($smcallout);
+                                                    pre($this->db->last_query());
+                                                    
+                                                }
+                                            }
+
+					 					}
 										
 					if(!empty($article_ingredients_current_language_i18_row) && count($article_ingredients_current_language_i18_row) > 0){
 
@@ -1714,6 +1791,7 @@ class Translate extends Frontend_Controller
 				$total_chars_array[] = $paragraph['section_text'];
 				$total_chars_array[] = $paragraph['section_image_alt'];
 				$total_chars_array[] = $paragraph['section_image_license'];
+				$total_chars_array[] = $paragraph['social_media_callout_title'];
 
 				foreach ($paragraph['callouts'] as $callouts) {
 					$total_chars_array[] = $callouts['callout_title'];
@@ -1808,6 +1886,7 @@ class Translate extends Frontend_Controller
 				$total_chars_array[] = $paragraph['section_text'];
 				$total_chars_array[] = $paragraph['section_image_alt'];
 				$total_chars_array[] = $paragraph['section_image_license'];
+				$total_chars_array[] = $paragraph['social_media_callout_title'];
 
 				foreach ($paragraph['callouts'] as $callouts) {
 					$total_chars_array[] = $callouts['callout_title'];

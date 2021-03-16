@@ -138,7 +138,6 @@ class Keyword extends Admin_Controller
 
 	public function delete_keyword($id)
     {
-
         if (!$this->user_model->loggedin()) {
             redirect('/', 'refresh');
         }
@@ -210,37 +209,81 @@ class Keyword extends Admin_Controller
 			$data['status'] = 1;  // status: 1 => 'Analyzing'
 			$data['keyword_analyze_by'] = $this->session->userdata('id');
 			$keyword_id = $this->keyword_model->save($data, $id);
-			$keyword_result = $this->get_keyword_analysis_details($keyword_id,'en', $keyword);
-			if($keyword_result)
-			{
-				$keyword_analysis_details = $keyword_result['keyword_analysis'];
-				$keyword_data = $keyword_result['keyword_data'];
-				$focus_keyword_count = 0;
-				foreach ($keyword_data['should_use'] as $should_use) {
-					if($should_use['priority']==1){
-						$focus_keyword_count = $focus_keyword_count+1;
-					}
-				}
-				$update_data['status'] = 2;
-				$update_data['monthly_search'] = $keyword_analysis_details['monthly_searches'] == "N/A" ? null : $keyword_analysis_details['monthly_searches'];
-				$update_data['content_score'] = $keyword_analysis_details['content_difficult_score'];
-				$update_data['link_building'] = $keyword_analysis_details['link_difficult_score'];
-				$update_data['focus_keyword'] = $focus_keyword_count;
-				$this->keyword_model->save($update_data, $keyword_id);
-			}
-			//$redirect_url =  'secure/keyword';
 			$redirect_url = 'secure/contentarticlesbrief/add/'.$keyword_id;
 			$return['is_redirect'] = 'yes';
 			$return['redirect'] = site_url($redirect_url);
 		}else{
 
 		}
-
 		if($json_output){
             $this->output->set_content_type('application/json')->set_output(json_encode($return));
         }else{
             return $return;
         }
+	}
+
+	public function keywordanalysisdata()
+	{
+		$result = [];
+		$keyword_id = $this->input->post('keyword_id');
+		$keyword = $this->input->post('keyword');
+		$keyword_result = $this->get_keyword_analysis_details($keyword_id,'en', $keyword);
+		if($keyword_result)
+		{
+			$keyword_analysis_details = $keyword_result['keyword_analysis'];
+			$keyword_data = $keyword_result['keyword_data'];
+			$focus_keyword_count = 0;
+			foreach ($keyword_data['should_use'] as $should_use) {
+				if($should_use['priority']==1){
+					$focus_keyword_count = $focus_keyword_count+1;
+				}
+			}
+			$update_data['status'] = 2;
+			$update_data['monthly_search'] = $keyword_analysis_details['monthly_searches'] == "N/A" ? null : $keyword_analysis_details['monthly_searches'];
+			$update_data['content_score'] = $keyword_analysis_details['content_difficult_score'];
+			$update_data['link_building'] = $keyword_analysis_details['link_difficult_score'];
+			$update_data['focus_keyword'] = $focus_keyword_count;
+			$this->keyword_model->save($update_data, $keyword_id);
+			$result['status'] = 1;
+			$result['html'] = $this->load->view('secure/keywordanalysis/details',['keyword_analysis' => $keyword_result],TRUE);
+			$result['serp_url'] = $keyword_data['serp'];
+			$result['topic_section'] = $this->load->view('secure/contentarticlebrief/topic-score-section',['optimizecontent' => $keyword_data],TRUE);
+			$result['keyword'] = $keyword;
+		}	
+		else
+		{
+			$result['status'] = 0;
+			$result['flashes'] =  ['type' => 'error','message' => 'No Keyword Ananlysis done'];
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($result));
+	}
+
+	public function checktopicsection()
+	{
+		$page_content = strtolower($this->input->post('page_content'));
+		$optimize_string = $this->input->post('optimize_string');
+		$optimize_ar = json_decode($optimize_string, true);
+		$should_use = $optimize_ar['should_use'];
+		$more_often = 0;
+		$focus_keyword = 0;
+		foreach($should_use as $suse)
+		{
+			if (strpos($page_content, strtolower($suse['keyword'])) !== FALSE) {
+				$optimize_ar['already_use'][] = $suse;
+				if($suse['priority'] == 1)
+				{
+					$focus_keyword++;
+					$key = array_search($suse,$should_use);
+					unset($should_use[$key]);
+				}
+			}
+		}
+		$optimize_ar['content_performance']['total_already_use'] = count($optimize_ar['already_use']);
+		$optimize_ar['content_performance']['total_should_use'] = count($should_use);
+		$optimize_ar['content_performance']['total_focus_keywords'] = $focus_keyword;
+		$optimize_ar['should_use'] = $should_use;
+		$result['topic_section'] = $this->load->view('secure/contentarticlebrief/topic-score-section',['optimizecontent' => $optimize_ar],TRUE);
+		$this->output->set_content_type('application/json')->set_output(json_encode($result));
 	}
 }
 

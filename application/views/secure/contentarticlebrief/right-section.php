@@ -1,5 +1,5 @@
 
-	<ul class="nav nav-tabs brief-nav-tabs" id="sideTab" role="tablist">
+	<ul class="nav nav-tabs brief-nav-tabs tab-main-section bg-secondary"" id="sideTab" role="tablist">
 		<li class="nav-item">
 			<a class="nav-link active" id="top-results-tab" data-toggle="tab" href="#topresults" role="tab" aria-controls="topresults" aria-selected="true">Top Results</a>
 		</li>
@@ -14,8 +14,8 @@
 					<div class="tab-content" id="sideTabContent">
 						<!-- Top Results Tab -->
 						<div class="tab-pane fade show active" id="topresults" role="tabpanel" aria-labelledby="top-results-tab">
-							<div class="container">
-								<ul class="nav nav-tabs topresults-tab" id="subsideTab" role="tablist">
+							<div class="">
+								<ul class="nav nav-tabs topresults-tab sub-tab-section" id="subsideTab" role="tablist">
 									<li class="nav-item">
 										<a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
 									</li>
@@ -27,7 +27,7 @@
 									</li>
 								</ul>
 							</div>
-							<div class="tab-content" id="subsideTabContent">
+							<div class="tab-content tab-data-section" id="subsideTabContent">
 								<!-- Start of Overview Tab -->
 								<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
 									<div class="container document-search-results" data-keyword="<?php echo $keyword; ?>" data-json-serp-url='<?php echo json_encode($serp_url);?>'>
@@ -64,8 +64,8 @@
 						<!-- End of Topic-->
 						<!-- Questions Tab -->
 						<div class="tab-pane fade" id="questions" role="tabpanel" aria-labelledby="questions-tab">
-							<div class="container">
-								<ul class="nav nav-tabs question-option-tab" id="questionsideTab" role="tablist">
+							<div class="">
+								<ul class="nav nav-tabs question-option-tab sub-tab-section" id="questionsideTab" role="tablist">
 									<li class="nav-item">
 										<a class="nav-link active" id="serp-tab" data-toggle="tab" href="#serp" role="tab" aria-controls="serp" aria-selected="true">SERP</a>
 									</li>

@@ -347,6 +347,7 @@ class Contentarticlesbrief extends Admin_Controller
 			}
 			
 			$key_data_save = array();
+			$key_data_save['keyword_content_performance'] = $this->input->post('highlight_keywords');
 			$key_data_save['status'] = 3; //status: 3 => 'Brief submitted. Ready for writer to submit article.'
 			$this->keyword_model->save($key_data_save, $keyword_id);
 			if(!$id){
